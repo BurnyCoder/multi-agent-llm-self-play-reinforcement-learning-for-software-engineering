@@ -4,6 +4,8 @@
   "platform": "linux/amd64",
   "python_version": "3.12.16",
   "original_image_id": "sha256:b8fef3d5548b4335261bfd34df24fc30b8645ee8c0258ba13d46e96ccd21ebba",
+  "humanize_version": "4.16.1.dev42",
+  "humanize_version_file_sha256": "e3ff024c9d339a422adef96c5e1bdb95b9c6410bc08eb8c1d74a22dade2640cb",
   "packages": {
     "attrs": "26.1.0",
     "freezegun": "1.5.5",
@@ -40,6 +42,7 @@
   },
   "sources": [
     "https://docs.docker.com/build/building/best-practices/#pin-base-image-versions",
-    "https://docs.astral.sh/uv/reference/cli/#uv-build--build-constraints"
+    "https://docs.astral.sh/uv/reference/cli/#uv-build--build-constraints",
+    "https://setuptools-scm.readthedocs.io/latest/config/#environment-variables"
   ]
 }

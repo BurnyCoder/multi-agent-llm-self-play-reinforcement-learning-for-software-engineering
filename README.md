@@ -6,6 +6,10 @@ The project adapts [Self-play SWE-RL](https://arxiv.org/html/2512.18552v3), the 
 
 **Research status:** implementation and preregistration precede model execution. No improvement or trained-model result is claimed here. Generated results will be linked below after the first bounded pilot. The first delivery executes one pilot, not the larger seed/control study.
 
+<!-- SSR_RESULTS:START -->
+Results have not been measured. The report command will replace this block from saved records.
+<!-- SSR_RESULTS:END -->
+
 ```mermaid
 flowchart LR
     R[Real repository + dependencies] --> I[Injector primary]

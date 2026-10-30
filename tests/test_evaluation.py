@@ -30,7 +30,8 @@ def test_source_roots_use_existing_python_package_layouts(tmp_path):
     assert source_roots(tmp_path) == ["src"]
 
 
-def test_official_container_creation_is_hardened():
+def test_official_container_creation_is_hardened(monkeypatch):
+    monkeypatch.setenv("SSR_RUN_ID", "fixture-run")
     class Containers:
         def create(self, **kwargs):
             return kwargs
@@ -39,12 +40,13 @@ def test_official_container_creation_is_hardened():
         containers = Containers()
 
     args = HardenedDockerClient(Client()).containers.create(
-        image="test", cap_add=["SYS_ADMIN"], network_mode="bridge", privileged=True)
+        image="test", cap_add=["SYS_ADMIN"], network_mode="bridge", privileged=True, labels={"existing": "preserved"})
     assert args["network_mode"] == "none"
     assert args["cap_drop"] == ["ALL"]
     assert args["security_opt"] == ["no-new-privileges:true"]
     assert not args.get("privileged")
     assert "cap_add" not in args
+    assert args["labels"] == {"existing": "preserved", "org.multi-agent-ssr.run": "fixture-run"}
 
 
 def test_base_verification_ignores_mode_only_changes_but_rejects_content_or_empty_additions(monkeypatch):

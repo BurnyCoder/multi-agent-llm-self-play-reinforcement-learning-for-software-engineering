@@ -3,6 +3,7 @@
 import ast
 import json
 import time
+from dataclasses import replace
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -37,6 +38,7 @@ def prepared(tmp_path, monkeypatch):
     spec = RepoSpec("humanize", "https://example.invalid/humanize", "a" * 40,
                     "fixture", str(source), "test", ["src/humanize"], ["tests"], "MIT", "fixture-digest")
     monkeypatch.setattr(synthetic, "load_repositories", lambda: [spec])
+    monkeypatch.setattr(synthetic, "_environment_fingerprint", lambda: "fixture-environment")
     data = tmp_path / "private-data"
     monkeypatch.setattr(synthetic, "data_directory", lambda: data)
     calls = []
@@ -98,6 +100,34 @@ def test_cached_mutant_integrity_is_checked_before_model_evaluation(prepared):
     mutant = data / "synthetic" / records[0]["buggy_tree"] / records[0]["source_file"]
     mutant.write_text("# corrupt cached mutant\n")
     with pytest.raises(ValueError, match="immutable"):
+        synthetic.prepare_synthetic(data, count=2)
+
+
+def test_rebuilt_image_can_reuse_same_source_and_environment_recipe(prepared, monkeypatch):
+    data, records, spec, calls = prepared
+    monkeypatch.setattr(synthetic, "load_repositories", lambda: [replace(spec, image_digest="rebuilt-image")])
+    before = len(calls)
+    assert synthetic.prepare_synthetic(data, count=2) == records
+    assert len(calls) == before
+    monkeypatch.setattr(synthetic, "_environment_fingerprint", lambda: "changed-environment")
+    with pytest.raises(ValueError, match="environment"):
+        synthetic.prepare_synthetic(data, count=2)
+
+
+def test_public_cohort_and_timestamp_are_immutable_across_local_preparation(prepared):
+    data, _, _, _ = prepared
+    public_path = Path("manifests/synthetic.json")
+    original = public_path.read_bytes()
+    metadata_path = data / "synthetic/preparation.json"
+    metadata = json.loads(metadata_path.read_text())
+    metadata["created_at"] = "new-local-build-time"
+    metadata_path.write_text(json.dumps(metadata))
+    synthetic.prepare_synthetic(data, count=2)
+    assert public_path.read_bytes() == original
+    public = json.loads(original)
+    public["tasks"][0]["patch_sha256"] = "different-frozen-task"
+    public_path.write_text(json.dumps(public))
+    with pytest.raises(ValueError, match="committed"):
         synthetic.prepare_synthetic(data, count=2)
 
 
