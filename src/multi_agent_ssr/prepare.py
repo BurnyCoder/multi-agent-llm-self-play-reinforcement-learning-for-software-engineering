@@ -32,6 +32,25 @@ def data_directory() -> Path:
     return Path(os.environ.get("SSR_DATA_DIR", "data")).resolve()
 
 
+def preparation_evidence() -> dict:
+    """Summarize existing executable setup checks without exposing oracle patches."""
+    destination = data_directory()
+    human = json.loads((destination / "human_envs.json").read_text())
+    synthetic = json.loads((destination / "synthetic/tasks.json").read_text())
+    control_file = destination / "validation/human-grader-smoke/results.json"
+    controls = json.loads(control_file.read_text()) if control_file.exists() else []
+    result = {"human_environments_ready": sum(row.get("status") == "ready" for row in human["tasks"]),
+        "human_environments_planned": len(_read_manifest("evaluation")["tasks"]),
+        "synthetic_validated_tasks": len(synthetic),
+        "synthetic_distinct_functions": len({row["cluster_id"] for row in synthetic}),
+        "synthetic_clean_test_counts": sorted({len(row["clean_results"]) for row in synthetic}),
+        "official_grader_controls": [{key: row[key] for key in ("control", "instance_id", "success", "status")}
+                                     for row in controls],
+        "environment_fingerprint": _environment_fingerprint(),
+        "evidence_type": "CPU executable preparation checks; not model-performance results"}
+    return result
+
+
 def command(args: list[str], cwd: Path | None = None) -> str:
     """Use argument lists, not interpolated shell commands, for setup operations."""
     result = subprocess.run(args, cwd=cwd, text=True, capture_output=True, check=True)
@@ -144,14 +163,24 @@ def _prepare_source(record: RepoSpec, destination: Path) -> RepoSpec:
         raise ValueError(f"Repository {record.name} is at {actual}, not committed pin {record.commit}")
     if command(["git", "status", "--porcelain"], source):
         raise ValueError(f"Prepared source has unexpected local changes: {source}")
-    if record.name == "humanize" and not (source / "src/humanize/_version.py").is_file():
-        # Let upstream hatch-vcs generate metadata; constrain its isolated build.
-        # https://docs.astral.sh/uv/reference/cli/#uv-build--build-constraints
-        constraints = destination / "environment" / "build-constraints.txt"
-        constraints.parent.mkdir(parents=True, exist_ok=True)
-        constraints.write_text(_requirements(_read_manifest("environment")["build_packages"]), encoding="utf-8")
-        subprocess.run(["uv", "build", "--build-constraints", str(constraints), "--wheel",
-                        "--out-dir", str(destination / "wheels"), str(source)], check=True)
+    if record.name == "humanize":
+        environment = _read_manifest("environment")
+        version_file = source / "src/humanize/_version.py"
+        if not version_file.is_file():
+            # Upstream generates metadata, with the observed version frozen so
+            # newly added upstream Git tags cannot change a future reproduction.
+            # https://setuptools-scm.readthedocs.io/latest/config/#environment-variables
+            # https://docs.astral.sh/uv/reference/cli/#uv-build--build-constraints
+            constraints = destination / "environment" / "build-constraints.txt"
+            constraints.parent.mkdir(parents=True, exist_ok=True)
+            constraints.write_text(_requirements(environment["build_packages"]), encoding="utf-8")
+            # hatch-vcs does not pass dist_name; its pinned implementation reads
+            # the global override. Scope it to this single build subprocess.
+            env = dict(os.environ, SETUPTOOLS_SCM_PRETEND_VERSION=environment["humanize_version"])
+            subprocess.run(["uv", "build", "--build-constraints", str(constraints), "--wheel",
+                            "--out-dir", str(destination / "wheels"), str(source)], check=True, env=env)
+        if hashlib.sha256(version_file.read_bytes()).hexdigest() != environment["humanize_version_file_sha256"]:
+            raise ValueError("Generated humanize version metadata differs from the committed preparation")
     return replace(record, source_path=str(source))
 
 

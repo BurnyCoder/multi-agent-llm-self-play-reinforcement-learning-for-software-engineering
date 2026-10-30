@@ -97,3 +97,51 @@ def test_report_collects_saved_patches_and_nested_traces_without_grader_secrets(
     assert [patch["text"] for patch in data["patches"]] == ["fixture prediction"]
     assert data["events"][0]["session_id"] == "child"
     assert "SECRET_ORACLE" not in json.dumps(data)
+
+
+def test_failure_metadata_coverage_and_configured_bootstrap_are_reported(tmp_path, monkeypatch):
+    run = tmp_path / "run"
+    run.mkdir()
+    (run / "manifest.json").write_text(json.dumps({"expected_human_tasks": 3,
+        "config": {"experiment": {"bootstrap_samples": 123}}}))
+    (run / "failure.json").write_text(json.dumps({"phase": "preflight", "error": "fixture failure"}))
+    (run / "preparation.json").write_text(json.dumps({"status": "fixture_prepared"}))
+    (run / "evaluation.jsonl").write_text(json.dumps(record("a", "base", False)) + "\n")
+    readme = tmp_path / "README.md"
+    readme.write_text("Preserve this intro.\n<!-- SSR_RESULTS:START -->\nold\n<!-- SSR_RESULTS:END -->\nPreserve this end.\n")
+    monkeypatch.setattr("multi_agent_ssr.reporting.render_figures", lambda *args: {})
+    monkeypatch.setattr("multi_agent_ssr.reporting.render_paper", lambda *args: None)
+    generate_report(run, tmp_path / "report", tmp_path / "site", readme_path=readme)
+    data = json.loads((tmp_path / "site" / "data.json").read_text())
+    assert data["status"] == "preflight_failed"
+    assert data["failure"]["error"] == "fixture failure"
+    assert data["preparation"]["preparation"]["status"] == "fixture_prepared"
+    assert data["analysis"]["bootstrap"]["samples"] == 123
+    assert data["analysis"]["conditions"]["human"]["base"]["planned"] == 3
+    assert data["analysis"]["conditions"]["human"]["base"]["unrecorded"] == 2
+    assert all(control["status"] == "not_run" for control in data["controls"])
+    assert "fixture failure" in (tmp_path / "report" / "experiment.md").read_text()
+    assert "Preserve this intro." in readme.read_text() and "Preserve this end." in readme.read_text()
+    assert "single-agent" in readme.read_text()
+
+
+def test_diagnostics_count_real_calls_not_copied_observations(tmp_path, monkeypatch):
+    run = tmp_path / "run"
+    run.mkdir()
+    events = [{"event": "session_started", "episode_id": "e", "session_id": "r", "parent_session_id": None},
+              {"event": "session_started", "episode_id": "e", "session_id": "c", "parent_session_id": "r"},
+              {"event": "tool_started", "name": "subagent", "session_id": "r"},
+              {"event": "generation", "call_id": "unique", "generation": {"completion_ids": [1, 2, 3]}},
+              {"event": "artifact_validated", "valid": False, "reason": "fixture invalid"}]
+    (run / "events.jsonl").write_text("".join(json.dumps(event) + "\n" for event in events))
+    (run / "metrics.jsonl").write_text(json.dumps({"step": 1, "memory": 100, "optimizer_steps": 2}) + "\n")
+    monkeypatch.setattr("multi_agent_ssr.reporting.render_figures", lambda *args: {})
+    monkeypatch.setattr("multi_agent_ssr.reporting.render_paper", lambda *args: None)
+    generate_report(run, tmp_path / "report", tmp_path / "site")
+    diagnostics = json.loads((tmp_path / "site" / "data.json").read_text())["diagnostics"]
+    assert diagnostics["generated_action_tokens"] == 3
+    assert diagnostics["delegation_calls"] == 1
+    assert diagnostics["child_sessions"] == 1
+    assert diagnostics["invalid_artifact_rate"] == 1
+    assert diagnostics["invalid_reasons"] == {"fixture invalid": 1}
+    assert diagnostics["peak_allocated_bytes"] == 100

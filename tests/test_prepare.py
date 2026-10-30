@@ -1,5 +1,6 @@
 """Preparation must replay committed scientific inputs on another machine."""
 
+import hashlib
 import json
 import subprocess
 import sys
@@ -123,3 +124,43 @@ def test_prepare_all_runs_both_frozen_eval_preparations(manifests, tmp_path, mon
     result = prepare.prepare_all()
     assert calls == ["repositories", "evaluation", "model", "synthetic", "human_environments"]
     assert {"synthetic", "human_environments"} <= result.keys()
+
+
+def test_existing_original_image_is_verified_and_reused_without_build(manifests, tmp_path, monkeypatch):
+    record = {"original_image_id": "original-image", "packages": {"pytest": "9.2.0"}}
+    (manifests / "environment.json").write_text(json.dumps(record))
+    calls = []
+    monkeypatch.setattr(prepare, "_image_id", lambda image: calls.append(("inspect", image)) or image)
+    monkeypatch.setattr(prepare, "_verify_dependency_image", lambda image: calls.append(("verify", image)))
+    monkeypatch.setattr(subprocess, "run", lambda *args, **kwargs: pytest.fail("Must not rebuild existing image"))
+    assert prepare._prepare_dependency_image(tmp_path, build=True) == "original-image"
+    assert calls == [("inspect", "original-image"), ("verify", "original-image")]
+    local = json.loads((tmp_path / "prepared_environment.json").read_text())
+    assert local["image_digest"] == "original-image"
+    assert local["environment_fingerprint"] == prepare._environment_fingerprint()
+
+
+def test_changed_dependency_inventory_is_rejected(manifests, monkeypatch):
+    record = {"python_version": "3.12.16", "platform": "linux/amd64", "packages": {"pytest": "9.2.0"}}
+    (manifests / "environment.json").write_text(json.dumps(record))
+    actual = {"python": "3.12.16", "machine": "x86_64", "packages": {"pytest": "different-version"}}
+    monkeypatch.setattr(prepare, "command", lambda args: json.dumps(actual))
+    with pytest.raises(ValueError, match="differs"):
+        prepare._verify_dependency_image("changed-image")
+
+
+def test_generated_version_cannot_drift_with_future_upstream_tags(manifests, tmp_path, monkeypatch):
+    source = tmp_path / "repositories/humanize"
+    version = source / "src/humanize/_version.py"
+    version.parent.mkdir(parents=True)
+    original = b"version = '4.16.1.dev42'\n"
+    version.write_bytes(original)
+    (manifests / "environment.json").write_text(json.dumps({
+        "humanize_version": "4.16.1.dev42",
+        "humanize_version_file_sha256": hashlib.sha256(original).hexdigest()}))
+    spec = RepoSpec("humanize", "url", "pinned", "image", "", "test", ["src/humanize"], ["tests"])
+    monkeypatch.setattr(prepare, "command", lambda args, cwd: "pinned" if "rev-parse" in args else "")
+    assert prepare._prepare_source(spec, tmp_path).source_path == str(source)
+    version.write_text("version = 'future-version'\n")
+    with pytest.raises(ValueError, match="version|metadata"):
+        prepare._prepare_source(spec, tmp_path)

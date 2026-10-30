@@ -19,10 +19,15 @@ def main() -> None:
         sub = subcommands.add_parser(name)
         sub.add_argument("--run", type=Path, default=Path("runs/pilot"))
         sub.add_argument("--config", type=Path, default=Path("configs/pilot.toml"))
+        sub.add_argument("--worker", action="store_true", help=argparse.SUPPRESS)
     report = subcommands.add_parser("report")
     report.add_argument("--run", type=Path, default=Path("runs/pilot"))
     report.add_argument("--output", type=Path, default=Path("reports/generated"))
     report.add_argument("--site", type=Path, default=Path("site/dist"))
+    export = subcommands.add_parser("export", help="Build a Hub bundle from the final completed checkpoint")
+    export.add_argument("--run", type=Path, default=Path("runs/pilot"))
+    export.add_argument("--report", type=Path, default=Path("reports/generated"))
+    export.add_argument("--output", type=Path, default=Path("runs/pilot/publication"))
     args = parser.parse_args()
     if args.command == "prepare":
         from .prepare import prepare_all
@@ -33,10 +38,18 @@ def main() -> None:
             subprocess.run(command, check=True)
     elif args.command == "report":
         from .reporting import generate_report
-        print(json.dumps(generate_report(args.run, args.output, args.site), indent=2, default=str))
+        print(json.dumps(generate_report(args.run, args.output, args.site,
+                                         readme_path=Path("README.md")), indent=2, default=str))
+    elif args.command == "export":
+        from .publication import export_checkpoint
+        print(export_checkpoint(args.run, args.report, args.output))
     else:
-        from .experiment import execute
-        execute(args.command, args.config, args.run)
+        if args.worker:
+            from .experiment import execute
+            execute(args.command, args.config, args.run)
+        else:
+            from .supervisor import bounded_phase
+            raise SystemExit(bounded_phase(args.command, args.config, args.run))
 
 
 if __name__ == "__main__":

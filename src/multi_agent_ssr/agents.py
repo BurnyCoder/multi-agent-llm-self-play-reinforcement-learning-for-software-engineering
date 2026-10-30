@@ -22,6 +22,7 @@ from typing import Any
 
 from .contracts import ActionTrace, Episode, Limits, Policy
 from .io import EventLog, utc_now
+from .sandbox import SandboxInfrastructureError
 
 
 def parse_action(text: str) -> dict[str, Any] | None:
@@ -214,6 +215,8 @@ class AgentHarness:
                 path, old, new = str(args["path"]), str(args["old"]), str(args["new"])
                 try:
                     previous = self.sandbox.read(path)
+                except SandboxInfrastructureError:
+                    raise
                 except (FileNotFoundError, ValueError, RuntimeError):
                     previous = None
                 if old == "":
@@ -269,6 +272,8 @@ class AgentHarness:
                 self.log.emit("tool_started", session_id=session.session_id, name=name, arguments=args)
                 try:
                     result = self._tool(session, name, args)
+                except SandboxInfrastructureError:
+                    raise
                 except Exception as exc:
                     result = {"error": f"{type(exc).__name__}: {exc}"}
                 self.log.emit("tool_finished", session_id=session.session_id, name=name, result=result)

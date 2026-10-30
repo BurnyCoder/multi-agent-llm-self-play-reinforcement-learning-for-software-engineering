@@ -120,6 +120,18 @@ def test_expired_update_never_starts_an_action_or_optimizer_step():
     assert policy.version == 0
 
 
+def test_zero_action_group_is_scored_but_never_trained():
+    torch = pytest.importorskip("torch")
+    policy = TinyPolicy(torch)
+    episodes = [Episode("empty-a", "same", "solver", reward=-1, completed=True),
+                Episode("empty-b", "same", "solver", reward=-1, completed=True)]
+    optimizer = torch.optim.SGD(policy.trainable_parameters(), lr=0.1)
+    result = update_policy(policy, [episodes], optimizer, capacity=8)
+    assert result["no_action_groups"] == 1
+    assert result["optimizer_steps"] == 0
+    assert not policy.scored
+
+
 def test_shared_policy_updates_and_reuses_behavior_logprobs_across_passes():
     torch = pytest.importorskip("torch")
     policy = TinyPolicy(torch)

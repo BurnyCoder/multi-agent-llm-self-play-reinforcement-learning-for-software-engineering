@@ -45,7 +45,10 @@ def compute_advantages(episodes: list[Episode]) -> dict[str, float]:
         raise ValueError("Only completed, finite-reward episodes can form a training group")
     total = sum(episode.token_count for episode in episodes)
     if total == 0:
-        raise ValueError("A group without sampled actions cannot train the policy")
+        # The weighted mean is undefined when no action was sampled. Returning
+        # zero contribution preserves its scored outcomes without inventing
+        # gradients; update_policy reports this non-trainable group explicitly.
+        return {episode.episode_id: 0.0 for episode in episodes}
     mean = math.fsum(float(episode.reward) * episode.token_count for episode in episodes) / total
     return {episode.episode_id: float(episode.reward) - mean for episode in episodes}
 
@@ -137,6 +140,7 @@ def update_policy(policy: Any, groups: list[list[Episode]], optimizer: Any,
             "episodes": len(episodes), "sampled_tokens": sampled_tokens,
             "trained_tokens_per_pass": trained_tokens, "capacity": capacity,
             "zero_advantage_episodes": len(episodes) - len(active),
+            "no_action_groups": sum(not any(ep.token_count for ep in group) for group in groups),
             "passes": [], "optimizer_steps": 0,
         }
         for epoch in range(epochs if trained_tokens else 0):

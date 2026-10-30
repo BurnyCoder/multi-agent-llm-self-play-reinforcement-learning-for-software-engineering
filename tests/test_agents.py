@@ -82,6 +82,22 @@ def test_explore_has_no_mutating_tools():
     assert names == {"read", "search", "finish"}
 
 
+def test_docker_tool_failure_is_not_a_policy_reward(tmp_path):
+    from multi_agent_ssr.agents import run_team
+    from multi_agent_ssr.sandbox import SandboxInfrastructureError
+
+    class BrokenSandbox(FakeSandbox):
+        def read(self, path):
+            raise SandboxInfrastructureError("Docker daemon unavailable")
+
+    sandbox = BrokenSandbox()
+    policy = ScriptedPolicy(sandbox)
+    policy.root_calls = 1  # Begin with a read; no child should wait on this failed fixture.
+    episode = run_team(policy, sandbox, "solver", "task", "Repair it", tmp_path)
+    assert not episode.completed
+    assert episode.error.startswith("SandboxInfrastructureError:")
+
+
 def test_parse_native_qwen_call_preserves_edit_whitespace_and_code():
     """Qwen's parameter delimiters add one newline around raw string values."""
     from multi_agent_ssr.agents import parse_action

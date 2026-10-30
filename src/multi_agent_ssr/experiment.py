@@ -96,6 +96,8 @@ def execute(phase: str, config_path: Path, run_dir: Path) -> None:
     if budget.remaining() <= 0:
         log.emit("budget_exhausted", phase=phase)
         return
+    from .prepare import preparation_evidence
+    write_json(run_dir / "preparation.json", preparation_evidence())
     log.emit("phase_started", phase=phase, code_commit=commit, remaining_seconds=budget.remaining())
     try:
         if phase == "preflight":

@@ -226,6 +226,8 @@ class _HardenedContainers:
 
     def create(self, *args, **kwargs):
         kwargs.pop("cap_add", None)
+        if os.environ.get("SSR_RUN_ID"):
+            kwargs["labels"] = {**kwargs.get("labels", {}), "org.multi-agent-ssr.run": os.environ["SSR_RUN_ID"]}
         kwargs.update(network_mode="none", cap_drop=["ALL"], security_opt=["no-new-privileges:true"],
                       privileged=False, mem_limit="2g", memswap_limit="2g", nano_cpus=1_000_000_000,
                       pids_limit=256)
@@ -344,6 +346,7 @@ def evaluate_human(policy: Policy, condition: str, run_dir: Path, limits: Limits
         started = time.monotonic()
         row: dict[str, Any] = {"task_id": task_id, "condition": condition, "source": "human", "success": None,
                                "status": "pending", "generated_tokens": 0, "delegations": 0,
+                               "attempted": False,
                                "policy_version": getattr(policy, "version", None)}
         env = envs.get(task_id, {})
         if deadline - time.time() < 120:
@@ -363,13 +366,15 @@ def evaluate_human(policy: Policy, condition: str, run_dir: Path, limits: Limits
             try:
                 with DockerSandbox(spec.image, Path(spec.source_path), task_dir / "sandbox") as sandbox:
                     stage = "rollout"
+                    row["attempted"] = True
                     episode = run_team(policy, sandbox, "solver", task_id, agent_prompt(task), run_dir,
                                        limits=local_limits, delegation=delegation)
                     write_json(task_dir / "episode.json", episode.to_dict())
                     row["generated_tokens"] = episode.token_count
                     row["delegations"] = len({action.session_id for action in episode.actions if action.parent_session_id})
-                    context_budget = "ContextLimitError" in (episode.error or "")
+                    context_budget = (episode.error or "").startswith("ContextLimitError:")
                     policy_budget = episode.result.get("budget_exhausted", False) or context_budget
+                    row["policy_budget_exhausted"] = bool(policy_budget)
                     if episode.error:
                         row["agent_error"] = episode.error
                     if episode.error and not context_budget:

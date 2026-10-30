@@ -25,7 +25,12 @@ from typing import Any
 from .agents import run_team
 from .contracts import Episode, Limits, RepoSpec
 from .io import EventLog, utc_now, write_json
-from .prepare import data_directory, load_repositories
+from .prepare import (
+    _environment_fingerprint,
+    _read_manifest,
+    data_directory,
+    load_repositories,
+)
 from .sandbox import DockerSandbox
 from .validation import _apply, _copy, run_tests, source_diff
 
@@ -128,8 +133,15 @@ def _spec() -> RepoSpec:
 def _load_records(root: Path, spec: RepoSpec) -> list[dict[str, Any]]:
     """Validate cohort provenance and mutation hashes before any evaluation."""
     metadata = json.loads((root / "preparation.json").read_text(encoding="utf-8"))
-    if metadata["repository_commit"] != spec.commit or metadata["image_digest"] != spec.image_digest:
-        raise ValueError("Synthetic cohort repository/image pin differs from current preparation")
+    environment = _environment_fingerprint()
+    legacy = "environment_fingerprint" not in metadata
+    if metadata["repository_commit"] != spec.commit:
+        raise ValueError("Synthetic cohort repository pin differs from current preparation")
+    if legacy:
+        if metadata["image_digest"] != _read_manifest("environment")["original_image_id"]:
+            raise ValueError("Legacy synthetic cohort has no verified environment provenance")
+    elif metadata["environment_fingerprint"] != environment:
+        raise ValueError("Synthetic cohort environment recipe differs from current preparation")
     records = json.loads((root / "tasks.json").read_text(encoding="utf-8"))
     if len({record["cluster_id"] for record in records}) != len(records):
         raise ValueError("Synthetic cohort repeats an original function")
@@ -143,6 +155,11 @@ def _load_records(root: Path, spec: RepoSpec) -> list[dict[str, Any]]:
         current = (buggy / record["source_file"]).read_bytes()
         if hashlib.sha256(current).hexdigest() != record["source_sha256"]:
             raise ValueError("An immutable synthetic mutant tree was changed")
+    if legacy:
+        # Migrate only the original verified image; equivalent future rebuilds
+        # may have another OCI ID, but must retain the committed complete recipe.
+        metadata["environment_fingerprint"] = environment
+        write_json(root / "preparation.json", metadata)
     return records
 
 
@@ -150,13 +167,20 @@ def _publish_manifest(records: list[dict[str, Any]], metadata: dict[str, Any]) -
     """Publish cohort identities without patches, reference code or test maps."""
     fields = ("task_id", "repository", "repository_commit", "cluster_id",
               "source_file", "function", "patch_sha256")
-    write_json(Path("manifests/synthetic.json"), {
+    public_path = Path("manifests/synthetic.json")
+    manifest = {
         "created_at": metadata["created_at"], "requested_count": metadata["count"],
         "accepted_count": len(records),
         "diagnostic": "visible_existing_tests_without_ssr_weakening",
         "selection": "Sorted file/function/AST position; first test-detected mutant per function; no learned policy",
         "tasks": [{key: record[key] for key in fields} for record in records],
-    })
+    }
+    if public_path.exists():
+        existing = json.loads(public_path.read_text(encoding="utf-8"))
+        if any(existing.get(key) != value for key, value in manifest.items() if key != "created_at"):
+            raise ValueError("Prepared synthetic cohort differs from the committed manifest")
+        return  # A new local preparation never rewrites the original timestamp.
+    write_json(public_path, manifest)
 
 
 def prepare_synthetic(data_dir: Path, count: int = 16) -> list[dict[str, Any]]:
@@ -181,7 +205,8 @@ def prepare_synthetic(data_dir: Path, count: int = 16) -> list[dict[str, Any]]:
     else:
         _copy(original, root / "clean")
         metadata = {"created_at": utc_now(), "count": count, "repository_commit": spec.commit,
-                    "image_digest": spec.image_digest, "test_targets": TEST_TARGETS,
+                    "image_digest": spec.image_digest, "environment_fingerprint": _environment_fingerprint(),
+                    "test_targets": TEST_TARGETS,
                     "max_candidates_per_function": 64}
         write_json(metadata_path, metadata)
         records = []
@@ -319,7 +344,7 @@ def evaluate_synthetic(policy: Any, condition: str, run_dir: Path, limits: Limit
         started = time.monotonic()
         row = {"condition": condition, "task_id": record["task_id"], "source": "synthetic",
                "cluster_id": record["cluster_id"], "status": "infrastructure_error", "success": None,
-               "generated_tokens": 0, "elapsed_seconds": 0.0, "delegations": 0, "reason": "",
+               "attempted": False, "generated_tokens": 0, "elapsed_seconds": 0.0, "delegations": 0, "reason": "",
                "policy_version": getattr(policy, "version", 0), "policy_fingerprint": fingerprint}
         remaining = deadline - time.time()
         # Reserve the trusted runner's 90-second command ceiling before rollout.
@@ -336,6 +361,7 @@ def evaluate_synthetic(policy: Any, condition: str, run_dir: Path, limits: Limit
             episode_limits = replace(limits, episode_seconds=min(limits.episode_seconds, int(remaining - 95)))
             with DockerSandbox(spec.image_digest or spec.image, root / record["buggy_tree"], work) as sandbox:
                 stage = "rollout"
+                row["attempted"] = True
                 episode = run_team(policy, sandbox, "solver", record["task_id"], _prompt(record),
                                    work / "agents", limits=episode_limits, delegation=delegation)
                 row.update(generated_tokens=episode.token_count, delegations=_delegations(episode, work / "agents"))

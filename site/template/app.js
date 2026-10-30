@@ -18,8 +18,8 @@ function renderEvidence() {
   for (const name of ["base", "trained"]) {
     byId(`${name}-score`).textContent = percent(human[name].rate);
     byId(`${name}-coverage`).textContent = human[name].completed
-      ? `${human[name].successes} / ${human[name].completed} completed · ${human[name].unscored} unscored`
-      : "No completed measurements";
+      ? `${human[name].successes} / ${human[name].completed} scored · ${number(human[name].planned)} planned · ${human[name].unscored + (human[name].unrecorded || 0)} missing`
+      : `No scored measurements · ${number(human[name].planned)} planned`;
   }
   const pair = dataset.analysis.comparisons.human;
   if (pair.difference !== null) {
@@ -123,6 +123,20 @@ function renderPatches() {
   select.addEventListener("change", show); show();
 }
 
+function renderDiagnostics() {
+  const diagnostics = dataset.diagnostics || {};
+  const labels = {generated_action_tokens: "Generated action tokens", delegation_calls: "Delegation tool calls",
+    child_sessions: "Child sessions", optimizer_steps: "Optimizer steps", validated_artifacts: "Validated artifacts"};
+  const list = byId("diagnostic-list");
+  for (const [key, label] of Object.entries(labels)) list.append(element("dt", label), element("dd", number(diagnostics[key])));
+  byId("diagnostic-data").textContent = JSON.stringify(diagnostics, null, 2);
+  for (const control of dataset.controls || []) byId("control-list").append(element("li", `${control.condition} — Not run. ${control.purpose}.`));
+  if (dataset.failure && Object.keys(dataset.failure).length) {
+    byId("run-failure").hidden = false;
+    byId("run-failure").textContent = `Recorded ${dataset.failure.phase || "run"} failure: ${dataset.failure.error || "Unspecified"}. This record is retained even if a later phase completes.`;
+  }
+}
+
 async function start() {
   const response = await fetch("data.json", {cache: "no-cache"});
   if (!response.ok) throw new Error(`Could not load run data (${response.status}).`);
@@ -131,7 +145,8 @@ async function start() {
   byId("run-status").textContent = String(dataset.status).replaceAll("_", " ");
   byId("generated-at").textContent = `Generated ${new Date(dataset.generated_at).toISOString().slice(0, 16).replace("T", " ")} UTC`;
   byId("summary-link").href = "data.json";
-  byId("run-metadata").textContent = JSON.stringify({manifest: dataset.manifest, preflight: dataset.preflight, run_summary: dataset.run_summary}, null, 2);
+  byId("run-metadata").textContent = JSON.stringify({manifest: dataset.manifest, preflight: dataset.preflight,
+    failure: dataset.failure, preparation: dataset.preparation, budget: dataset.budget, run_summary: dataset.run_summary}, null, 2);
   for (const source of dataset.sources) {
     const li = element("li"), a = element("a", source.title); a.href = source.url; a.rel = "noopener"; li.append(a); byId("source-list").append(li);
   }
@@ -142,7 +157,7 @@ async function start() {
   const episodes = [...new Set(dataset.events.map(episodeId).filter(Boolean))];
   for (const id of episodes) { const option = element("option", id); option.value = id; byId("episode-filter").append(option); }
   byId("episode-filter").addEventListener("change", renderTraces);
-  renderEvidence(); renderTraces(); renderPatches();
+  renderEvidence(); renderTraces(); renderPatches(); renderDiagnostics();
 }
 
 start().catch(error => {

@@ -51,6 +51,20 @@ def test_textual_tool_protocol_evicts_observations_with_their_action():
     assert removed == 1
 
 
+def test_latest_observation_is_bounded_without_breaking_native_tool_ids():
+    messages = [
+        {"role": "system", "content": "instructions"}, {"role": "user", "content": "task"},
+        {"role": "assistant", "content": "read", "tool_calls": [{"id": "call"}]},
+        {"role": "tool", "content": "x" * 2000, "tool_call_id": "call"},
+    ]
+    retained, ids, removed = bound_messages(messages, encode_messages, 350)
+    assert retained[:3] == messages[:3]
+    assert retained[3]["tool_call_id"] == "call"
+    assert "Observation shortened to fit context" in retained[3]["content"]
+    assert len(ids) <= 350 and removed == 0
+    assert len(messages[3]["content"]) == 2000
+
+
 @pytest.mark.parametrize("messages", [
     [{"role": "tool", "content": "orphan"}],
     [{"role": "assistant", "tool_calls": [{"id": "x"}]},
@@ -108,7 +122,8 @@ def test_action_logprobs_align_first_completion_and_exclude_observations():
     assert policy.model.logits.grad[4].abs().sum() == 0
 
 
-def test_generation_records_the_actual_sampled_token_probability(tmp_path, monkeypatch):
+@pytest.mark.parametrize("long_observation", [False, True])
+def test_generation_records_the_actual_sampled_token_probability(tmp_path, monkeypatch, long_observation):
     """Verify the final/EOS-step recorder path without loading any model weights."""
     torch = pytest.importorskip("torch")
     pytest.importorskip("transformers")
@@ -119,10 +134,10 @@ def test_generation_records_the_actual_sampled_token_probability(tmp_path, monke
 
         def apply_chat_template(self, messages, **kwargs):
             assert kwargs["enable_thinking"] is False
-            return "prompt"
+            return json.dumps(messages) if long_observation else "prompt"
 
         def encode(self, text, **kwargs):
-            return [1, 2]
+            return [1] * len(text) if long_observation else [1, 2]
 
         def decode(self, ids, **kwargs):
             return " ".join(str(int(value)) for value in ids)
@@ -144,7 +159,7 @@ def test_generation_records_the_actual_sampled_token_probability(tmp_path, monke
             return result
 
     policy = LocalPolicy.__new__(LocalPolicy)
-    policy.config = ModelConfig(context_tokens=32, action_tokens=4)
+    policy.config = ModelConfig(context_tokens=512 if long_observation else 32, action_tokens=4)
     policy.log_path = tmp_path / "events.jsonl"
     policy.lock = threading.RLock()
     policy._log_lock = threading.RLock()
@@ -155,14 +170,27 @@ def test_generation_records_the_actual_sampled_token_probability(tmp_path, monke
     policy.model = GeneratingModel()
     policy._backend = SimpleNamespace(for_inference=lambda model: None,
                                       for_training=lambda model: None)
-    result = policy.generate([{"role": "user", "content": "test"}], max_new_tokens=4)
+    messages = [{"role": "user", "content": "test"}]
+    if long_observation:
+        messages += [{"role": "assistant", "content": "read"},
+                     {"role": "user", "content": "Tool read result: " + "x" * 2000}]
+    result = policy.generate(messages, max_new_tokens=4)
     expected = torch.arange(6, dtype=torch.float32).log_softmax(0)[[4, 5]].tolist()
     assert result.old_logprobs == pytest.approx(expected)
-    assert result.prompt_ids == [1, 2]
+    if not long_observation:
+        assert result.prompt_ids == [1, 2]
     assert result.completion_ids == [4, 5]
     assert result.policy_version == 7
     content = policy.log_path.read_text(encoding="utf-8")
     assert "not-a-real-token-never-log-this" not in content
     events = [json.loads(line) for line in content.splitlines()]
+    effective = next(item for item in events if item["event"] == "prompt_effective")
+    requested = next(item for item in events if item["event"] == "prompt_requested")
+    assert effective["prompt_ids"] == result.prompt_ids
+    assert requested["messages"] == messages
+    if long_observation:
+        assert "Observation shortened to fit context" in effective["messages"][-1]["content"]
+        assert len(result.prompt_ids) <= policy.config.context_tokens - 4
+        assert result.prompt_ids == policy._encode_messages(effective["messages"], None)
     assert any(item["event"] == "output_chunk" for item in events)
     assert events[-1]["event"] == "generation_complete"
