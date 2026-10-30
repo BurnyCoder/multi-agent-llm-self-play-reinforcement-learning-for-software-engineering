@@ -28,7 +28,7 @@ class LocalFixtureSandbox:
     def exec(self, command, timeout=90):
         args = shlex.split(command)
         assert args[0] == "python", "Fixture evaluator only executes trusted Python"
-        env = dict(os.environ, PYTHONDONTWRITEBYTECODE="1")
+        env = dict(os.environ, PYTHONDONTWRITEBYTECODE="1", PYTEST_DISABLE_PLUGIN_AUTOLOAD="1")
         result = subprocess.run([sys.executable, *args[1:]], cwd=self.source,
                                 capture_output=True, text=True, timeout=timeout,
                                 env=env, encoding="utf-8", check=False)
@@ -175,3 +175,13 @@ def test_collection_failures_still_reject_policy_artifacts(repository, monkeypat
     monkeypatch.setattr(validation, "_run_tests", collection_error)
     assert not validation.validate_bug(spec, artifact, work).valid
     assert not validation.score_repair(spec, artifact, "", ValidationResult(True, "valid"), work)["success"]
+
+
+@pytest.mark.parametrize("returncode", [2, 5, 124, 127])
+def test_missing_tests_and_timeouts_differ_from_unavailable_runner(repository, monkeypatch, returncode):
+    clean, _, spec, work = repository
+    monkeypatch.setattr(LocalFixtureSandbox, "exec", lambda *args, **kwargs: {
+        "stdout": "", "stderr": "fixture diagnostic", "returncode": returncode})
+    error = validation.SandboxInfrastructureError if returncode == 127 else ValueError
+    with pytest.raises(error, match="fixture diagnostic"):
+        validation.run_tests(spec, clean, ["tests/test_sample.py"], work)

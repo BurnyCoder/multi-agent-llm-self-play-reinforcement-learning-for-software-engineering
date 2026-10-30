@@ -160,8 +160,11 @@ class DockerSandbox:
             raise RuntimeError("Sandbox is already running")
         archive = _source_archive(self.source)
         self.work_root.mkdir(parents=True, exist_ok=True)
+        run_label = (["--label", f"org.multi-agent-ssr.run={os.environ['SSR_RUN_ID']}"]
+                     if os.environ.get("SSR_RUN_ID") else [])
         result = self._run([
             "run", "--detach", "--rm", "--name", f"ssr-{uuid.uuid4().hex}",
+            *run_label,
             "--network", "none", "--user", "65534:65534", "--read-only",
             "--cap-drop", "ALL", "--security-opt", "no-new-privileges",
             "--pids-limit", "128", "--memory", "768m", "--memory-swap", "768m",

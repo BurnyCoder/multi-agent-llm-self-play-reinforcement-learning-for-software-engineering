@@ -29,6 +29,9 @@ class ContextLimitError(ValueError):
     """The task and latest complete interaction cannot fit without corruption."""
 
 
+_OBSERVATION_MARKER = "\n[Observation shortened to fit context; request a narrower read. Full output is in the event log.]"
+
+
 def _is_observation(message: dict[str, Any]) -> bool:
     """Recognize native tools and the harness's explicitly marked observations."""
     if message.get("role") == "tool":
@@ -80,10 +83,12 @@ def bound_messages(
     encode: Callable[[list[dict[str, Any]]], list[int]],
     prompt_budget: int,
 ) -> tuple[list[dict[str, Any]], list[int], int]:
-    """Drop oldest whole exchanges while preserving instructions and latest state.
+    """Drop old exchanges, then bound observation text, preserving task instructions.
 
     System/task instructions and the latest assistant/tool exchange are retained.
-    No token slicing, fabricated masks, or partial tool-message deletion occurs.
+    If necessary, shrink only observation content with an explicit marker. Tool
+    envelopes and IDs stay valid; exact retained input IDs are returned for both
+    logging and training. Required task text is never silently shortened.
     """
     if prompt_budget < 1:
         raise ContextLimitError("No prompt capacity remains after reserving the action")
@@ -94,14 +99,26 @@ def bound_messages(
         ids = encode(retained)
         if len(ids) <= prompt_budget:
             return retained, ids, removed
-        if len(spans) < 2:
-            raise ContextLimitError(
-                f"Required instructions/latest interaction use {len(ids)} tokens; "
-                f"prompt capacity is {prompt_budget}"
-            )
-        start, end = spans[0]
-        del retained[start:end]
-        removed += 1
+        if len(spans) >= 2:
+            start, end = spans[0]
+            del retained[start:end]
+            removed += 1
+            continue
+        observations = [(index, message["content"].removesuffix(_OBSERVATION_MARKER))
+                        for index, message in enumerate(retained)
+                        if _is_observation(message) and isinstance(message.get("content"), str)]
+        candidates = [(index, content) for index, content in observations if len(content) > 64]
+        if candidates:
+            # Character prefixes preserve source indentation; re-tokenizing the
+            # whole rendered prompt verifies the actual capacity after each cut.
+            # Geometric shrinking avoids assuming BPE token counts are monotonic.
+            index, content = max(candidates, key=lambda item: (len(item[1]), -item[0]))
+            retained[index]["content"] = content[:max(64, len(content) * 3 // 4)] + _OBSERVATION_MARKER
+            continue
+        raise ContextLimitError(
+            f"Required instructions/latest interaction use {len(ids)} tokens; "
+            f"prompt capacity is {prompt_budget}"
+        )
 
 
 class LocalPolicy:
