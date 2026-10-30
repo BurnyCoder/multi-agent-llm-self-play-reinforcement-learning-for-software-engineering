@@ -22,3 +22,11 @@ Training repositories: [more-itertools](https://github.com/more-itertools/more-i
 ## Claim boundaries
 
 An executable test is an oracle for the specified behavior, not a proof of complete program correctness. A training update is evidence of weight optimization, not of generalization. A comparison with the unchanged policy tests the combined pipeline; attributing an effect to subagents requires the planned ablations. Unrun controls and missing measurements are explicitly unscored. Both positive and negative observations belong in the generated reports.
+
+## Human evaluation implementation boundary
+
+[The local evaluator](../src/multi_agent_ssr/evaluation.py) calls the installed, locked official SWE-bench `make_test_spec` and `run_instance` APIs. It preserves their test oracle and parser. Its Docker client wrapper disables networking, drops capabilities, and applies memory, process, and CPU limits; these isolation settings differ from upstream defaults. The grader receives reference test patches only on the host, after the agent finishes.
+
+The agent image is derived from the official dependency image with its original `/testbed` checkout and Git history removed. A separate source copy is checked against the pinned base commit, allowing mode-only changes made by the image builder, and receives no original Git metadata. Agent imports resolve to `/repo` or `/repo/src`. Committed official image digests remain fixed across preparation and fresh clones; rebuilt dependency-image IDs are recorded locally.
+
+The upstream grader caches reports by run ID without comparing a new submitted patch. Each actual grading attempt therefore receives its own ID, while the evaluator reuses a task only after a completed outcome has been recorded. Infrastructure errors remain unscored. Invalid agent artifacts count as failures, and context-budget exhaustion is evaluated using the available patch when the official oracle can run. The generated reports retain coverage and distinguish the preregistered interval decision from the limitations of a degenerate bootstrap interval.

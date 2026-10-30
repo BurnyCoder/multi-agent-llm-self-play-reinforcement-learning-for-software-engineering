@@ -1,0 +1,200 @@
+{
+  "dataset": "SWE-bench/SWE-bench_Verified",
+  "revision": "78f471bf655a3137b2e8a75af1501690ec009ec3",
+  "selection": "sha256(instance_id), ascending; fixed repository eligibility",
+  "created_at": "2026-10-30T03:01:29.848115+00:00",
+  "tasks": [
+    {
+      "instance_id": "pytest-dev__pytest-5631",
+      "repo": "pytest-dev/pytest",
+      "base_commit": "cb828ebe70b4fa35cd5f9a7ee024272237eab351",
+      "image": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-5631:latest"
+    },
+    {
+      "instance_id": "pylint-dev__pylint-7080",
+      "repo": "pylint-dev/pylint",
+      "base_commit": "3c5eca2ded3dd2b59ebaf23eb289453b5d2930f0",
+      "image": "swebench/sweb.eval.x86_64.pylint-dev_1776_pylint-7080:latest"
+    },
+    {
+      "instance_id": "pylint-dev__pylint-6386",
+      "repo": "pylint-dev/pylint",
+      "base_commit": "754b487f4d892e3d4872b6fc7468a71db4e31c13",
+      "image": "swebench/sweb.eval.x86_64.pylint-dev_1776_pylint-6386:latest"
+    },
+    {
+      "instance_id": "pytest-dev__pytest-7982",
+      "repo": "pytest-dev/pytest",
+      "base_commit": "a7e38c5c61928033a2dc1915cbee8caa8544a4d0",
+      "image": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-7982:latest"
+    },
+    {
+      "instance_id": "pylint-dev__pylint-4970",
+      "repo": "pylint-dev/pylint",
+      "base_commit": "40cc2ffd7887959157aaf469e09585ec2be7f528",
+      "image": "swebench/sweb.eval.x86_64.pylint-dev_1776_pylint-4970:latest"
+    },
+    {
+      "instance_id": "psf__requests-2931",
+      "repo": "psf/requests",
+      "base_commit": "5f7a3a74aab1625c2bb65f643197ee885e3da576",
+      "image": "swebench/sweb.eval.x86_64.psf_1776_requests-2931:latest"
+    },
+    {
+      "instance_id": "pytest-dev__pytest-7432",
+      "repo": "pytest-dev/pytest",
+      "base_commit": "e6e300e729dd33956e5448d8be9a0b1540b4e53a",
+      "image": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-7432:latest"
+    },
+    {
+      "instance_id": "pytest-dev__pytest-5809",
+      "repo": "pytest-dev/pytest",
+      "base_commit": "8aba863a634f40560e25055d179220f0eefabe9a",
+      "image": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-5809:latest"
+    },
+    {
+      "instance_id": "pytest-dev__pytest-7521",
+      "repo": "pytest-dev/pytest",
+      "base_commit": "41d211c24a6781843b174379d6d6538f5c17adb9",
+      "image": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-7521:latest"
+    },
+    {
+      "instance_id": "pylint-dev__pylint-6903",
+      "repo": "pylint-dev/pylint",
+      "base_commit": "ca80f03a43bc39e4cc2c67dc99817b3c9f13b8a6",
+      "image": "swebench/sweb.eval.x86_64.pylint-dev_1776_pylint-6903:latest"
+    },
+    {
+      "instance_id": "pytest-dev__pytest-5262",
+      "repo": "pytest-dev/pytest",
+      "base_commit": "58e6a09db49f34886ff13f3b7520dd0bcd7063cd",
+      "image": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-5262:latest"
+    },
+    {
+      "instance_id": "pytest-dev__pytest-10356",
+      "repo": "pytest-dev/pytest",
+      "base_commit": "3c1534944cbd34e8a41bc9e76818018fadefc9a1",
+      "image": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-10356:latest"
+    },
+    {
+      "instance_id": "pylint-dev__pylint-4661",
+      "repo": "pylint-dev/pylint",
+      "base_commit": "1d1619ef913b99b06647d2030bddff4800abdf63",
+      "image": "swebench/sweb.eval.x86_64.pylint-dev_1776_pylint-4661:latest"
+    },
+    {
+      "instance_id": "pytest-dev__pytest-10051",
+      "repo": "pytest-dev/pytest",
+      "base_commit": "aa55975c7d3f6c9f6d7f68accc41bb7cadf0eb9a",
+      "image": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-10051:latest"
+    },
+    {
+      "instance_id": "psf__requests-1142",
+      "repo": "psf/requests",
+      "base_commit": "22623bd8c265b78b161542663ee980738441c307",
+      "image": "swebench/sweb.eval.x86_64.psf_1776_requests-1142:latest"
+    },
+    {
+      "instance_id": "psf__requests-1921",
+      "repo": "psf/requests",
+      "base_commit": "3c88e520da24ae6f736929a750876e7654accc3d",
+      "image": "swebench/sweb.eval.x86_64.psf_1776_requests-1921:latest"
+    },
+    {
+      "instance_id": "pytest-dev__pytest-6202",
+      "repo": "pytest-dev/pytest",
+      "base_commit": "3a668ea6ff24b0c8f00498c3144c63bac561d925",
+      "image": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-6202:latest"
+    },
+    {
+      "instance_id": "pylint-dev__pylint-4551",
+      "repo": "pylint-dev/pylint",
+      "base_commit": "99589b08de8c5a2c6cc61e13a37420a868c80599",
+      "image": "swebench/sweb.eval.x86_64.pylint-dev_1776_pylint-4551:latest"
+    },
+    {
+      "instance_id": "psf__requests-1766",
+      "repo": "psf/requests",
+      "base_commit": "847735553aeda6e6633f2b32e14ba14ba86887a4",
+      "image": "swebench/sweb.eval.x86_64.psf_1776_requests-1766:latest"
+    },
+    {
+      "instance_id": "psf__requests-5414",
+      "repo": "psf/requests",
+      "base_commit": "39d0fdd9096f7dceccbc8f82e1eda7dd64717a8e",
+      "image": "swebench/sweb.eval.x86_64.psf_1776_requests-5414:latest"
+    },
+    {
+      "instance_id": "pytest-dev__pytest-7205",
+      "repo": "pytest-dev/pytest",
+      "base_commit": "5e7f1ab4bf58e473e5d7f878eb2b499d7deabd29",
+      "image": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-7205:latest"
+    },
+    {
+      "instance_id": "pylint-dev__pylint-6528",
+      "repo": "pylint-dev/pylint",
+      "base_commit": "273a8b25620467c1e5686aa8d2a1dbb8c02c78d0",
+      "image": "swebench/sweb.eval.x86_64.pylint-dev_1776_pylint-6528:latest"
+    },
+    {
+      "instance_id": "pytest-dev__pytest-5787",
+      "repo": "pytest-dev/pytest",
+      "base_commit": "955e54221008aba577ecbaefa15679f6777d3bf8",
+      "image": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-5787:latest"
+    },
+    {
+      "instance_id": "psf__requests-6028",
+      "repo": "psf/requests",
+      "base_commit": "0192aac24123735b3eaf9b08df46429bb770c283",
+      "image": "swebench/sweb.eval.x86_64.psf_1776_requests-6028:latest"
+    },
+    {
+      "instance_id": "psf__requests-2317",
+      "repo": "psf/requests",
+      "base_commit": "091991be0da19de9108dbe5e3752917fea3d7fdc",
+      "image": "swebench/sweb.eval.x86_64.psf_1776_requests-2317:latest"
+    },
+    {
+      "instance_id": "pallets__flask-5014",
+      "repo": "pallets/flask",
+      "base_commit": "7ee9ceb71e868944a46e1ff00b506772a53a4f1d",
+      "image": "swebench/sweb.eval.x86_64.pallets_1776_flask-5014:latest"
+    },
+    {
+      "instance_id": "pytest-dev__pytest-7490",
+      "repo": "pytest-dev/pytest",
+      "base_commit": "7f7a36478abe7dd1fa993b115d22606aa0e35e88",
+      "image": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-7490:latest"
+    },
+    {
+      "instance_id": "pytest-dev__pytest-7571",
+      "repo": "pytest-dev/pytest",
+      "base_commit": "422685d0bdc110547535036c1ff398b5e1c44145",
+      "image": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-7571:latest"
+    },
+    {
+      "instance_id": "pytest-dev__pytest-6197",
+      "repo": "pytest-dev/pytest",
+      "base_commit": "e856638ba086fcf5bebf1bebea32d5cf78de87b4",
+      "image": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-6197:latest"
+    },
+    {
+      "instance_id": "pylint-dev__pylint-8898",
+      "repo": "pylint-dev/pylint",
+      "base_commit": "1f8c4d9eb185c16a2c1d881c054f015e1c2eb334",
+      "image": "swebench/sweb.eval.x86_64.pylint-dev_1776_pylint-8898:latest"
+    },
+    {
+      "instance_id": "psf__requests-1724",
+      "repo": "psf/requests",
+      "base_commit": "1ba83c47ce7b177efe90d5f51f7760680f72eda0",
+      "image": "swebench/sweb.eval.x86_64.psf_1776_requests-1724:latest"
+    },
+    {
+      "instance_id": "pytest-dev__pytest-7236",
+      "repo": "pytest-dev/pytest",
+      "base_commit": "c98bc4cd3d687fe9b392d8eecd905627191d4f06",
+      "image": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-7236:latest"
+    }
+  ]
+}

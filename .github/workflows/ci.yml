@@ -1,0 +1,16 @@
+name: Harness tests
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  cpu:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: astral-sh/setup-uv@v10.3.3
+        with:
+          version: "0.13.6"
+          enable-cache: true
+      - run: uv sync --locked
+      - run: uv run --no-sync pytest -q
+      - run: uv run --no-sync ruff check src tests

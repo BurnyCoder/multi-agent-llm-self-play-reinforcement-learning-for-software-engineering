@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Reproducible local research into shared-policy multi-agent self-play for software repair.">
+  <title>Shared Policy Lab — Local SWE Self-Play</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#overview" aria-label="Shared Policy Lab home"><span class="mark" aria-hidden="true">↗</span>SHARED POLICY LAB</a>
+    <nav aria-label="Main navigation"><a href="#evidence">Evidence</a><a href="#mechanism">Method</a><a href="#traces">Agent traces</a><a href="paper.pdf">Paper ↗</a></nav>
+  </header>
+  <main>
+    <section class="hero" id="overview">
+      <div class="eyebrow"><span class="status-dot"></span> LOCAL RESEARCH · SOFTWARE ENGINEERING</div>
+      <h1>Shared weights.<br><span>Competing teams.</span></h1>
+      <p class="intro">One team introduces bugs. Another learns to repair them. Primary agents and their subagents share the same local language model.</p>
+      <div class="hero-bottom"><p class="byline">Libor “Burny” Burian <span> / </span> Qwen3.5-2B + shared LoRA</p><a class="text-link" href="experiment.md">Read the experiment report <span>↗</span></a></div>
+      <div class="run-strip"><span class="label">RUN RECORD</span><code id="run-id">Loading…</code><span id="run-status" class="pill">Awaiting data</span><span id="generated-at" class="timestamp"></span></div>
+      <p id="load-error" class="notice" hidden></p>
+    </section>
+
+    <section id="evidence" class="section">
+      <div class="section-heading"><div><div class="eyebrow">01 / EVIDENCE</div><h2>What changed after training?</h2></div><p>Frozen and final policies, matched tasks. Human bugs and synthetic diagnostics remain separate.</p></div>
+      <div class="metrics-grid">
+        <article class="metric"><span class="label">HUMAN BUGS · FROZEN</span><strong id="base-score">—</strong><span id="base-coverage" class="muted">No completed measurements</span></article>
+        <article class="metric highlight"><span class="label">HUMAN BUGS · TRAINED</span><strong id="trained-score">—</strong><span id="trained-coverage" class="muted">No completed measurements</span></article>
+        <article class="metric"><span class="label">PAIRED DIFFERENCE</span><strong id="effect">—</strong><span id="effect-ci" class="muted">No paired estimate</span></article>
+      </div>
+      <div id="interpretation" class="finding" aria-live="polite">Results will appear only when valid evaluations have completed.</div>
+      <div class="figure-grid"><figure><img src="figures/scores.png" alt="Observed task resolution with evaluated counts" loading="lazy"><figcaption>Resolution uses completed evaluations. Missing coverage is never treated as a failed repair.</figcaption></figure><div class="methods-note"><span class="label">READING THE EVIDENCE</span><h3>A pilot, with explicit limits.</h3><p>The paired interval resamples held-out tasks. It conditions on one checkpoint and does not measure training-seed uncertainty.</p><p>Improving self-generated bugs does not by itself demonstrate transfer to human-written bugs. Unrun controls have no score.</p><a class="text-link" href="summary.json" id="summary-link">Download generated analysis ↗</a></div></div>
+      <div class="table-controls"><label>Bug source<select id="source-filter"><option value="all">All sources</option><option value="human">Human bugs</option><option value="synthetic">Synthetic bugs</option></select></label><label>Outcome<select id="outcome-filter"><option value="all">All outcomes</option><option value="resolved">Resolved</option><option value="unresolved">Not resolved</option><option value="unscored">Unscored</option></select></label><label class="search-label">Find a task<input id="task-filter" type="search" placeholder="Repository or task ID…"></label><span id="visible-count" class="muted"></span></div>
+      <div class="table-wrap"><table><thead><tr><th>Task</th><th>Source</th><th>Policy</th><th>Outcome</th><th>Tokens</th><th>Subagents</th></tr></thead><tbody id="evaluation-table"><tr><td colspan="6" class="empty">Loading saved records…</td></tr></tbody></table></div>
+    </section>
+
+    <section id="mechanism" class="section">
+      <div class="section-heading"><div><div class="eyebrow">02 / MECHANISM</div><h2>Independent contexts.<br>One learning policy.</h2></div><p>Children run alongside the primary agent. GPU requests take turns; repository tools can overlap.</p></div>
+      <div class="architecture" role="img" aria-label="Injector and repair teams each have a primary agent with asynchronous general and explore children. Both use one shared model. Tests verify bugs and repairs and provide training rewards.">
+        <article class="team injector"><span class="label">INJECTOR TEAM</span><h3>Introduce a bug</h3><div class="primary-node">Primary agent</div><div class="children"><span>general</span><span>explore</span></div><p>Code changes + weakened tests</p></article>
+        <div class="oracle"><span class="flow-arrow">→</span><span class="label">EXECUTABLE CHECKS</span><strong>Validated<br>bug artifact</strong><span class="flow-arrow">→</span></div>
+        <article class="team repair"><span class="label">REPAIR TEAM</span><h3>Restore behavior</h3><div class="primary-node">Primary agent</div><div class="children"><span>general</span><span>explore</span></div><p>Source repair + restored oracle tests</p></article>
+        <div class="shared-node"><span class="model-icon" aria-hidden="true">⟳</span><div><strong>Qwen3.5-2B + one shared adapter</strong><span>Every sampled action is trained once in its actual context.</span></div><span class="pill">LOCAL GPU</span></div>
+      </div>
+      <div class="figure-grid learning"><figure><img src="figures/loss.png" alt="Recorded policy objective loss by optimizer step" loading="lazy"><figcaption>Policy objective. Empty charts indicate absent measurements.</figcaption></figure><figure><img src="figures/rewards.png" alt="Recorded injector and repair team returns by optimizer step" loading="lazy"><figcaption>Executable-test rewards. Higher return is not a generalization claim.</figcaption></figure></div>
+    </section>
+
+    <section id="traces" class="section">
+      <div class="section-heading"><div><div class="eyebrow">03 / INSPECT THE RUN</div><h2>Follow the work.</h2></div><p>Inspect recorded sessions, delegation, tool outcomes, and patches. These are run records, not a scripted demonstration.</p></div>
+      <div class="trace-controls"><label>Episode<select id="episode-filter"><option value="all">All recorded episodes</option></select></label><span id="trace-count" class="muted"></span></div>
+      <div class="trace-layout"><div id="session-tree" class="session-tree"><p class="empty">No agent sessions recorded.</p></div><div id="event-panel" class="event-panel" tabindex="0"><div class="empty">Choose a session to inspect its events.</div></div></div>
+      <div class="trace-controls"><label>Saved patch<select id="patch-filter"><option value="">No generated patches recorded</option></select></label><span id="patch-kind" class="muted"></span></div>
+      <pre id="patch-panel" class="event-panel" tabindex="0">Generated bug and repair patches appear here when they are saved. Benchmark reference fixes and oracle test patches are excluded.</pre>
+      <details class="metadata"><summary>Configuration, preflight, and run summary</summary><pre id="run-metadata"></pre></details>
+    </section>
+
+    <section class="section references" id="sources"><div class="eyebrow">04 / PROVENANCE</div><h2>Built on existing work.</h2><p>The task follows Self-play SWE-RL; the local model, trusted Python test interface, and concurrent teams are adaptations. Source licenses and implementation differences are documented in the repository.</p><ol id="source-list"></ol></section>
+  </main>
+  <footer><span>SHARED POLICY LAB</span><p>Generated from saved run artifacts. Reproducible records, including negative results.</p><a href="data.json">Data ↗</a><a href="paper.pdf">PDF ↗</a></footer>
+  <script src="app.js"></script>
+</body>
+</html>

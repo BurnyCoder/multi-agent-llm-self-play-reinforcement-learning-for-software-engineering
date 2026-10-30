@@ -1,0 +1,153 @@
+{
+  "created_at": "2026-10-30T03:21:45.439843+00:00",
+  "requested_count": 16,
+  "accepted_count": 16,
+  "diagnostic": "visible_existing_tests_without_ssr_weakening",
+  "selection": "Sorted file/function/AST position; first test-detected mutant per function; no learned policy",
+  "tasks": [
+    {
+      "task_id": "synthetic-humanize-32912c7633850fdd",
+      "repository": "humanize",
+      "repository_commit": "6b817b963dbb091b9ad20a746cb6a26653a93b95",
+      "cluster_id": "humanize@6b817b963dbb091b9ad20a746cb6a26653a93b95:src/humanize/filesize.py:naturalsize",
+      "source_file": "src/humanize/filesize.py",
+      "function": "naturalsize",
+      "patch_sha256": "ad325d89978c0c3824a16bc7edbc4c37428377ff120b6693520d7841cf0c83c1"
+    },
+    {
+      "task_id": "synthetic-humanize-d258d2ea7032e406",
+      "repository": "humanize",
+      "repository_commit": "6b817b963dbb091b9ad20a746cb6a26653a93b95",
+      "cluster_id": "humanize@6b817b963dbb091b9ad20a746cb6a26653a93b95:src/humanize/lists.py:natural_list",
+      "source_file": "src/humanize/lists.py",
+      "function": "natural_list",
+      "patch_sha256": "c95a9ebce3fda55731a2284ac50d8cb194bc76cb8cc551a1a4c6f4ed4b9f5839"
+    },
+    {
+      "task_id": "synthetic-humanize-edc1d6af7128307a",
+      "repository": "humanize",
+      "repository_commit": "6b817b963dbb091b9ad20a746cb6a26653a93b95",
+      "cluster_id": "humanize@6b817b963dbb091b9ad20a746cb6a26653a93b95:src/humanize/number.py:_format_not_finite",
+      "source_file": "src/humanize/number.py",
+      "function": "_format_not_finite",
+      "patch_sha256": "1efe57ce345d3842254aa3f7f3e47ef30b76e955947f96282cf7fb423bb21eaa"
+    },
+    {
+      "task_id": "synthetic-humanize-a4f8bb81c6ca3710",
+      "repository": "humanize",
+      "repository_commit": "6b817b963dbb091b9ad20a746cb6a26653a93b95",
+      "cluster_id": "humanize@6b817b963dbb091b9ad20a746cb6a26653a93b95:src/humanize/number.py:ordinal",
+      "source_file": "src/humanize/number.py",
+      "function": "ordinal",
+      "patch_sha256": "86367c60147f844f3d5c64c9ff57fa361696f53b4a8ef0f58b67f10c1a2340e0"
+    },
+    {
+      "task_id": "synthetic-humanize-9eb856b7fe1fbb0b",
+      "repository": "humanize",
+      "repository_commit": "6b817b963dbb091b9ad20a746cb6a26653a93b95",
+      "cluster_id": "humanize@6b817b963dbb091b9ad20a746cb6a26653a93b95:src/humanize/number.py:intcomma",
+      "source_file": "src/humanize/number.py",
+      "function": "intcomma",
+      "patch_sha256": "a941ba6c45836ed0e03ca7d47f429cd319644293ad6ddfdae95bfb1d033d967e"
+    },
+    {
+      "task_id": "synthetic-humanize-3c4b72e69ffbaff4",
+      "repository": "humanize",
+      "repository_commit": "6b817b963dbb091b9ad20a746cb6a26653a93b95",
+      "cluster_id": "humanize@6b817b963dbb091b9ad20a746cb6a26653a93b95:src/humanize/number.py:intword",
+      "source_file": "src/humanize/number.py",
+      "function": "intword",
+      "patch_sha256": "74f1d8eb8494c0fdf94a00f39ee91b7097e2d6e1bdcc138d62c5b2fe0b5091e7"
+    },
+    {
+      "task_id": "synthetic-humanize-4176e570baef9fda",
+      "repository": "humanize",
+      "repository_commit": "6b817b963dbb091b9ad20a746cb6a26653a93b95",
+      "cluster_id": "humanize@6b817b963dbb091b9ad20a746cb6a26653a93b95:src/humanize/number.py:apnumber",
+      "source_file": "src/humanize/number.py",
+      "function": "apnumber",
+      "patch_sha256": "1dc10b6c9fac57c6fb7fcfc897fdb1f80e22c9183cc7a98721e16768f9f7777d"
+    },
+    {
+      "task_id": "synthetic-humanize-637453bf29b7980c",
+      "repository": "humanize",
+      "repository_commit": "6b817b963dbb091b9ad20a746cb6a26653a93b95",
+      "cluster_id": "humanize@6b817b963dbb091b9ad20a746cb6a26653a93b95:src/humanize/number.py:fractional",
+      "source_file": "src/humanize/number.py",
+      "function": "fractional",
+      "patch_sha256": "96d1d28044df0f2ba721eed2d829cc76007edb088ed79b3c83306a11dc0c7124"
+    },
+    {
+      "task_id": "synthetic-humanize-767ec1fe7cfde5c8",
+      "repository": "humanize",
+      "repository_commit": "6b817b963dbb091b9ad20a746cb6a26653a93b95",
+      "cluster_id": "humanize@6b817b963dbb091b9ad20a746cb6a26653a93b95:src/humanize/number.py:clamp",
+      "source_file": "src/humanize/number.py",
+      "function": "clamp",
+      "patch_sha256": "7b60a9909b3d88c0476f88cd0c1f4b62153054f05a55a2c2a3f0090dc3d1870a"
+    },
+    {
+      "task_id": "synthetic-humanize-782ab9a9560e06ae",
+      "repository": "humanize",
+      "repository_commit": "6b817b963dbb091b9ad20a746cb6a26653a93b95",
+      "cluster_id": "humanize@6b817b963dbb091b9ad20a746cb6a26653a93b95:src/humanize/number.py:metric",
+      "source_file": "src/humanize/number.py",
+      "function": "metric",
+      "patch_sha256": "2b9853c830f945f4345043f745cad1f9d4789e798418b0cd695c5c79327bf757"
+    },
+    {
+      "task_id": "synthetic-humanize-4577a0721f5aec44",
+      "repository": "humanize",
+      "repository_commit": "6b817b963dbb091b9ad20a746cb6a26653a93b95",
+      "cluster_id": "humanize@6b817b963dbb091b9ad20a746cb6a26653a93b95:src/humanize/time.py:Unit.__lt__",
+      "source_file": "src/humanize/time.py",
+      "function": "Unit.__lt__",
+      "patch_sha256": "aebd05489056a0d5b9b0c997df833bed6065aa8d7797b99d6bbf03fa0cd633f3"
+    },
+    {
+      "task_id": "synthetic-humanize-c527e68239f0d194",
+      "repository": "humanize",
+      "repository_commit": "6b817b963dbb091b9ad20a746cb6a26653a93b95",
+      "cluster_id": "humanize@6b817b963dbb091b9ad20a746cb6a26653a93b95:src/humanize/time.py:_abs_timedelta",
+      "source_file": "src/humanize/time.py",
+      "function": "_abs_timedelta",
+      "patch_sha256": "6e182be1edf83ff710410187001a401ffdb1f72593dc684f184ffff80254f046"
+    },
+    {
+      "task_id": "synthetic-humanize-9c4c86f6fe33d2a7",
+      "repository": "humanize",
+      "repository_commit": "6b817b963dbb091b9ad20a746cb6a26653a93b95",
+      "cluster_id": "humanize@6b817b963dbb091b9ad20a746cb6a26653a93b95:src/humanize/time.py:naturaldelta",
+      "source_file": "src/humanize/time.py",
+      "function": "naturaldelta",
+      "patch_sha256": "2e296911028b851399bd07945c2cd77e19de9d71ffc570a715596f5068e9eb1e"
+    },
+    {
+      "task_id": "synthetic-humanize-90b514c0a3eb94e5",
+      "repository": "humanize",
+      "repository_commit": "6b817b963dbb091b9ad20a746cb6a26653a93b95",
+      "cluster_id": "humanize@6b817b963dbb091b9ad20a746cb6a26653a93b95:src/humanize/time.py:naturaltime",
+      "source_file": "src/humanize/time.py",
+      "function": "naturaltime",
+      "patch_sha256": "619eca6d1729eaa2d75f0d4f9d3a0b47a229c2b542a65710fc333d4ddb8d6012"
+    },
+    {
+      "task_id": "synthetic-humanize-d419d1eb521e8815",
+      "repository": "humanize",
+      "repository_commit": "6b817b963dbb091b9ad20a746cb6a26653a93b95",
+      "cluster_id": "humanize@6b817b963dbb091b9ad20a746cb6a26653a93b95:src/humanize/time.py:_convert_aware_datetime",
+      "source_file": "src/humanize/time.py",
+      "function": "_convert_aware_datetime",
+      "patch_sha256": "607a57c8f777d19844d427b0964991107cd891ed3fed28c46ef064dec21e6124"
+    },
+    {
+      "task_id": "synthetic-humanize-c5851b669aa4e34a",
+      "repository": "humanize",
+      "repository_commit": "6b817b963dbb091b9ad20a746cb6a26653a93b95",
+      "cluster_id": "humanize@6b817b963dbb091b9ad20a746cb6a26653a93b95:src/humanize/time.py:naturalday",
+      "source_file": "src/humanize/time.py",
+      "function": "naturalday",
+      "patch_sha256": "ba3cd0e39ea51ae457d2374d797b0dd02bf80096689d6617f7e61fad33a6a312"
+    }
+  ]
+}

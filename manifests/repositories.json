@@ -1,0 +1,66 @@
+[
+  {
+    "name": "more-itertools",
+    "url": "https://github.com/more-itertools/more-itertools",
+    "commit": "4aeb4338ae1407d8da9723e86da99efeb446f719",
+    "image": "multi-agent-ssr-python:pilot",
+    "source_path": "/mnt/d/AI/multi-agent-ssr/repositories/more-itertools",
+    "split": "train",
+    "source_roots": [
+      "more_itertools"
+    ],
+    "test_roots": [
+      "tests"
+    ],
+    "license": "MIT",
+    "image_digest": "sha256:b8fef3d5548b4335261bfd34df24fc30b8645ee8c0258ba13d46e96ccd21ebba"
+  },
+  {
+    "name": "boltons",
+    "url": "https://github.com/mahmoud/boltons",
+    "commit": "d31d821d56c8f7756af9c30a864077f2e5855321",
+    "image": "multi-agent-ssr-python:pilot",
+    "source_path": "/mnt/d/AI/multi-agent-ssr/repositories/boltons",
+    "split": "train",
+    "source_roots": [
+      "boltons"
+    ],
+    "test_roots": [
+      "tests"
+    ],
+    "license": "BSD-3-Clause",
+    "image_digest": "sha256:b8fef3d5548b4335261bfd34df24fc30b8645ee8c0258ba13d46e96ccd21ebba"
+  },
+  {
+    "name": "cachetools",
+    "url": "https://github.com/tkem/cachetools",
+    "commit": "505aece98f29a1aca26c4ae5ba57e03a8a3397f3",
+    "image": "multi-agent-ssr-python:pilot",
+    "source_path": "/mnt/d/AI/multi-agent-ssr/repositories/cachetools",
+    "split": "dev",
+    "source_roots": [
+      "src/cachetools"
+    ],
+    "test_roots": [
+      "tests"
+    ],
+    "license": "MIT",
+    "image_digest": "sha256:b8fef3d5548b4335261bfd34df24fc30b8645ee8c0258ba13d46e96ccd21ebba"
+  },
+  {
+    "name": "humanize",
+    "url": "https://github.com/python-humanize/humanize",
+    "commit": "6b817b963dbb091b9ad20a746cb6a26653a93b95",
+    "image": "multi-agent-ssr-python:pilot",
+    "source_path": "/mnt/d/AI/multi-agent-ssr/repositories/humanize",
+    "split": "test",
+    "source_roots": [
+      "src/humanize"
+    ],
+    "test_roots": [
+      "tests"
+    ],
+    "license": "MIT",
+    "image_digest": "sha256:b8fef3d5548b4335261bfd34df24fc30b8645ee8c0258ba13d46e96ccd21ebba"
+  }
+]
