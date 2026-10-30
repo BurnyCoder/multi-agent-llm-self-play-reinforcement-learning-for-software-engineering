@@ -1,0 +1,3 @@
+extends = "pilot.toml"
+[model]
+seed = 1

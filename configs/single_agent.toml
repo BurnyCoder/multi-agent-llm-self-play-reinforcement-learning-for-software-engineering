@@ -1,0 +1,5 @@
+# Optional expanded-study condition; not executed by the first pilot.
+extends = "pilot.toml"
+[experiment]
+delegation = false
+condition = "selfplay"

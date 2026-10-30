@@ -1,0 +1,29 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+/dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# Private configuration, model caches, raw rollouts and disposable environments.
+.env
+.env.*
+!.env.example
+runs/
+data/
+tmp/
+output/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+.test-tmp/
+logs/
+*.egg-info/
+unsloth_compiled_cache/
+*.safetensors
+*.pt
+*.bin

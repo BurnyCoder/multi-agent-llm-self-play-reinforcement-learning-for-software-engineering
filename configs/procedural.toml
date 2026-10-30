@@ -1,0 +1,4 @@
+# Policy-independent mutations of training repositories; visible original tests.
+extends = "pilot.toml"
+[experiment]
+condition = "procedural"

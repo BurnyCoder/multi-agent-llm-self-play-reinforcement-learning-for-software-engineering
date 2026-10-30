@@ -1,0 +1,5 @@
+# Replay the completed pilot's frozen valid bug corpus, updating repairs only.
+extends = "pilot.toml"
+[experiment]
+condition = "repair_only"
+corpus_run = "runs/pilot"

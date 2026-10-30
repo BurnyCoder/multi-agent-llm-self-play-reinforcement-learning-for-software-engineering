@@ -1,0 +1,31 @@
+# Preregistered local adaptation; these are settings, not empirical measurements.
+[model]
+model_id = "Qwen/Qwen3.5-2B"
+revision = ""
+context_tokens = 2048
+action_tokens = 256
+lora_rank = 16
+lora_alpha = 16
+learning_rate = 0.000005
+seed = 0
+
+[limits]
+generated_tokens = 4096
+tool_calls = 32
+child_sessions = 2
+child_depth = 1
+command_seconds = 90
+episode_seconds = 900
+
+[experiment]
+budget_seconds = 28800
+injector_samples = 2
+repair_samples = 4
+optimization_passes = 2
+max_bug_order = 2
+human_tasks = 32
+synthetic_tasks = 16
+minimum_final_reserve_seconds = 7200
+delegation = true
+condition = "selfplay"
+bootstrap_samples = 10000

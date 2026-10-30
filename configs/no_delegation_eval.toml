@@ -1,0 +1,6 @@
+# Evaluation-only intervention on a separately specified completed checkpoint.
+extends = "pilot.toml"
+[experiment]
+condition = "evaluation_only"
+delegation = false
+checkpoint_run = "runs/pilot"
