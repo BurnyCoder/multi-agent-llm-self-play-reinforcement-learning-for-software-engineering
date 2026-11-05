@@ -176,3 +176,64 @@ def test_recovery_disclosure_preserves_failed_attempt_after_success(tmp_path, mo
         assert "83 seconds" in text and "100 seconds" in text
         assert "offline interval" in text and "amendment" in text
         assert "model outputs 0, evaluations 0, checkpoints 0" in text
+
+
+@pytest.mark.parametrize("later_failure", [None, "pilot", "supervisor"])
+def test_preflight_recovery_status_uses_latest_phase_and_retains_failures(tmp_path, monkeypatch, later_failure):
+    """Exercise failed then successful preflight orchestration without an LLM."""
+    import sys
+    from types import SimpleNamespace
+
+    from multi_agent_ssr import experiment, prepare
+    from multi_agent_ssr.io import EventLog, utc_now, write_json
+
+    monkeypatch.chdir(tmp_path)
+    (tmp_path / "manifests").mkdir()
+    (tmp_path / "manifests/model.json").write_text('{"revision": "fixture-pin"}')
+    config = {"model": {}, "limits": {}, "experiment": {
+        "budget_seconds": 60, "human_tasks": 32, "synthetic_tasks": 16}}
+    monkeypatch.setattr(experiment, "load_config", lambda _: config)
+    monkeypatch.setattr(experiment, "require_preregistered", lambda: "fixture-commit")
+    monkeypatch.setattr(experiment.subprocess, "run", lambda *a, **kw: SimpleNamespace(stdout="fixture GPU"))
+    monkeypatch.setattr(prepare, "preparation_evidence", lambda: {})
+    calls = 0
+
+    def fixture_preflight(*args):
+        nonlocal calls
+        calls += 1
+        if calls == 1:
+            raise RuntimeError("fixture first preflight failure")
+        return {"success": True, "purpose": "preflight_only"}
+
+    monkeypatch.setitem(sys.modules, "multi_agent_ssr.learning", SimpleNamespace(run_preflight=fixture_preflight))
+    run = tmp_path / "run"
+    with pytest.raises(RuntimeError, match="first preflight failure"):
+        experiment.execute("preflight", tmp_path / "config.toml", run)
+    original_failure = (run / "failure.json").read_bytes()
+    experiment.execute("preflight", tmp_path / "config.toml", run)
+    assert (run / "failure.json").read_bytes() == original_failure
+    assert load_jsonl(run / "events.jsonl")[-1]["event"] == "phase_completed"
+    likelihood = {"sampled_logprobs": [-0.5], "max_logprob_error": 0.1}
+    kernel_review = {"recommendation": "fixture only; no installation"}
+    write_json(run / "preflight" / "likelihood.json", likelihood)
+    write_json(run / "kernel-review.json", kernel_review)
+
+    if later_failure:
+        error = f"fixture {later_failure} failure"
+        if later_failure == "pilot":
+            EventLog(run / "events.jsonl").emit("phase_failed", phase="pilot", error=error)
+        write_json(run / "failure.json", {"timestamp": utc_now(), "phase": "pilot", "error": error})
+    monkeypatch.setattr("multi_agent_ssr.reporting.render_figures", lambda *args: {})
+    monkeypatch.setattr("multi_agent_ssr.reporting.render_paper", lambda *args: None)
+    generate_report(run, tmp_path / "report", tmp_path / "site")
+    data = json.loads((tmp_path / "site/data.json").read_text())
+    assert data["status"] == ("pilot_failed" if later_failure else "preflight_passed")
+    assert data["likelihood"] == likelihood
+    assert data["preparation"]["kernel_review"] == kernel_review
+    errors = [row["error"] for row in data["failure_history"]]
+    assert errors == ["RuntimeError: fixture first preflight failure"] + ([error] if later_failure else [])
+    for name in ("experiment.md", "experiments-summary.md", "paper.md"):
+        text = (tmp_path / "report" / name).read_text()
+        assert "fixture first preflight failure" in text
+        if later_failure:
+            assert error in text

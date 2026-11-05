@@ -63,6 +63,39 @@ def _write_json(path: Path, value: Any) -> None:
     path.write_text(json.dumps(value, ensure_ascii=False, indent=2, allow_nan=False) + "\n", encoding="utf-8")
 
 
+def _phase_history(events: list[dict[str, Any]], failure: dict[str, Any]) -> tuple[str | None, list[dict[str, Any]]]:
+    """Derive current state from ordered terminal evidence, retaining old failures.
+
+    The supervisor can write failure.json without a worker event. Normal worker
+    failures appear in both files; retain that evidence once in the history.
+    """
+    phases = [event for event in events if event.get("event") in
+              {"phase_started", "phase_completed", "phase_failed", "pilot_complete", "budget_exhausted"}]
+    failures = [event for event in phases if event["event"] == "phase_failed"]
+    if failure:
+        before_failure = [event for event in phases if event.get("timestamp", "") <= failure.get("timestamp", "")]
+        preceding = before_failure[-1] if before_failure else {}
+        if preceding.get("event") != "phase_failed" or any(
+                preceding.get(key) != failure.get(key) for key in ("phase", "error")):
+            failures.append(failure)
+        # Include the standalone file in state ordering even when it duplicates
+        # a worker event; a newer supervisor failure must override old success.
+        phases.append({**failure, "event": "phase_failed"})
+    terminals = sorted((event for event in phases if event["event"] != "phase_started"),
+                       key=lambda event: event.get("timestamp", ""))
+    failures.sort(key=lambda event: event.get("timestamp", ""))
+    if not terminals:
+        return None, failures
+    latest = terminals[-1]
+    if latest["event"] == "phase_failed":
+        status = f"{latest.get('phase', 'run')}_failed"
+    elif latest["event"] == "phase_completed":
+        status = "preflight_passed" if latest.get("phase") == "preflight" else f"{latest.get('phase', 'run')}_completed"
+    else:
+        status = "completed" if latest["event"] == "pilot_complete" else "budget_exhausted"
+    return status, failures
+
+
 def _recovery_text(recovery: dict[str, Any]) -> str:
     """Disclose the committed budget amendment without replacing the failed run."""
     if not recovery:
@@ -347,8 +380,9 @@ def _paper_sections(payload: dict[str, Any]) -> list[tuple[str, str]]:
     def value(data, key):
         return str(data.get(key, "unrecorded"))
     state = f"Recorded run status: {payload['status']}."
-    if payload["failure"]:
-        state += f" A recorded {payload['failure'].get('phase', 'run')} failure was: {payload['failure'].get('error', 'unspecified')}."
+    for failure in payload["failure_history"]:
+        state += (f" Recorded failure at {failure.get('timestamp', 'unrecorded time')} "
+                  f"in {failure.get('phase', 'run')}: {failure.get('error', 'unspecified')}.")
     if not payload["diagnostics"]["optimizer_steps"]:
         state += " No completed policy optimizer steps are recorded; this record does not establish a learned checkpoint."
     sections = [
@@ -660,6 +694,7 @@ def generate_report(run_dir: Path, output_dir: Path, site_dir: Path, *, readme_p
     preflight = _json(run_dir / "preflight.json") or _json(run_dir / "preflight" / "preflight.json")
     metrics = load_jsonl(run_dir / "metrics.jsonl")
     events = _run_events(run_dir)
+    phase_status, failure_history = _phase_history(events, failure)
     evaluations = load_jsonl(run_dir / "evaluation.jsonl")
     settings = manifest.get("config", {}).get("experiment", {})
     analysis = analyze_evaluations(evaluations, bootstrap_samples=settings.get("bootstrap_samples", 10000))
@@ -668,16 +703,18 @@ def generate_report(run_dir: Path, output_dir: Path, site_dir: Path, *, readme_p
         for result in conditions.values():
             result["planned"] = planned
             result["unrecorded"] = max(0, planned - result["recorded_tasks"]) if isinstance(planned, int) else None
-    status = run_summary.get("status") or (f"{failure.get('phase', 'run')}_failed" if failure else
+    status = phase_status or run_summary.get("status") or (
         "preflight_passed" if preflight.get("success") else "in_progress" if metrics else manifest.get("status", "not_evaluated"))
     payload = {
         "schema_version": 1, "run_id": manifest.get("run_id", run_dir.name),
         "generated_at": datetime.now(UTC).isoformat(),
-        "status": status, "failure": failure, "budget": _json(run_dir / "budget.json"),
+        "status": status, "failure": failure, "failure_history": failure_history,
+        "budget": _json(run_dir / "budget.json"),
         "preparation": {name: _json(run_dir / f"{name}.json") for name in
                         ("preparation", "preparation_validation", "environment_validation", "validation")
                         if (run_dir / f"{name}.json").exists()},
         "manifest": manifest, "run_summary": run_summary, "preflight": preflight,
+        "likelihood": _json(run_dir / "preflight" / "likelihood.json"),
         "recovery": manifest.get("recovery", {}),
         "recovery_disclosure": _recovery_text(manifest.get("recovery", {})),
         "analysis": analysis, "metrics": metrics,
@@ -685,14 +722,18 @@ def generate_report(run_dir: Path, output_dir: Path, site_dir: Path, *, readme_p
         "diagnostics": _diagnostics(events, metrics, preflight, analysis["records"]),
         "sources": [{"title": title, "url": url} for title, url in SOURCES],
     }
+    if (run_dir / "kernel-review.json").exists():
+        payload["preparation"]["kernel_review"] = _json(run_dir / "kernel-review.json")
     figures = render_figures(payload, output_dir / "figures")
     payload["figures"] = {key: f"figures/{value}" for key, value in figures.items()}
     _write_json(output_dir / "summary.json", payload)
     table = _table(payload["analysis"])
     controls = _control_table(payload["controls"])
     diagnostics = _diagnostic_table(payload["diagnostics"])
-    failure_text = (f"Recorded failure in **{failure.get('phase', 'run')}**: {failure.get('error', 'Unspecified')}.\n\n"
-                    if failure else "No failure metadata is recorded. This alone does not establish successful execution.\n\n")
+    failure_text = ("Recorded failure history (retained after later successful phases):\n\n" + "\n".join(
+        f"- {row.get('timestamp', 'Unrecorded time')}, **{row.get('phase', 'run')}**: {row.get('error', 'Unspecified')}."
+        for row in failure_history) + "\n\n" if failure_history else
+        "No failure metadata is recorded. This alone does not establish successful execution.\n\n")
     recovery_text = ("## Interrupted attempt and recovery amendment\n\n" + payload["recovery_disclosure"] + "\n\n"
                      if payload["recovery_disclosure"] else "")
     details = "\n\n".join(f"### {source.title()} bugs\n\n{_effect_text(comparison)}"
@@ -714,7 +755,7 @@ def generate_report(run_dir: Path, output_dir: Path, site_dir: Path, *, readme_p
               "below for observed failures, decisions, and completed work. No unrun control has a reported score.\n\n"
               f"```json\n{json.dumps(run_summary, ensure_ascii=False, indent=2)}\n```\n\n"
               "## Failure, preflight, and preparation records\n\n"
-              f"```json\n{json.dumps({'failure': failure, 'preflight': preflight, 'preparation': payload['preparation']}, ensure_ascii=False, indent=2)}\n```\n\n"
+              f"```json\n{json.dumps({'failure': failure, 'failure_history': failure_history, 'preflight': preflight, 'likelihood': payload['likelihood'], 'preparation': payload['preparation']}, ensure_ascii=False, indent=2)}\n```\n\n"
               "## Recorded configuration\n\n"
               f"```json\n{json.dumps(manifest, ensure_ascii=False, indent=2)}\n```\n\n"
               "## Reproduction and limitations\n\n"

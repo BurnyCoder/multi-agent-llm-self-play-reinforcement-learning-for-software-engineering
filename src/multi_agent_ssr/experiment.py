@@ -98,6 +98,11 @@ def execute(phase: str, config_path: Path, run_dir: Path) -> None:
     if budget.remaining() <= 0:
         log.emit("budget_exhausted", phase=phase)
         return
+    # Keep the original creation commit while identifying the code actually used
+    # by each resumed phase. Events retain earlier attempts of the same phase.
+    manifest = json.loads(manifest_path.read_text())
+    manifest.setdefault("phase_code_commits", {})[phase] = commit
+    write_json(manifest_path, manifest)
     try:
         log.emit("phase_started", phase=phase, code_commit=commit, remaining_seconds=budget.remaining())
         from .prepare import preparation_evidence
@@ -106,6 +111,7 @@ def execute(phase: str, config_path: Path, run_dir: Path) -> None:
         if phase == "preflight":
             from .learning import run_preflight
             write_json(run_dir / "preflight.json", run_preflight(model_config, run_dir / "preflight"))
+            log.emit("phase_completed", phase=phase, remaining_seconds=budget.remaining())
             return
         checkpoint_run = Path(settings.get("checkpoint_run", run_dir))
         preflight_path = checkpoint_run / "preflight.json"
