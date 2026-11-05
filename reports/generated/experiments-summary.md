@@ -3,10 +3,17 @@
 Recorded failure history (retained after later successful phases):
 
 - 2026-11-05T21:30:15.600645+00:00, **preflight**: RuntimeError: Generation/scoring log probabilities disagree: 0.152308.
+- 2026-11-05T21:58:00.073528+00:00, **preflight**: RuntimeError: Generation/scoring log probabilities disagree: 0.152151.
 
 ## Interrupted attempt and recovery amendment
 
 Prior attempt runs/pilot has recorded status preflight_failed. Its original wall-clock deadline was 2026-10-30T15:31:24.450111+00:00; original deadline preserved: True. Recorded prior failure: preflight: BrokenPipeError: [Errno 32] Broken pipe. The prior attempt's recorded elapsed time was 479.063 seconds. The recovery amendment charges 600 seconds for that attempt and allocates 28200 seconds to this recovery, within 28800 seconds of total active allocation. The amendment excludes the offline interval; it does not erase the expired original attempt. Saved prior artifacts: model outputs 0, evaluations 0, checkpoints 0. Recorded reason: User requested recovery after OS restart. Original preflight failed with BrokenPipeError; original wall-clock deadline expired. Offline interval is excluded only by the dated preregistration amendment.
+
+## Preflight likelihood diagnostics
+
+Check at 2026-11-05T21:58:00.067+00:00: 101 sampled action tokens; maximum cached-replay log-probability difference 0; maximum trainer-versus-sampling log-probability difference 0.152151. Pre-update scoring/behavior ratio range [0.858858, 1.10626]; 0/101 tokens outside [0.8, 1.25]. Recorded trainer guard: absolute log-probability difference limit 0.05; cached-replay difference limit 0.05. CWM retains sampled behavior probabilities in the denominator [2]. Upstream Qwen analysis attributes some BF16 cached/full-forward differences to rounding [10]. Each check is a single-prompt software diagnostic; it does not bound drift in training contexts or establish training quality.
+
+Sources: [CWM Appendix C](https://arxiv.org/html/2510.02387v1#A3) and [Qwen numerical analysis](https://github.com/huggingface/transformers/issues/46190).
 
 | Bug source | Condition | Planned | Attempted | Resolved / scored | Rate | Unscored recorded | Unrecorded |
 | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
@@ -42,8 +49,8 @@ Not evaluated: no tasks have completed outcomes for both conditions.
 | episodes with children | 0 |
 | delegation rate | Not measured |
 | delegation calls | 0 |
-| generated action tokens | 0 |
-| generation calls | 0 |
+| generated tokens from research agents (excludes preflight) | 0 |
+| generation calls by research agents (excludes preflight) | 0 |
 | validated artifacts | 0 |
 | invalid artifacts | 0 |
 | invalid artifact rate | Not measured |
