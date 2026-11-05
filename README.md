@@ -8,9 +8,11 @@ The project adapts [Self-play SWE-RL](https://arxiv.org/html/2512.18552v3), the 
 
 <!-- SSR_RESULTS:START -->
 
-Recorded run status: **not_evaluated**.
+Recorded run status: **preflight_failed**.
 
-No failure metadata is recorded. This alone does not establish successful execution.
+Recorded failure history (retained after later successful phases):
+
+- 2026-11-05T21:30:15.600645+00:00, **preflight**: RuntimeError: Generation/scoring log probabilities disagree: 0.152308.
 
 ## Interrupted attempt and recovery amendment
 

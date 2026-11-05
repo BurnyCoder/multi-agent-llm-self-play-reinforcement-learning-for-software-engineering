@@ -17,6 +17,7 @@ from pathlib import Path
 from typing import Any
 
 from .contracts import Episode, Generation, ModelConfig
+from .io import write_json
 
 
 def injection_reward(valid: bool, solve_rate: float | None, alpha: float = 0.8) -> float:
@@ -215,6 +216,27 @@ def run_preflight(config: ModelConfig, run_dir: Path) -> dict[str, Any]:
             rescored = policy.action_logprobs(generation)
             sampled = torch.tensor(generation.old_logprobs, device=rescored.device)
             mismatch = float((rescored - sampled).abs().max().item())
+            scoring_values = rescored.detach().cpu().tolist()
+        # Replay the actual cached sampling path separately from the trainer's
+        # full forward. CWM keeps inference probabilities as the denominator;
+        # these diagnostics must never overwrite the original behavior record.
+        replayed = policy.replay_behavior_logprobs(generation, max_new_tokens=config.action_tokens)
+        replay_mismatch = max(abs(a - b) for a, b in zip(replayed, generation.old_logprobs, strict=True))
+        finite = all(math.isfinite(value) for value in scoring_values + replayed)
+        likelihood = {
+            "sampled_logprobs": generation.old_logprobs,
+            "scoring_logprobs": [value if math.isfinite(value) else str(value) for value in scoring_values],
+            "replayed_logprobs": [value if math.isfinite(value) else str(value) for value in replayed],
+            "scoring_max_abs_difference": mismatch if math.isfinite(mismatch) else None,
+            "replay_max_abs_difference": replay_mismatch if math.isfinite(replay_mismatch) else None,
+            "difference_limit": 0.05, "finite": finite,
+        }
+        write_json(run_dir / "likelihood.json", likelihood)
+        policy.log_event("likelihood_checked", **likelihood)
+        if not finite:
+            raise FloatingPointError("Preflight log probabilities must be finite")
+        if replay_mismatch > 0.05:
+            raise RuntimeError(f"Generation/replay log probabilities disagree: {replay_mismatch:.6g}")
         # Cached generation and full BF16 forwards may differ numerically. Large
         # discrepancies invalidate importance ratios and fail the preflight.
         if mismatch > 0.05:
@@ -258,6 +280,7 @@ def run_preflight(config: ModelConfig, run_dir: Path) -> dict[str, Any]:
             "generated_tokens": len(generation.completion_ids),
             "old_logprob_max_abs_difference": mismatch,
             "old_logprob_difference_limit": 0.05,
+            "old_logprob_replay_max_abs_difference": replay_mismatch,
             "stress_context_tokens": config.context_tokens,
             "stress_action_tokens": config.action_tokens,
             "stress_loss": float(loss.detach()), "gradient_norm": float(grad_norm),

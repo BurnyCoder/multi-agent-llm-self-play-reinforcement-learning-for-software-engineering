@@ -4,7 +4,7 @@ Libor "Burny" Burian
 
 ## Abstract
 
-We implement a local shared-policy extension of Self-play SWE-RL in which bug-injection and repair teams can delegate to asynchronous subagents. All roles use one Qwen3.5-2B policy with a shared trainable LoRA adapter. This report is generated from the saved run records. Recorded run status: not_evaluated. No completed policy optimizer steps are recorded; this record does not establish a learned checkpoint. Not evaluated: no tasks have completed outcomes for both conditions.
+We implement a local shared-policy extension of Self-play SWE-RL in which bug-injection and repair teams can delegate to asynchronous subagents. All roles use one Qwen3.5-2B policy with a shared trainable LoRA adapter. This report is generated from the saved run records. Recorded run status: preflight_failed. Recorded failure at 2026-11-05T21:30:15.600645+00:00 in preflight: RuntimeError: Generation/scoring log probabilities disagree: 0.152308. No completed policy optimizer steps are recorded; this record does not establish a learned checkpoint. Not evaluated: no tasks have completed outcomes for both conditions.
 
 ## Context and motivation
 
@@ -60,7 +60,7 @@ Prior attempt runs/pilot has recorded status preflight_failed. Its original wall
 
 ## Results
 
-Recorded run status: not_evaluated. No completed policy optimizer steps are recorded; this record does not establish a learned checkpoint.
+Recorded run status: preflight_failed. Recorded failure at 2026-11-05T21:30:15.600645+00:00 in preflight: RuntimeError: Generation/scoring log probabilities disagree: 0.152308. No completed policy optimizer steps are recorded; this record does not establish a learned checkpoint.
 
 Not evaluated: no tasks have completed outcomes for both conditions.
 
