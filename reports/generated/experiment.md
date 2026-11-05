@@ -1,8 +1,10 @@
 # Experiment: pilot-recovery
 
-Status: **not_evaluated**. This report is generated from saved records; absent measurements remain unknown. All tables and diagnostics are derived from the [machine-readable analysis](summary.json). The [committed preregistration](preregistration.md) defines the hypotheses and decision rules.
+Status: **preflight_failed**. This report is generated from saved records; absent measurements remain unknown. All tables and diagnostics are derived from the [machine-readable analysis](summary.json). The [committed preregistration](preregistration.md) defines the hypotheses and decision rules.
 
-No failure metadata is recorded. This alone does not establish successful execution.
+Recorded failure history (retained after later successful phases):
+
+- 2026-11-05T21:30:15.600645+00:00, **preflight**: RuntimeError: Generation/scoring log probabilities disagree: 0.152308.
 
 ## Interrupted attempt and recovery amendment
 
@@ -73,8 +75,22 @@ One shared model serves the primary agents and asynchronous children. The pilot 
 
 ```json
 {
-  "failure": {},
+  "failure": {
+    "phase": "preflight",
+    "error": "RuntimeError: Generation/scoring log probabilities disagree: 0.152308",
+    "timestamp": "2026-11-05T21:30:15.605228+00:00",
+    "remaining_seconds": 26308.19226360321
+  },
+  "failure_history": [
+    {
+      "timestamp": "2026-11-05T21:30:15.600645+00:00",
+      "event": "phase_failed",
+      "phase": "preflight",
+      "error": "RuntimeError: Generation/scoring log probabilities disagree: 0.152308"
+    }
+  ],
   "preflight": {},
+  "likelihood": {},
   "preparation": {
     "preparation": {
       "human_environments_ready": 32,
@@ -206,7 +222,85 @@ One shared model serves the primary agents and asynchronous children. The pilot 
       "recovery_grader_controls": "/mnt/d/AI/multi-agent-ssr/validation/human-grader-smoke-recovery-20261105/results.json",
       "duplicate_directory_removed": "/home/burny/projects/multi-agent-ssr",
       "storage_steering": "User requested no duplicate downloads on C: after reconnecting D:",
-      "duplicates_removed_at": "2026-11-05T21:14:53.148265+00:00"
+      "duplicates_removed_at": "2026-11-05T21:14:53.148265+00:00",
+      "runtime_backend_messages": [
+        "Unsloth: xformers is installed but cannot load with torch 2.14.1+cu130 (it was built for 2.10.0+cu128), so PyTorch attention is used instead.",
+        "`causal_conv1d_fn` is falling back to its reference PyTorch implementation because `causal_conv1d` is not installed. This is correct but much slower; install `causal_conv1d` for the optimized kernel."
+      ]
+    },
+    "kernel_review": {
+      "review_date": "2026-11-05",
+      "evidence_type": "Read-only installed-source and official-documentation inspection; no kernel execution or benchmark performed by this review",
+      "recommendation": "Continue the existing pinned BF16 preflight using bundled kernels. Do not install optional kernel packages solely because their import warnings appeared. Actual dispatch and compatibility still require the running generation, likelihood, and backward checks.",
+      "installed_versions": {
+        "torch": "2.14.1",
+        "transformers": "5.17.0",
+        "unsloth": "2026.10.10",
+        "unsloth-zoo": "2026.10.10",
+        "triton": "3.8.0",
+        "xformers": "0.0.35",
+        "vendored_fla": "0.5.1"
+      },
+      "optional_packages_not_installed": [
+        "flash-linear-attention",
+        "fla-core",
+        "causal-conv1d",
+        "mamba-ssm"
+      ],
+      "findings": [
+        {
+          "component": "Vendored Flash Linear Attention",
+          "finding": "Unsloth-Zoo bundles FLA 0.5.1. Its CUDA eligibility gates require Torch >=2.7 and Triton >=3.3; the installed versions satisfy those version gates. Absence of a separate fla-core distribution does not establish use of the PyTorch fallback.",
+          "installed_source": ".venv/lib/python3.12/site-packages/unsloth_zoo/temporary_patches/fla_vendor.py",
+          "source_url": "https://github.com/unslothai/unsloth-zoo/blob/main/unsloth_zoo/temporary_patches/fla_vendor.py"
+        },
+        {
+          "component": "Causal convolution",
+          "finding": "Unsloth-Zoo bundles BF16-compatible Triton forward, backward, and cached-decode implementations. They normally replace the missing causal_conv1d package for eligible tensors; some torch.compile paths intentionally use the PyTorch fallback. The package warning alone does not identify actual dispatch.",
+          "disable_option": "UNSLOTH_DISABLE_TRITON_CAUSAL_CONV1D=1",
+          "dispatch_counter": "GDN_CAUSAL_CONV1D_STATS",
+          "installed_source": ".venv/lib/python3.12/site-packages/unsloth_zoo/temporary_patches/gdn_causal_conv1d.py",
+          "source_url": "https://github.com/unslothai/unsloth-zoo/blob/main/unsloth_zoo/temporary_patches/gdn_causal_conv1d.py"
+        },
+        {
+          "component": "Initial compilation",
+          "finding": "The official Qwen3.5 training guide warns that compilation of its Mamba Triton kernels can take longer than usual. This explains a possible slow first call but is not a measurement of this run's progress or throughput.",
+          "source_url": "https://unsloth.ai/docs/models/qwen3.5/fine-tune.md"
+        },
+        {
+          "component": "xFormers",
+          "finding": "The installed extension build metadata targets Torch 2.10.0+cu128, not the locked Torch 2.14.1+cu130 runtime. Its disabled compiled extension is consistent with this mismatch. Official guidance for another Torch version is a source build without build isolation. No nvcc executable was found in PATH during the review. A rebuild would need explicit pinning and renewed correctness checks.",
+          "build_metadata": {
+            "torch": "2.10.0+cu128",
+            "cuda": 1208,
+            "python": "3.10.19",
+            "TORCH_CUDA_ARCH_LIST": "7.5 8.0+PTX 8.0 9.0a"
+          },
+          "installed_source": ".venv/lib/python3.12/site-packages/xformers/cpp_lib.json",
+          "source_url": "https://github.com/facebookresearch/xformers#installing-xformers"
+        },
+        {
+          "component": "Optional external causal-conv1d",
+          "finding": "Upstream version 1.7.0 supports BF16 and its source build includes sm_120 with CUDA >=12.8. No prebuilt wheel matching this Torch 2.14, Python 3.12, CUDA 13 environment was verified. Do not substitute an older Torch-specific wheel.",
+          "source_url": "https://github.com/Dao-AILab/causal-conv1d/blob/main/setup.py",
+          "version_source_url": "https://github.com/Dao-AILab/causal-conv1d/blob/main/causal_conv1d/__init__.py"
+        }
+      ],
+      "sm120_correctness_guard": {
+        "recommendation": "Do not enable FlashQLA's SM120 override for this pilot.",
+        "reason": "Installed Unsloth-Zoo deliberately gates FlashQLA on SM120 because some drivers produce incorrect forward outputs. The published issue reports large numerical discrepancies.",
+        "backend_option": "UNSLOTH_GDN_BACKEND=flashqla",
+        "unsafe_override": "UNSLOTH_FLASHQLA_ALLOW_SM120=1",
+        "installed_source": ".venv/lib/python3.12/site-packages/unsloth_zoo/temporary_patches/fla_vendor.py",
+        "source_url": "https://github.com/QwenLM/FlashQLA/issues/35"
+      },
+      "future_diagnostic_option": "UNSLOTH_ENABLE_LOGGING=1 exposes patch and fallback messages on a subsequent invocation.",
+      "limitations": [
+        "The review did not introspect or modify the active model process.",
+        "Installed-source capability is not proof of the running process's actual dispatch.",
+        "Linked upstream main branches can change; installed source and distribution versions were the local evidence.",
+        "No installations, model execution, or cache modifications were performed."
+      ]
     }
   }
 }
