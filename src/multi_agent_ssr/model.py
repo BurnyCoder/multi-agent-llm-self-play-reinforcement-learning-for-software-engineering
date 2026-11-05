@@ -13,7 +13,6 @@ import json
 import math
 import os
 import random
-import sys
 import threading
 import time
 from collections.abc import Callable
@@ -23,6 +22,7 @@ from pathlib import Path
 from typing import Any
 
 from .contracts import Generation, ModelConfig
+from .io import mirror_terminal
 
 
 class ContextLimitError(ValueError):
@@ -213,12 +213,7 @@ class LocalPolicy:
             with self.log_path.open("a", encoding="utf-8") as stream:
                 stream.write(line + "\n")
                 stream.flush()
-            try:
-                sys.stdout.write(line + "\n")
-                sys.stdout.flush()
-            except UnicodeEncodeError:
-                sys.stdout.buffer.write((line + "\n").encode("utf-8"))
-                sys.stdout.buffer.flush()
+            mirror_terminal(line)
 
     def _validate_trainable_scope(self) -> None:
         """Reject accidental full-weight, embedding, head, or vision training."""
