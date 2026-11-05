@@ -1,0 +1,6 @@
+# The original attempt stays immutable. See the dated preregistration amendment.
+extends = "pilot.toml"
+
+[experiment]
+budget_seconds = 28200
+recovery_evidence = "manifests/recovery.json"
