@@ -4,7 +4,7 @@ Libor "Burny" Burian
 
 ## Abstract
 
-We implement a local shared-policy extension of Self-play SWE-RL in which bug-injection and repair teams can delegate to asynchronous subagents. All roles use one Qwen3.5-2B policy with a shared trainable LoRA adapter. This report is generated from the saved run records. Recorded run status: preflight_failed. Recorded failure at 2026-11-05T21:30:15.600645+00:00 in preflight: RuntimeError: Generation/scoring log probabilities disagree: 0.152308. Recorded failure at 2026-11-05T21:58:00.073528+00:00 in preflight: RuntimeError: Generation/scoring log probabilities disagree: 0.152151. No completed policy optimizer steps are recorded; this record does not establish a learned checkpoint. Not evaluated: no tasks have completed outcomes for both conditions.
+We implement a local shared-policy extension of Self-play SWE-RL in which bug-injection and repair teams can delegate to asynchronous subagents. All roles use one Qwen3.5-2B policy with a shared trainable LoRA adapter. This report is generated from the saved run records. Recorded run status: pilot_running. Recorded failure at 2026-11-05T21:30:15.600645+00:00 in preflight: RuntimeError: Generation/scoring log probabilities disagree: 0.152308. Recorded failure at 2026-11-05T21:58:00.073528+00:00 in preflight: RuntimeError: Generation/scoring log probabilities disagree: 0.152151. No completed policy optimizer steps are recorded; this record does not establish a learned checkpoint. Not evaluated: no tasks have completed outcomes for both conditions.
 
 ## Context and motivation
 
@@ -34,6 +34,8 @@ Injector returns follow SSR: -1 for an invalid artifact; -0.8 for a valid bug wi
 
 The recorded model is Qwen/Qwen3.5-2B at revision 15852e8c16360a2fea060d615a32b45270f8a8fc. LoRA rank is 16, alpha 16, and learning rate 5e-06; recorded training seed is 0. The implementation uses BF16 mixed-precision LoRA training with dropout zero, a frozen base, frozen vision tower, embeddings and output head, and language-model attention/MLP adapters only [4, 5].
 
+Recorded parameter storage counts (scalar elements, separate from compute dtype): frozen:torch.bfloat16 = 2213035584, frozen:torch.float32 = 206080, trainable:torch.float32 = 16819200.
+
 A call has at most 2048 input-plus-action tokens and 256 generated tokens. Each team shares a generated-token cap of 4096, a tool-call cap of 32, and 2 child sessions at depth 1. Sampling temperature is one; thinking is disabled. Root and child threads progress concurrently, but calls acquire one shared GPU policy lock. All workers finish before an update.
 
 The recorded collection uses 2 independent injectors per clean starting state and 4 repairs per valid bug, followed by 2 optimization passes. AdamW uses betas (0.9, 0.99), weight decay zero, gradient clipping at norm 1.0, gradient checkpointing, and one call per microbatch. Likelihood computation retains only action-position logits and accumulates gradients sequentially.
@@ -60,7 +62,7 @@ Prior attempt runs/pilot has recorded status preflight_failed. Its original wall
 
 ## Results
 
-Recorded run status: preflight_failed. Recorded failure at 2026-11-05T21:30:15.600645+00:00 in preflight: RuntimeError: Generation/scoring log probabilities disagree: 0.152308. Recorded failure at 2026-11-05T21:58:00.073528+00:00 in preflight: RuntimeError: Generation/scoring log probabilities disagree: 0.152151. No completed policy optimizer steps are recorded; this record does not establish a learned checkpoint.
+Recorded run status: pilot_running. Recorded failure at 2026-11-05T21:30:15.600645+00:00 in preflight: RuntimeError: Generation/scoring log probabilities disagree: 0.152308. Recorded failure at 2026-11-05T21:58:00.073528+00:00 in preflight: RuntimeError: Generation/scoring log probabilities disagree: 0.152151. No completed policy optimizer steps are recorded; this record does not establish a learned checkpoint.
 
 Not evaluated: no tasks have completed outcomes for both conditions.
 
@@ -83,7 +85,7 @@ Synthetic diagnostic set: Not evaluated: no tasks have completed outcomes for bo
 
 ## Preflight likelihood diagnostics
 
-Check at 2026-11-05T21:58:00.067+00:00: 101 sampled action tokens; maximum cached-replay log-probability difference 0; maximum trainer-versus-sampling log-probability difference 0.152151. Pre-update scoring/behavior ratio range [0.858858, 1.10626]; 0/101 tokens outside [0.8, 1.25]. Recorded trainer guard: absolute log-probability difference limit 0.05; cached-replay difference limit 0.05. CWM retains sampled behavior probabilities in the denominator [2]. Upstream Qwen analysis attributes some BF16 cached/full-forward differences to rounding [10]. Each check is a single-prompt software diagnostic; it does not bound drift in training contexts or establish training quality.
+Check at 2026-11-05T21:58:00.067+00:00: 101 sampled action tokens; maximum cached-replay log-probability difference 0; maximum trainer-versus-sampling log-probability difference 0.152151. Pre-update scoring/behavior ratio range [0.858858, 1.10626]; 0/101 tokens outside [0.8, 1.25]. Recorded trainer guard: absolute log-probability difference limit 0.05; cached-replay difference limit 0.05. Check at 2026-11-05T22:16:41.480+00:00: 101 sampled action tokens; maximum cached-replay log-probability difference 0; maximum trainer-versus-sampling log-probability difference 0.151829. Pre-update scoring/behavior ratio range [0.859135, 1.06795]; 0/101 tokens outside [0.8, 1.25]. Recorded trainer guard: preupdate_ratios_inside_clip_interval with interval [0.8, 1.25]; cached-replay difference limit 0.05. CWM retains sampled behavior probabilities in the denominator [2]. Upstream Qwen analysis attributes some BF16 cached/full-forward differences to rounding [10]. Each check is a single-prompt software diagnostic; it does not bound drift in training contexts or establish training quality.
 
 ## Observed execution diagnostics
 
@@ -103,7 +105,7 @@ The following diagnostics are derived from saved event, evaluation, and optimize
 | invalid artifact rate | Not measured |
 | optimizer steps | 0 |
 | recorded training groups | 0 |
-| peak allocated bytes | Not measured |
+| peak allocated bytes | 5136889856 |
 | evaluation seconds | 0 |
 | training group seconds | 0 |
 | pass to pass regressions | Not measured |
@@ -220,7 +222,8 @@ The saved artifacts establish what ran and what was measured. Not evaluated: no 
   "expected_synthetic_tasks": 16,
   "hypothesis": "Trained team improves held-out human bug resolution over frozen initialization",
   "phase_code_commits": {
-    "preflight": "83c218b5c151f25854226bc03d627e8a66a47f14"
+    "preflight": "05d7f357458d9eee1ec64637ff0277464839be06",
+    "pilot": "05d7f357458d9eee1ec64637ff0277464839be06"
   }
 }
 ```
