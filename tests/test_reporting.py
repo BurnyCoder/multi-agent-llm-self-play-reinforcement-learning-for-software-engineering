@@ -147,6 +147,55 @@ def test_diagnostics_count_real_calls_not_copied_observations(tmp_path, monkeypa
     assert diagnostics["peak_allocated_bytes"] == 100
 
 
+def test_likelihood_history_retains_checks_and_derives_drift_without_counting_preflight_actions(tmp_path, monkeypatch):
+    """A later guard amendment must not erase earlier diagnostics or imply training."""
+    run = tmp_path / "run"
+    preflight = run / "preflight"
+    preflight.mkdir(parents=True)
+    history = [
+        {"event": "likelihood_checked", "timestamp": "2020-01-01T00:00:00Z",
+         "sampled_logprobs": [-1.0, -2.0], "scoring_logprobs": [-1.2, -1.8],
+         "replayed_logprobs": [-1.0, -2.0], "scoring_max_abs_difference": 0.2,
+         "replay_max_abs_difference": 0.0, "difference_limit": 0.05, "finite": True},
+        {"event": "likelihood_checked", "timestamp": "2020-01-02T00:00:00Z",
+         "sampled_logprobs": [-1.0, -2.0], "scoring_logprobs": [-0.9, -1.7],
+         "replayed_logprobs": [-1.0, -2.01], "scoring_max_abs_difference": 0.3,
+         "replay_max_abs_difference": 0.01, "difference_limit": None, "replay_limit": 0.05,
+         "scoring_guard": {"kind": "preupdate_ratios_inside_clip_interval",
+                           "ratio_lower": 0.8, "ratio_upper": 1.25}, "finite": True},
+    ]
+    other = {"event": "generation_complete", "completion_ids": [1, 2]}
+    (preflight / "model.jsonl").write_text("".join(json.dumps(row) + "\n" for row in [history[0], other, history[1]]))
+    latest = {key: value for key, value in history[-1].items() if key not in {"event", "timestamp"}}
+    (preflight / "likelihood.json").write_text(json.dumps(latest))
+    paper_sections = []
+    monkeypatch.setattr("multi_agent_ssr.reporting.render_figures", lambda *args: {})
+    monkeypatch.setattr("multi_agent_ssr.reporting.render_paper", lambda payload, sections, *args: paper_sections.extend(sections))
+    generate_report(run, tmp_path / "report", tmp_path / "site")
+    data = json.loads((tmp_path / "site" / "data.json").read_text())
+    assert data["likelihood_history"] == history
+    assert data["likelihood"] == latest
+    assert not data["events"]
+    assert data["diagnostics"]["generated_action_tokens"] == 0
+    assert data["diagnostics"]["generation_calls"] == 0
+    disclosure = data["likelihood_disclosure"]
+    assert "2020-01-01T00:00:00Z" in disclosure and "2020-01-02T00:00:00Z" in disclosure
+    assert "[0.818731, 1.2214]" in disclosure and "[1.10517, 1.34986]" in disclosure
+    assert "0/2" in disclosure and "1/2" in disclosure
+    assert "absolute log-probability difference limit 0.05" in disclosure
+    assert "preupdate_ratios_inside_clip_interval" in disclosure
+    assert "does not bound drift in training contexts" in disclosure
+    assert ("Preflight likelihood diagnostics", disclosure) in paper_sections
+    for name in ("experiment.md", "experiments-summary.md", "paper.md"):
+        text = (tmp_path / "report" / name).read_text()
+        assert disclosure in text
+        assert "https://github.com/huggingface/transformers/issues/46190" in text
+        assert "https://arxiv.org/html/2510.02387v1#A3" in text
+    paper = (tmp_path / "report" / "paper.md").read_text()
+    assert "https://github.com/huggingface/transformers/issues/46190" in paper
+    assert "BF16 mixed-precision LoRA training" in paper and "BF16 adapters" not in paper
+
+
 def test_recovery_disclosure_preserves_failed_attempt_after_success(tmp_path, monkeypatch):
     """A successful recovery cannot erase a failed attempt or its compute charge."""
     run = tmp_path / "recovery"
