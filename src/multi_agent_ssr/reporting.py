@@ -26,7 +26,7 @@ SOURCES = [
     ("SWE-bench evaluation harness", "https://www.swebench.com/SWE-bench/guides/evaluation/"),
     ("Anchored Self-Play: synthetic-to-human bug distribution shift", "https://arxiv.org/html/2607.03523v1"),
     ("Paired percentile bootstrap procedure", "https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.bootstrap.html"),
-    ("Committed preregistration and analysis plan", "preregistration.md"),
+    ("Committed preregistration and analysis plan", "https://github.com/BurnyCoder/multi-agent-llm-self-play-reinforcement-learning-for-software-engineering/blob/main/reports/preregistration.md"),
 ]
 
 AI_STATEMENT = (
@@ -61,6 +61,37 @@ def _json(path: Path) -> dict[str, Any]:
 def _write_json(path: Path, value: Any) -> None:
     """Reject NaNs so downstream JavaScript and scientific consumers agree."""
     path.write_text(json.dumps(value, ensure_ascii=False, indent=2, allow_nan=False) + "\n", encoding="utf-8")
+
+
+def _recovery_text(recovery: dict[str, Any]) -> str:
+    """Disclose the committed budget amendment without replacing the failed run."""
+    if not recovery:
+        return ""
+    deadline = recovery.get("prior_budget", {}).get("deadline_epoch")
+    deadline_text = (datetime.fromtimestamp(deadline, UTC).isoformat()
+                     if isinstance(deadline, (int, float)) else "unrecorded")
+    failures = "; ".join(f"{event.get('phase', 'run')}: {event.get('error', 'unspecified')}"
+                         for event in recovery.get("prior_events", [])
+                         if event.get("event") == "phase_failed")
+    elapsed = recovery.get("prior_attempt_elapsed_seconds", "unrecorded")
+    if isinstance(elapsed, (int, float)):
+        elapsed = round(elapsed, 3)
+    text = (f"Prior attempt {recovery.get('prior_run', 'unrecorded')} has recorded status "
+            f"{recovery.get('prior_status', 'unrecorded')}. Its original wall-clock deadline "
+            f"was {deadline_text}; original deadline preserved: "
+            f"{recovery.get('original_deadline_preserved', 'unrecorded')}. "
+            f"Recorded prior failure: {failures or 'unrecorded'}. "
+            f"The prior attempt's recorded elapsed time was "
+            f"{elapsed} seconds. "
+            f"The recovery amendment charges {recovery.get('charged_prior_seconds', 'unrecorded')} "
+            f"seconds for that attempt and allocates {recovery.get('recovery_budget_seconds', 'unrecorded')} "
+            f"seconds to this recovery, within {recovery.get('total_active_allocation_seconds', 'unrecorded')} "
+            "seconds of total active allocation. The amendment excludes the offline interval; "
+            "it does not erase the expired original attempt. ")
+    text += (f"Saved prior artifacts: model outputs {recovery.get('saved_model_generations', 'unrecorded')}, "
+             f"evaluations {recovery.get('saved_evaluations', 'unrecorded')}, "
+             f"checkpoints {recovery.get('saved_checkpoints', 'unrecorded')}. ")
+    return text + f"Recorded reason: {recovery.get('reason', 'unrecorded')}"
 
 
 def _display_event(event: dict[str, Any]) -> dict[str, Any]:
@@ -399,7 +430,7 @@ def _paper_sections(payload: dict[str, Any]) -> list[tuple[str, str]]:
          "The paired difference is mean(trained_success - base_success) over completed pairs. A positive lower "
          "bound supports the prediction; an upper bound at or below zero contradicts it; an interval spanning "
          "zero is inconclusive. Degenerate intervals are explicitly qualified [8].\n\n"
-         f"The recorded total single-GPU wall-clock cap is {value(settings, 'budget_seconds')} seconds. It "
+         f"This run's recorded single-GPU wall-clock cap is {value(settings, 'budget_seconds')} seconds. It "
          "includes model loading, compilation, preflight, baseline, training, and final evaluation, using a "
          "persisted deadline that restarts cannot reset. Baseline allocation is capped at (remaining - 1800) / "
          "2.25 seconds. Training reserves the greater of the configured minimum final-evaluation reserve and "
@@ -437,6 +468,9 @@ def _paper_sections(payload: dict[str, Any]) -> list[tuple[str, str]]:
          "evidence. All incomplete coverage is retained in the tables.")),
         ("Conclusion", "The saved artifacts establish what ran and what was measured. " + primary),
     ]
+    if payload.get("recovery_disclosure"):
+        position = next(index for index, (title, _) in enumerate(sections) if title == "Results")
+        sections.insert(position, ("Interrupted attempt and recovery amendment", payload["recovery_disclosure"]))
     return sections
 
 
@@ -534,6 +568,7 @@ def render_paper(payload: dict[str, Any], sections: list[tuple[str, str]], desti
     from reportlab.lib.units import cm
     from reportlab.platypus import (
         Image,
+        KeepTogether,
         Paragraph,
         SimpleDocTemplate,
         Spacer,
@@ -544,6 +579,9 @@ def render_paper(payload: dict[str, Any], sections: list[tuple[str, str]], desti
     styles = getSampleStyleSheet()
     styles.add(ParagraphStyle(name="PaperTitle", parent=styles["Title"], fontSize=20, leading=24, textColor=colors.HexColor("#163b33")))
     styles.add(ParagraphStyle(name="Meta", parent=styles["BodyText"], alignment=TA_CENTER, fontSize=9, leading=13, spaceAfter=10))
+    # A compact table style preserves whole column labels within the A4 frame.
+    styles.add(ParagraphStyle(name="ResultCell", parent=styles["BodyText"],
+                              fontSize=8, leading=11, spaceAfter=0, splitLongWords=False))
     styles["BodyText"].fontSize = 9.5
     styles["BodyText"].leading = 14
     styles["BodyText"].spaceAfter = 8
@@ -565,9 +603,10 @@ def render_paper(payload: dict[str, Any], sections: list[tuple[str, str]], desti
                                  str(row["attempted"]), f"{row['successes']} / {row['completed']}" if row["completed"] else "Not evaluated",
                                  _pct(row["rate"]), str(row["unscored"]),
                                  str(row.get("unrecorded") if row.get("unrecorded") is not None else "Unknown")])
-            table = Table([[Paragraph(escape(cell), styles["BodyText"]) for cell in row] for row in data],
-                          colWidths=[width * cm for width in [1.6, 1.7, 1.3, 1.7, 2.6, 2.1, 2.7, 2.3]], repeatRows=1)
+            table = Table([[Paragraph(escape(cell), styles["ResultCell"]) for cell in row] for row in data],
+                          colWidths=[width * cm for width in [1.8, 1.7, 1.65, 1.75, 2.5, 1.9, 2.5, 2.2]], repeatRows=1)
             table.setStyle(TableStyle([("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#e3ece7")),
+                                       ("LEFTPADDING", (0, 0), (-1, -1), 4), ("RIGHTPADDING", (0, 0), (-1, -1), 4),
                                        ("VALIGN", (0, 0), (-1, -1), "TOP"), ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
                                        ("LINEBELOW", (0, 0), (-1, 0), .5, colors.HexColor("#177b67"))]))
             story.extend([table, Spacer(1, .3 * cm)])
@@ -591,7 +630,9 @@ def render_paper(payload: dict[str, Any], sections: list[tuple[str, str]], desti
     story.append(Paragraph("References", styles["Heading2"]))
     for index, (title, url) in enumerate(SOURCES, 1):
         story.append(Paragraph(f'[{index}] <a href="{escape(url, quote=True)}" color="#177b67">{escape(title)}</a>. {escape(url)}', styles["BodyText"]))
-    story.extend([Paragraph("AI statement", styles["Heading2"]), Paragraph(escape(AI_STATEMENT), styles["BodyText"])])
+    # Keep the final disclosure heading with its text across page boundaries.
+    story.append(KeepTogether([Paragraph("AI statement", styles["Heading2"]),
+                               Paragraph(escape(AI_STATEMENT), styles["BodyText"])]))
 
     def footer(canvas, doc):
         """Keep provenance visible without adding an empirical claim."""
@@ -637,6 +678,8 @@ def generate_report(run_dir: Path, output_dir: Path, site_dir: Path, *, readme_p
                         ("preparation", "preparation_validation", "environment_validation", "validation")
                         if (run_dir / f"{name}.json").exists()},
         "manifest": manifest, "run_summary": run_summary, "preflight": preflight,
+        "recovery": manifest.get("recovery", {}),
+        "recovery_disclosure": _recovery_text(manifest.get("recovery", {})),
         "analysis": analysis, "metrics": metrics,
         "events": events, "patches": _run_patches(run_dir), "controls": _controls(),
         "diagnostics": _diagnostics(events, metrics, preflight, analysis["records"]),
@@ -650,13 +693,15 @@ def generate_report(run_dir: Path, output_dir: Path, site_dir: Path, *, readme_p
     diagnostics = _diagnostic_table(payload["diagnostics"])
     failure_text = (f"Recorded failure in **{failure.get('phase', 'run')}**: {failure.get('error', 'Unspecified')}.\n\n"
                     if failure else "No failure metadata is recorded. This alone does not establish successful execution.\n\n")
+    recovery_text = ("## Interrupted attempt and recovery amendment\n\n" + payload["recovery_disclosure"] + "\n\n"
+                     if payload["recovery_disclosure"] else "")
     details = "\n\n".join(f"### {source.title()} bugs\n\n{_effect_text(comparison)}"
                             for source, comparison in payload["analysis"]["comparisons"].items())
     report = (f"# Experiment: {payload['run_id']}\n\nStatus: **{payload['status']}**. "
               "This report is generated from saved records; absent measurements remain unknown. "
               "All tables and diagnostics are derived from the [machine-readable analysis](summary.json). "
               "The [committed preregistration](preregistration.md) defines the hypotheses and decision rules.\n\n"
-              + failure_text + f"## Evaluation\n\n{table}\n\n{details}\n\n"
+              + failure_text + recovery_text + f"## Evaluation\n\n{table}\n\n{details}\n\n"
               f"## Deferred controls\n\n{controls}\n\n"
               f"## Execution diagnostics\n\n{diagnostics}\n\n"
               "These are event-level counts, including incomplete collections; memory can include preflight. "
@@ -681,7 +726,7 @@ def generate_report(run_dir: Path, output_dir: Path, site_dir: Path, *, readme_p
               "\n".join(f"- [{title}]({url})" for title, url in SOURCES) + "\n")
     (output_dir / "experiment.md").write_text(report, encoding="utf-8")
     (output_dir / "experiments-summary.md").write_text(
-        "# Experiments recorded in this run\n\n" + failure_text + table + "\n\n" + details +
+        "# Experiments recorded in this run\n\n" + failure_text + recovery_text + table + "\n\n" + details +
         "\n\n## Deferred controls\n\n" + controls + "\n\n## Recorded diagnostics\n\n" + diagnostics +
         "\n\n## Network and experiment design\n\n"
         "| Condition | Architecture | Training in this experiment | Objective | Data and domain |\n"
@@ -734,7 +779,7 @@ def generate_report(run_dir: Path, output_dir: Path, site_dir: Path, *, readme_p
             relative = output_dir.resolve().relative_to(readme_path.resolve().parent).as_posix()
             links = (f"\n\n![Recorded evaluation outcomes]({relative}/figures/scores.png)\n\n"
                      f"[Experiment report]({relative}/experiment.md) · [PDF paper]({relative}/paper.pdf)")
-        _update_readme(readme_path, f"Recorded run status: **{status}**.\n\n" + failure_text + table + "\n\n" +
+        _update_readme(readme_path, f"Recorded run status: **{status}**.\n\n" + failure_text + recovery_text + table + "\n\n" +
                        details + "\n\n" + controls + links + "\n\nRegenerate all results with `uv run selfplay report --run <run-directory>`. ")
     (site_dir / ".nojekyll").write_text("", encoding="utf-8")
     return {"summary.json": str(output_dir / "summary.json"), "experiment.md": str(output_dir / "experiment.md"),

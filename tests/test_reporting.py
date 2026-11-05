@@ -145,3 +145,34 @@ def test_diagnostics_count_real_calls_not_copied_observations(tmp_path, monkeypa
     assert diagnostics["invalid_artifact_rate"] == 1
     assert diagnostics["invalid_reasons"] == {"fixture invalid": 1}
     assert diagnostics["peak_allocated_bytes"] == 100
+
+
+def test_recovery_disclosure_preserves_failed_attempt_after_success(tmp_path, monkeypatch):
+    """A successful recovery cannot erase a failed attempt or its compute charge."""
+    run = tmp_path / "recovery"
+    run.mkdir()
+    recovery = {
+        "prior_run": "runs/interrupted-fixture", "prior_status": "preflight_failed",
+        "prior_budget": {"deadline_epoch": 100},
+        "prior_events": [{"event": "phase_failed", "phase": "preflight", "error": "fixture broken pipe"}],
+        "prior_attempt_elapsed_seconds": 12.5, "charged_prior_seconds": 17,
+        "recovery_budget_seconds": 83, "total_active_allocation_seconds": 100,
+        "original_deadline_preserved": True,
+        "saved_model_generations": 0, "saved_evaluations": 0, "saved_checkpoints": 0,
+        "reason": "An OS restart interrupted this fixture before model output.",
+    }
+    (run / "manifest.json").write_text(json.dumps({"recovery": recovery}))
+    (run / "summary.json").write_text(json.dumps({"status": "completed"}))
+    monkeypatch.setattr("multi_agent_ssr.reporting.render_figures", lambda *args: {})
+    monkeypatch.setattr("multi_agent_ssr.reporting.render_paper", lambda *args: None)
+    generate_report(run, tmp_path / "report", tmp_path / "site")
+    data = json.loads((tmp_path / "site" / "data.json").read_text())
+    assert data["status"] == "completed"
+    assert data["recovery"] == recovery
+    for name in ("experiment.md", "experiments-summary.md", "paper.md"):
+        text = (tmp_path / "report" / name).read_text()
+        assert "runs/interrupted-fixture" in text and "fixture broken pipe" in text
+        assert "12.5 seconds" in text and "charges 17 seconds" in text
+        assert "83 seconds" in text and "100 seconds" in text
+        assert "offline interval" in text and "amendment" in text
+        assert "model outputs 0, evaluations 0, checkpoints 0" in text
