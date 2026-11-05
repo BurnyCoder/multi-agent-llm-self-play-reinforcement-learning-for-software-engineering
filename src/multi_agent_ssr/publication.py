@@ -49,7 +49,7 @@ def export_checkpoint(run_dir: Path, report_dir: Path, destination: Path) -> Pat
         f"Exact base revision: `{base['revision']}`. Selected policy version: `{record['policy_version']}`. "
         "Selection uses the final completed collection group, independently of evaluation score.\n\n"
         "## Reproduction\n\n"
-        "Use the locked [research harness](https://github.com/BurnyCoder/local-multi-agent-swe-rl). "
+        "Use the locked [research harness](https://github.com/BurnyCoder/multi-agent-llm-self-play-reinforcement-learning-for-software-engineering). "
         "The adapter, processor, checkpoint metadata, optimizer/RNG state and experiment configuration "
         "are included. Load the exact base revision and this adapter; do not initialize from a preflight checkpoint.\n\n"
         "## Recorded evaluation\n\n```json\n" + json.dumps(report["analysis"], indent=2) + "\n```\n\n"
