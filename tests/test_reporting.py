@@ -248,6 +248,55 @@ def test_protocol_diagnostics_preserve_usage_and_mark_unscored_traces(tmp_path, 
         assert disclosure in (tmp_path / "report" / name).read_text()
 
 
+def test_runtime_errors_are_descriptive_scoped_and_exclude_protocol_diagnostics(tmp_path, monkeypatch):
+    """Count emitted errors, not model text, test failures, or excluded protocol episodes."""
+    run = tmp_path / "run"
+    run.mkdir()
+    unsafe = {"error": "ValueError: Unsafe repository path: '/repo/example.py'"}
+    events = [{"event": "session_started", "session_id": "diagnostic", "episode_id": "diagnostic"},
+              {"event": "generation", "call_id": "d", "episode_id": "diagnostic", "generation": {"completion_ids": [1, 2, 3, 4]}},
+              {"event": "tool_finished", "session_id": "diagnostic", "result": unsafe},
+              {"event": "session_started", "session_id": "ordinary", "episode_id": "ordinary"},
+              {"event": "generation", "call_id": "r", "episode_id": "ordinary",
+               "generation": {"completion_ids": [5, 6], "text": "ContextLimitError: Unsafe repository path"}},
+              {"event": "tool_finished", "session_id": "ordinary", "result": unsafe},
+              {"event": "tool_finished", "session_id": "ordinary", "result": {"error": "ValueError: unknown tool"}},
+              {"event": "tool_finished", "session_id": "ordinary", "result": {"stdout": "Unsafe repository path", "exit_code": 1}}]
+    (run / "events.jsonl").write_text("".join(json.dumps(row) + "\n" for row in events))
+    (run / "protocol_diagnostics.json").write_text(json.dumps([
+        {"episode_id": "diagnostic", "task_id": "diagnostic-task", "status": "interrupted_unscored"}]))
+    context = {"agent_error": "ContextLimitError: required prompt exceeds capacity"}
+    evaluations = [{**record("a", "base", None, "infra_error"), **context},
+                   {**record("a", "base", False), **context}, record("b", "base", False),
+                   {**record("c", "trained", True), **context},
+                   {**record("d", "base", False, source="synthetic"), **context},
+                   {**record("diagnostic-task", "base", None, "interrupted_unscored"), **context}]
+    (run / "evaluation.jsonl").write_text("".join(json.dumps(row) + "\n" for row in evaluations))
+    sections = []
+    monkeypatch.setattr("multi_agent_ssr.reporting.render_figures", lambda *args: {})
+    monkeypatch.setattr("multi_agent_ssr.reporting.render_paper", lambda payload, current, *args: sections.extend(current))
+    generate_report(run, tmp_path / "report", tmp_path / "site")
+    data = json.loads((tmp_path / "site" / "data.json").read_text())
+    diagnostics = data["runtime_diagnostics"]
+    assert diagnostics["tool_result_events"] == 3
+    assert diagnostics["tool_error_events"] == 2
+    assert diagnostics["unsafe_repository_path_errors"] == 1
+    assert diagnostics["evaluation_context_limits"] == {
+        "human/base": {"records": 2, "context_limit_errors": 1, "completed_context_limit_errors": 1},
+        "human/trained": {"records": 1, "context_limit_errors": 1, "completed_context_limit_errors": 1},
+        "synthetic/base": {"records": 1, "context_limit_errors": 1, "completed_context_limit_errors": 1}}
+    assert data["diagnostics"]["generated_action_tokens"] == 6
+    assert data["diagnostics"]["generation_calls"] == 2
+    disclosure = data["runtime_disclosure"]
+    assert "human/base" in disclosure and "synthetic/base" in disclosure
+    assert "post-hoc descriptive" in disclosure
+    assert "do not establish a causal explanation" in disclosure
+    assert "remain fixed after held-out scoring" in disclosure
+    assert ("Runtime interface and context diagnostics", disclosure) in sections
+    for name in ("experiment.md", "experiments-summary.md", "paper.md"):
+        assert disclosure in (tmp_path / "report" / name).read_text()
+
+
 def test_recovery_disclosure_preserves_failed_attempt_after_success(tmp_path, monkeypatch):
     """A successful recovery cannot erase a failed attempt or its compute charge."""
     run = tmp_path / "recovery"

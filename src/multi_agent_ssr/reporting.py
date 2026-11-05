@@ -28,6 +28,8 @@ SOURCES = [
     ("Paired percentile bootstrap procedure", "https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.bootstrap.html"),
     ("Committed preregistration and analysis plan", "https://github.com/BurnyCoder/multi-agent-llm-self-play-reinforcement-learning-for-software-engineering/blob/main/reports/preregistration.md"),
     ("Qwen3.5 cached/full-forward BF16 numerical analysis", "https://github.com/huggingface/transformers/issues/46190"),
+    ("Frozen repository-relative path guard", "https://github.com/BurnyCoder/multi-agent-llm-self-play-reinforcement-learning-for-software-engineering/blob/109dfa67740ff9f0260d22be9407d047d90565f7/src/multi_agent_ssr/sandbox.py#L29"),
+    ("Frozen agent prompt and native tool descriptions", "https://github.com/BurnyCoder/multi-agent-llm-self-play-reinforcement-learning-for-software-engineering/blob/109dfa67740ff9f0260d22be9407d047d90565f7/src/multi_agent_ssr/agents.py#L146"),
 ]
 
 AI_STATEMENT = (
@@ -382,6 +384,50 @@ def _controls() -> list[dict[str, str]]:
         ("seed sensitivity", "Measure training-seed variation")]]
 
 
+def _runtime_diagnostics(events: list[dict[str, Any]], evaluations: list[dict[str, Any]],
+                         protocols: list[dict[str, Any]]) -> dict[str, Any]:
+    """Count recorded error fields without changing physical usage or scored outcomes."""
+    tools = [event for event in events if event.get("event") == "tool_finished" and not event.get("protocol_diagnostic")]
+    errors = [event["result"]["error"] for event in tools
+              if isinstance(event.get("result"), dict) and event["result"].get("error")]
+    excluded_episodes = {row["episode_id"] for row in protocols if row.get("episode_id")}
+    excluded_tasks = {(row.get("task_id"), row.get("status")) for row in protocols if row.get("task_id")}
+    cohorts = {}
+    for row in evaluations:
+        if (row.get("protocol_diagnostic") or row.get("episode_id") in excluded_episodes
+                or (row.get("task_id"), row.get("status")) in excluded_tasks):
+            continue
+        key = f"{row.get('source', 'unknown')}/{row.get('condition', 'unknown')}"
+        counts = cohorts.setdefault(key, {"records": 0, "context_limit_errors": 0, "completed_context_limit_errors": 0})
+        limited = str(row.get("agent_error", "")).startswith("ContextLimitError:")
+        counts["records"] += 1
+        counts["context_limit_errors"] += int(limited)
+        counts["completed_context_limit_errors"] += int(limited and _scored(row))
+    return {"analysis_type": "post_hoc_descriptive", "tool_result_events": len(tools),
+            "tool_error_events": len(errors),
+            "unsafe_repository_path_errors": sum(str(error).startswith("ValueError: Unsafe repository path:") for error in errors),
+            "evaluation_context_limits": cohorts}
+
+
+def _runtime_text(diagnostics: dict[str, Any]) -> str:
+    """Describe interface limitations without treating error counts as causal attribution."""
+    cohorts = "; ".join(
+        f"{cohort}: {counts['context_limit_errors']} ContextLimitError records among {counts['records']} retained rows "
+        f"({counts['completed_context_limit_errors']} with completed scoring)"
+        for cohort, counts in sorted(diagnostics["evaluation_context_limits"].items())) or "no retained evaluation rows"
+    return (f"This post-hoc descriptive analysis counts {diagnostics['tool_result_events']} actual tool_finished events "
+            f"across recorded phases, excluding protocol-diagnostic episodes. Of these, {diagnostics['tool_error_events']} "
+            f"have result.error values, including {diagnostics['unsafe_repository_path_errors']} ValueError unsafe-path "
+            "rejections. Generated text and nonzero command/test exit codes alone are not counted as tool errors. "
+            "Evaluation agent_error counts are separated by source/condition after the report's task deduplication, "
+            f"excluding protocol diagnostics: {cohorts}. Completed scoring can still be recorded after an agent context error.\n\n"
+            "Native read/edit path arguments require repository-relative paths [11]. The frozen prompt says "
+            "Work in /repo without explicitly stating that read/edit path arguments must be relative [12]. "
+            "This interface limitation and the fixed context capacity are potential confounders when interpreting repair outcomes. "
+            "These counts do not establish a causal explanation for every unresolved result. Prompts, API semantics, and budgets "
+            "remain fixed after held-out scoring; this analysis does not adapt them to observed benchmark outcomes.")
+
+
 def _control_table(controls: list[dict[str, str]]) -> str:
     lines = ["| Deferred condition | Purpose | Result |", "| --- | --- | --- |"]
     lines.extend(f"| {row['condition']} | {row['purpose']} | Not run |" for row in controls)
@@ -600,6 +646,9 @@ def _paper_sections(payload: dict[str, Any]) -> list[tuple[str, str]]:
     if payload.get("protocol_disclosure"):
         position = next(index for index, (title, _) in enumerate(sections) if title == "Results")
         sections.insert(position, ("Unscored protocol diagnostics", payload["protocol_disclosure"]))
+    if payload.get("runtime_disclosure"):
+        position = next(index for index, (title, _) in enumerate(sections) if title == "Claims and implications")
+        sections.insert(position, ("Runtime interface and context diagnostics", payload["runtime_disclosure"]))
     return sections
 
 
@@ -836,9 +885,11 @@ def generate_report(run_dir: Path, output_dir: Path, site_dir: Path, *, readme_p
         "analysis": analysis, "metrics": metrics,
         "events": events, "patches": _run_patches(run_dir), "controls": _controls(),
         "diagnostics": _diagnostics(events, metrics, preflight, analysis["records"]),
+        "runtime_diagnostics": _runtime_diagnostics(events, analysis["records"], protocol_diagnostics),
         "sources": [{"title": title, "url": url} for title, url in SOURCES],
     }
     payload["likelihood_disclosure"] = _likelihood_text(payload["likelihood_history"], payload["likelihood"])
+    payload["runtime_disclosure"] = _runtime_text(payload["runtime_diagnostics"])
     if (run_dir / "kernel-review.json").exists():
         payload["preparation"]["kernel_review"] = _json(run_dir / "kernel-review.json")
     figures = render_figures(payload, output_dir / "figures")
@@ -859,6 +910,8 @@ def generate_report(run_dir: Path, output_dir: Path, site_dir: Path, *, readme_p
                       if payload["likelihood_disclosure"] else "")
     protocol_text = ("## Unscored protocol diagnostics\n\n" + payload["protocol_disclosure"] + "\n\n"
                      if payload["protocol_disclosure"] else "")
+    runtime_text = ("## Runtime interface and context diagnostics\n\n" + payload["runtime_disclosure"] +
+                    f"\n\nSources: [pinned path guard]({SOURCES[10][1]}) and [pinned prompt]({SOURCES[11][1]}).\n\n")
     details = "\n\n".join(f"### {source.title()} bugs\n\n{_effect_text(comparison)}"
                             for source, comparison in payload["analysis"]["comparisons"].items())
     report = (f"# Experiment: {payload['run_id']}\n\nStatus: **{payload['status']}**. "
@@ -872,7 +925,7 @@ def generate_report(run_dir: Path, output_dir: Path, site_dir: Path, *, readme_p
               "Unrecorded planned tasks remain missing coverage.\n\n"
               f"Invalidity reasons: `{json.dumps(payload['diagnostics']['invalid_reasons'], ensure_ascii=False)}`. "
               f"Untrained-group reasons: `{json.dumps(payload['diagnostics']['untrained_group_reasons'], ensure_ascii=False)}`.\n\n"
-              "## Method and learnings\n\n"
+              + runtime_text + "## Method and learnings\n\n"
               "One shared model serves the primary agents and asynchronous children. The pilot tests the combined "
               "system; it does not identify the causal contribution of delegation. Inspect the saved run summary "
               "below for observed failures, decisions, and completed work. No unrun control has a reported score.\n\n"
@@ -892,6 +945,7 @@ def generate_report(run_dir: Path, output_dir: Path, site_dir: Path, *, readme_p
     (output_dir / "experiments-summary.md").write_text(
         "# Experiments recorded in this run\n\n" + failure_text + recovery_text + likelihood_text + protocol_text + table + "\n\n" + details +
         "\n\n## Deferred controls\n\n" + controls + "\n\n## Recorded diagnostics\n\n" + diagnostics +
+        "\n\n" + runtime_text +
         "\n\n## Network and experiment design\n\n"
         "| Condition | Architecture | Training in this experiment | Objective | Data and domain |\n"
         "| --- | --- | --- | --- | --- |\n"
