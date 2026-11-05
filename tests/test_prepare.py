@@ -62,6 +62,104 @@ def _git(directory, *arguments):
                           capture_output=True, text=True).stdout.strip()
 
 
+@pytest.fixture
+def prepared_evidence(manifests, tmp_path):
+    """Represent two ready tasks, one unavailable task, and a shared dependency."""
+    destination = tmp_path / "data"
+    (destination / "synthetic").mkdir(parents=True)
+    images = {"agent": "sha256:" + "a" * 64, "dependency": "fixture/dependency@sha256:" + "d" * 64,
+              "oracle_a": "fixture/a@sha256:" + "b" * 64,
+              "oracle_b": "fixture/b@sha256:" + "c" * 64}
+    human = [{"instance_id": name, "base_commit": "fixture-base", "status": "ready", "agent_image": images["agent"],
+              "image_digest": images[f"oracle_{name}"], "source_path": str(destination / name)}
+             for name in ("a", "b")]
+    for row in human:
+        Path(row["source_path"]).mkdir()
+    human.append({"instance_id": "unavailable", "status": "failed"})
+    (destination / "human_envs.json").write_text(json.dumps({"tasks": human}))
+    (destination / "synthetic/tasks.json").write_text("[]")
+    (manifests / "evaluation.json").write_text(json.dumps({"tasks": [{"instance_id": row["instance_id"]} for row in human]}))
+    (manifests / "image_pins.json").write_text(json.dumps({"tasks": human[:2]}))
+    (manifests / "environment.json").write_text("{}")
+    source = destination / "training-source"
+    source.mkdir()
+    spec = RepoSpec("tiny", "fixture-url", "pinned", "image-tag", str(source),
+                    "train", ["src"], ["tests"], image_digest=images["dependency"])
+    (manifests / "repositories.json").write_text(json.dumps([asdict(spec)]))
+    return destination, images
+
+
+def test_preparation_inspects_distinct_ready_images_in_one_batch(prepared_evidence, monkeypatch):
+    _, images = prepared_evidence
+    calls = []
+
+    def inspect(args):
+        calls.append(args)
+        return "\n".join(image.split("@")[-1] for image in args[5:])
+
+    monkeypatch.setattr(prepare, "command", inspect)
+    evidence = prepare.preparation_evidence()
+    assert calls == [["docker", "image", "inspect", "--format", "{{.Id}}", *sorted(images.values())]]
+    assert evidence["human_environments_ready"] == 2
+    assert evidence["human_environments_planned"] == 3
+    assert evidence["docker_images_checked"] == len(images)
+    assert evidence["dependency_image_ids"] == [images["dependency"].split("@")[-1]]
+    assert evidence["human_image_identities"] == [
+        {"instance_id": name, "base_commit": "fixture-base", "agent_image": images["agent"],
+         "image_digest": images[f"oracle_{name}"]} for name in ("a", "b")]
+    assert "source_path" not in json.dumps(evidence)
+
+
+@pytest.mark.parametrize("missing", ["agent", "oracle_a", "dependency"])
+def test_missing_prepared_image_fails_before_model_loading(prepared_evidence, tmp_path, monkeypatch, missing):
+    from multi_agent_ssr import experiment
+
+    _, images = prepared_evidence
+    monkeypatch.chdir(tmp_path)
+    (tmp_path / "manifests/model.json").write_text('{"revision": "fixture-pin"}')
+    config = {"model": {}, "limits": {}, "experiment": {
+        "budget_seconds": 60, "human_tasks": 3, "synthetic_tasks": 0}}
+    monkeypatch.setattr(experiment, "load_config", lambda _: config)
+    monkeypatch.setattr(experiment, "require_preregistered", lambda: "fixture-commit")
+    monkeypatch.setattr(experiment.subprocess, "run", lambda *args, **kwargs: SimpleNamespace(stdout="fixture GPU"))
+    monkeypatch.setitem(sys.modules, "multi_agent_ssr.learning", SimpleNamespace(
+        run_preflight=lambda *args: pytest.fail("Missing images must fail before model loading")))
+    calls = []
+
+    def inspect(args):
+        calls.append(args)
+        assert args[:5] == ["docker", "image", "inspect", "--format", "{{.Id}}"]
+        assert set(args[5:]) == set(images.values())
+        raise subprocess.CalledProcessError(1, args, stderr=f"No such image: {images[missing]}")
+
+    monkeypatch.setattr(prepare, "command", inspect)
+    with pytest.raises(RuntimeError, match="Prepared Docker images are unavailable"):
+        experiment.execute("preflight", tmp_path / "config.toml", tmp_path / "run")
+    assert len(calls) == 1
+    failure = json.loads((tmp_path / "run/failure.json").read_text())
+    assert images[missing] in failure["error"]
+
+
+@pytest.mark.parametrize("source", ["a", "training-source"])
+def test_missing_prepared_source_is_rejected(prepared_evidence, monkeypatch, source):
+    destination, _ = prepared_evidence
+    (destination / source).rmdir()
+    monkeypatch.setattr(prepare, "command", lambda *args: pytest.fail("Check source paths before Docker"))
+    with pytest.raises(FileNotFoundError, match="Prepared source is unavailable"):
+        prepare.preparation_evidence()
+
+
+def test_prepared_oracle_must_match_committed_pin(prepared_evidence, monkeypatch):
+    destination, _ = prepared_evidence
+    path = destination / "human_envs.json"
+    human = json.loads(path.read_text())
+    human["tasks"][0]["image_digest"] = "different-oracle"
+    path.write_text(json.dumps(human))
+    monkeypatch.setattr(prepare, "command", lambda *args: pytest.fail("Reject the changed pin before Docker"))
+    with pytest.raises(ValueError, match="oracle digest differs"):
+        prepare.preparation_evidence()
+
+
 def test_fresh_clone_uses_committed_revision_and_preserves_notices(manifests, tmp_path, monkeypatch):
     origin = tmp_path / "origin"
     origin.mkdir()
