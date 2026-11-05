@@ -411,7 +411,7 @@ def _paper_sections(payload: dict[str, Any]) -> list[tuple[str, str]]:
          "reproduction of SSR [1]. It uses Qwen3.5-2B, one tied LoRA adapter for both teams and all descendants, "
          "asynchronous prompted delegation, trusted pytest execution/JUnit parsing, bounded contexts, and a "
          "small fixed evaluation cohort. It does not reproduce SSR's original model scale, context length, "
-         "distributed asynchronous learner, history-guided curriculum, or full evaluation suite. The CWM "
+         "distributed asynchronous learner, git-history-aware bug-injection prompts, or full evaluation suite. The CWM "
          "objective is extended from trajectories to complete action trees using the exact original contexts [2].")),
         ("Results", state + "\n\n" + primary + "\n\nSynthetic diagnostic set: " + secondary),
         ("Observed execution diagnostics", "The following diagnostics are derived from saved event, evaluation, "
