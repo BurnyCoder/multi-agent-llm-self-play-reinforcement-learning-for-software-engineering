@@ -112,6 +112,79 @@ def test_statistics_downloads_are_disabled_before_unsloth_import(tmp_path, monke
         LocalPolicy(ModelConfig(revision="fixture-pin"), tmp_path / "model.jsonl")
 
 
+@pytest.mark.parametrize("model_eos,tokenizer_eos,pad,expected_eos,expected_pad", [
+    (248044, 248046, None, [248044, 248046], 248044),
+    ([248046, None, 248044, 248046], 248046, 0, [248046, 248044], 0),
+    (None, 248046, None, [248046], 248046),
+    (248044, None, None, [248044], 248044),
+    (None, None, None, None, None),
+    ([], None, 0, None, 0),
+    ([None], None, None, None, None),
+])
+def test_generation_stops_include_tokenizer_chat_end(
+        monkeypatch, model_eos, tokenizer_eos, pad, expected_eos, expected_pad):
+    """Keep model stop order while adding chat EOS and removing duplicates/None."""
+    monkeypatch.setitem(sys.modules, "transformers", SimpleNamespace(GenerationConfig=SimpleNamespace))
+    policy = LocalPolicy.__new__(LocalPolicy)
+    policy.config = ModelConfig()
+    policy.model = SimpleNamespace(generation_config=SimpleNamespace(eos_token_id=model_eos, bos_token_id=1))
+    policy.tokenizer = SimpleNamespace(eos_token_id=tokenizer_eos, pad_token_id=pad)
+    config = policy._generation_config(4)
+    assert config.eos_token_id == expected_eos
+    assert config.pad_token_id == expected_pad
+    assert policy.model.generation_config.eos_token_id == model_eos
+
+
+def test_real_generation_stops_at_chat_eos_and_keeps_its_action_probability(tmp_path):
+    """Run Transformers' actual CPU generation loop with deterministic toy logits."""
+    torch = pytest.importorskip("torch")
+    transformers = pytest.importorskip("transformers")
+    from transformers.modeling_outputs import CausalLMOutputWithPast
+
+    class Tokenizer:
+        pad_token_id, eos_token_id = 0, 5
+
+        def apply_chat_template(self, messages, **kwargs):
+            return "fixture prompt"
+
+        def encode(self, text, **kwargs):
+            return [1, 2]
+
+        def decode(self, ids, **kwargs):
+            return " ".join(str(int(token)) for token in ids if int(token) != self.eos_token_id)
+
+    class BoundaryModel(transformers.GPT2LMHeadModel):
+        def __init__(self):
+            super().__init__(transformers.GPT2Config(vocab_size=8, n_positions=16, n_embd=8,
+                                                   n_layer=1, n_head=1, bos_token_id=1, eos_token_id=7))
+            self.forward_calls = 0
+
+        def forward(self, input_ids, attention_mask=None, **kwargs):
+            token = (4, 5, 6)[min(self.forward_calls, 2)]
+            self.forward_calls += 1
+            logits = torch.full((*input_ids.shape, 8), -torch.inf, device=input_ids.device)
+            logits[:, -1, token] = 0.0
+            return CausalLMOutputWithPast(logits=logits)
+
+    policy = LocalPolicy.__new__(LocalPolicy)
+    policy.config = ModelConfig(context_tokens=16, action_tokens=4)
+    policy.log_path = tmp_path / "events.jsonl"
+    policy.lock, policy._log_lock = threading.RLock(), threading.RLock()
+    policy.version, policy.torch, policy.device = 0, torch, torch.device("cpu")
+    policy.processor = policy.tokenizer = Tokenizer()
+    policy.model = BoundaryModel()
+    policy._backend = SimpleNamespace(for_inference=lambda model: model.eval(),
+                                      for_training=lambda model: model.train())
+    result = policy.generate([{"role": "user", "content": "fixture"}], max_new_tokens=4)
+    assert policy.model.forward_calls == 2  # No generation and slicing of fake next-role tokens.
+    assert result.completion_ids == [4, 5]
+    assert result.old_logprobs == [0.0, 0.0]  # Includes the sampled chat EOS.
+    event = json.loads(policy.log_path.read_text().splitlines()[-1])
+    assert event["event"] == "generation_complete"
+    assert event["eos_token_ids"] == [7, 5]
+    assert event["completion_ids"] == result.completion_ids
+
+
 def test_action_logprobs_align_first_completion_and_exclude_observations():
     """A positional toy model exposes off-by-one and prompt-loss mistakes."""
     torch = pytest.importorskip("torch")
