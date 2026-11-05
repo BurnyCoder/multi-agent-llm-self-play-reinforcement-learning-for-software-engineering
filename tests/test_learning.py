@@ -8,6 +8,7 @@ import pytest
 
 from multi_agent_ssr.contracts import ActionTrace, Episode, Generation
 from multi_agent_ssr.learning import (
+    build_optimizer,
     clipped_token_loss,
     compute_advantages,
     injection_reward,
@@ -47,6 +48,28 @@ def test_advantages_weight_unique_root_and_child_actions():
     advantages = compute_advantages([success, failure])
     assert advantages == pytest.approx({"success": 0.5, "failure": -1.5})
     assert sum(ep.token_count * advantages[ep.episode_id] for ep in [success, failure]) == 0
+
+
+@pytest.mark.parametrize("empty_outlier", [False, True])
+def test_equal_fractional_rewards_have_exact_zero_advantages(empty_outlier):
+    """A constant active group is a true no-op despite unequal action lengths."""
+    group = [make_episode("a", -0.8, (1,), team="injector"),
+             make_episode("b", -0.8, (1, 1), team="injector")]
+    if empty_outlier:
+        group.insert(0, Episode("empty", "same-task", "injector", reward=0.55, completed=True))
+    advantages = compute_advantages(group)
+    assert advantages["a"] == advantages["b"] == 0.0
+    if empty_outlier:
+        assert advantages["empty"] == pytest.approx(1.35)
+
+
+def test_fractional_mixed_rewards_preserve_length_weighted_centering():
+    """Anchoring must preserve the CWM mean for a nonconstant reward group."""
+    group = [make_episode("a", -0.8, (1,), team="injector"),
+             make_episode("b", 0.55, (0, 0), team="injector")]
+    advantages = compute_advantages(group)
+    assert advantages == pytest.approx({"a": -0.9, "b": 0.45}, abs=1e-15)
+    assert math.fsum(ep.token_count * advantages[ep.episode_id] for ep in group) == pytest.approx(0, abs=1e-15)
 
 
 @pytest.mark.parametrize("alteration", ["team", "task", "incomplete", "missing-reward", "duplicate"])
@@ -157,6 +180,25 @@ def test_zero_advantage_group_does_not_fabricate_an_optimizer_step():
     assert result["optimizer_steps"] == policy.version == 0
     assert policy.adapter_fingerprint() == before
     assert not policy.scored
+
+
+@pytest.mark.parametrize("empty_outlier", [False, True])
+def test_equal_fractional_rewards_do_not_step_adamw_or_change_adapter(empty_outlier):
+    """Tiny rounding residuals must not start AdamW or mutate the shared policy."""
+    torch = pytest.importorskip("torch")
+    policy = TinyPolicy(torch)
+    optimizer = build_optimizer(policy)
+    before = policy.adapter_fingerprint()
+    group = [make_episode("a", -0.8, (1,), team="injector"),
+             make_episode("b", -0.8, (1, 1), team="injector")]
+    if empty_outlier:
+        group.insert(0, Episode("empty", "same-task", "injector", reward=0.55, completed=True))
+    result = update_policy(policy, [group], optimizer, capacity=8, epochs=2)
+    assert result["optimizer_steps"] == policy.version == 0
+    assert result["trained_tokens_per_pass"] == 0
+    assert policy.adapter_fingerprint() == before
+    assert not policy.scored
+    assert not optimizer.state
 
 
 @pytest.mark.parametrize("problem", ["stale", "duplicate-call", "capacity", "logprobs"])

@@ -313,12 +313,20 @@ def _control_table(controls: list[dict[str, str]]) -> str:
     return "\n".join(lines)
 
 
+def _diagnostic_label(key: str) -> str:
+    """Distinguish research agent actions from separate software preflight calls."""
+    return {
+        "generated_action_tokens": "generated tokens from research agents (excludes preflight)",
+        "generation_calls": "generation calls by research agents (excludes preflight)",
+    }.get(key, key.replace("_", " "))
+
+
 def _diagnostic_table(diagnostics: dict[str, Any]) -> str:
     lines = ["| Recorded diagnostic | Value |", "| --- | ---: |"]
     for key, value in diagnostics.items():
         if not isinstance(value, dict):
             shown = "Not measured" if value is None else f"{value:.6g}" if isinstance(value, float) else str(value)
-            lines.append(f"| {key.replace('_', ' ')} | {shown} |")
+            lines.append(f"| {_diagnostic_label(key)} | {shown} |")
     return "\n".join(lines)
 
 
@@ -482,7 +490,8 @@ def _paper_sections(payload: dict[str, Any]) -> list[tuple[str, str]]:
         ("Observed execution diagnostics", "The following diagnostics are derived from saved event, evaluation, "
          "and optimizer streams, including incomplete collections. Counts describe recorded activity, not "
          "generalization. Preflight memory belongs to a software check, not a trained-model evaluation. "
-         f"Recorded action tokens: {payload['diagnostics']['generated_action_tokens']}; actual subagent tool "
+         f"Recorded action tokens from research agents (excluding preflight): "
+         f"{payload['diagnostics']['generated_action_tokens']}; actual subagent tool "
          f"calls: {payload['diagnostics']['delegation_calls']}; child sessions: {payload['diagnostics']['child_sessions']}; "
          f"optimizer steps: {payload['diagnostics']['optimizer_steps']}. "
          "Full invalidity reasons, exclusions, failure metadata, and per-task outcomes accompany the generated report."),
@@ -620,6 +629,7 @@ def render_paper(payload: dict[str, Any], sections: list[tuple[str, str]], desti
     styles["BodyText"].leading = 14
     styles["BodyText"].spaceAfter = 8
     styles["Heading2"].textColor = colors.HexColor("#177b67")
+    styles["Heading2"].keepWithNext = True
     story = [Paragraph("Local multi-agent self-play RL<br/>for software engineering", styles["PaperTitle"]),
              Paragraph("Libor &quot;Burny&quot; Burian", styles["Meta"]),
              Paragraph(escape(f"Run: {payload['run_id']} | Status: {payload['status']}"), styles["Meta"])]
@@ -653,7 +663,7 @@ def render_paper(payload: dict[str, Any], sections: list[tuple[str, str]], desti
         if title == "Observed execution diagnostics":
             for key, value in payload["diagnostics"].items():
                 shown = json.dumps(value, ensure_ascii=False) if isinstance(value, dict) else "Not measured" if value is None else str(value)
-                story.append(Paragraph(f"<b>{escape(key.replace('_', ' '))}</b>: {escape(shown)}", styles["BodyText"]))
+                story.append(Paragraph(f"<b>{escape(_diagnostic_label(key))}</b>: {escape(shown)}", styles["BodyText"]))
             for key in ("memory", "tokens", "validity"):
                 if figures.get(key):
                     story.append(Image(str(figure_dir / figures[key]), width=16 * cm, height=8 * cm))
