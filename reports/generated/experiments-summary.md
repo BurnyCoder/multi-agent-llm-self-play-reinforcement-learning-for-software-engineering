@@ -23,7 +23,7 @@ These are unscored harness diagnostics, excluded from benchmark success and trai
 
 | Bug source | Condition | Planned | Attempted | Resolved / scored | Rate | Unscored recorded | Unrecorded |
 | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| human | base | 32 | 1 | Not evaluated | Not evaluated | 1 | 31 |
+| human | base | 32 | 1 | 0 / 1 | 0.0% | 0 | 31 |
 | human | trained | 32 | 0 | Not evaluated | Not evaluated | 0 | 32 |
 | synthetic | base | 16 | 0 | Not evaluated | Not evaluated | 0 | 16 |
 | synthetic | trained | 16 | 0 | Not evaluated | Not evaluated | 0 | 16 |
@@ -50,23 +50,23 @@ Not evaluated: no tasks have completed outcomes for both conditions.
 
 | Recorded diagnostic | Value |
 | --- | ---: |
-| episodes | 1 |
+| episodes | 2 |
 | child sessions | 0 |
 | episodes with children | 0 |
 | delegation rate | 0 |
 | delegation calls | 0 |
-| generated tokens from research agents (excludes preflight) | 2094 |
-| generation calls by research agents (excludes preflight) | 9 |
+| generated tokens from research agents (excludes preflight) | 3337 |
+| generation calls by research agents (excludes preflight) | 41 |
 | validated artifacts | 0 |
 | invalid artifacts | 0 |
 | invalid artifact rate | Not measured |
 | optimizer steps | 0 |
 | recorded training groups | 0 |
 | peak allocated bytes | 5136889856 |
-| evaluation seconds | 377.29 |
+| evaluation seconds | 360.033 |
 | training group seconds | 0 |
-| pass to pass regressions | Not measured |
-| regression scored records | 0 |
+| pass to pass regressions | 0 |
+| regression scored records | 1 |
 
 ## Network and experiment design
 

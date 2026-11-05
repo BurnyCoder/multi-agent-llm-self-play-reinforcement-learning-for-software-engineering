@@ -4,7 +4,7 @@ Libor "Burny" Burian
 
 ## Abstract
 
-We implement a local shared-policy extension of Self-play SWE-RL in which bug-injection and repair teams can delegate to asynchronous subagents. All roles use one Qwen3.5-2B policy with a shared trainable LoRA adapter. This report is generated from the saved run records. Recorded run status: pilot_interrupted. Recorded failure at 2026-11-05T21:30:15.600645+00:00 in preflight: RuntimeError: Generation/scoring log probabilities disagree: 0.152308. Recorded failure at 2026-11-05T21:58:00.073528+00:00 in preflight: RuntimeError: Generation/scoring log probabilities disagree: 0.152151. No completed policy optimizer steps are recorded; this record does not establish a learned checkpoint. Not evaluated: no tasks have completed outcomes for both conditions.
+We implement a local shared-policy extension of Self-play SWE-RL in which bug-injection and repair teams can delegate to asynchronous subagents. All roles use one Qwen3.5-2B policy with a shared trainable LoRA adapter. This report is generated from the saved run records. Recorded run status: pilot_running. Recorded failure at 2026-11-05T21:30:15.600645+00:00 in preflight: RuntimeError: Generation/scoring log probabilities disagree: 0.152308. Recorded failure at 2026-11-05T21:58:00.073528+00:00 in preflight: RuntimeError: Generation/scoring log probabilities disagree: 0.152151. No completed policy optimizer steps are recorded; this record does not establish a learned checkpoint. Not evaluated: no tasks have completed outcomes for both conditions.
 
 ## Context and motivation
 
@@ -68,7 +68,7 @@ These are unscored harness diagnostics, excluded from benchmark success and trai
 
 ## Results
 
-Recorded run status: pilot_interrupted. Recorded failure at 2026-11-05T21:30:15.600645+00:00 in preflight: RuntimeError: Generation/scoring log probabilities disagree: 0.152308. Recorded failure at 2026-11-05T21:58:00.073528+00:00 in preflight: RuntimeError: Generation/scoring log probabilities disagree: 0.152151. No completed policy optimizer steps are recorded; this record does not establish a learned checkpoint.
+Recorded run status: pilot_running. Recorded failure at 2026-11-05T21:30:15.600645+00:00 in preflight: RuntimeError: Generation/scoring log probabilities disagree: 0.152308. Recorded failure at 2026-11-05T21:58:00.073528+00:00 in preflight: RuntimeError: Generation/scoring log probabilities disagree: 0.152151. No completed policy optimizer steps are recorded; this record does not establish a learned checkpoint.
 
 Not evaluated: no tasks have completed outcomes for both conditions.
 
@@ -76,7 +76,7 @@ Synthetic diagnostic set: Not evaluated: no tasks have completed outcomes for bo
 
 | Bug source | Condition | Planned | Attempted | Resolved / scored | Rate | Unscored recorded | Unrecorded |
 | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| human | base | 32 | 1 | Not evaluated | Not evaluated | 1 | 31 |
+| human | base | 32 | 1 | 0 / 1 | 0.0% | 0 | 31 |
 | human | trained | 32 | 0 | Not evaluated | Not evaluated | 0 | 32 |
 | synthetic | base | 16 | 0 | Not evaluated | Not evaluated | 0 | 16 |
 | synthetic | trained | 16 | 0 | Not evaluated | Not evaluated | 0 | 16 |
@@ -95,27 +95,27 @@ Check at 2026-11-05T21:58:00.067+00:00: 101 sampled action tokens; maximum cache
 
 ## Observed execution diagnostics
 
-The following diagnostics are derived from saved event, evaluation, and optimizer streams, including incomplete collections and unscored protocol diagnostics. Counts describe recorded activity, not generalization. Preflight memory belongs to a software check, not a trained-model evaluation. Recorded action tokens from research agents (excluding preflight): 2094; actual subagent tool calls: 0; child sessions: 0; optimizer steps: 0. Full invalidity reasons, exclusions, failure metadata, and per-task outcomes accompany the generated report.
+The following diagnostics are derived from saved event, evaluation, and optimizer streams, including incomplete collections and unscored protocol diagnostics. Counts describe recorded activity, not generalization. Preflight memory belongs to a software check, not a trained-model evaluation. Recorded action tokens from research agents (excluding preflight): 3337; actual subagent tool calls: 0; child sessions: 0; optimizer steps: 0. Full invalidity reasons, exclusions, failure metadata, and per-task outcomes accompany the generated report.
 
 | Recorded diagnostic | Value |
 | --- | ---: |
-| episodes | 1 |
+| episodes | 2 |
 | child sessions | 0 |
 | episodes with children | 0 |
 | delegation rate | 0 |
 | delegation calls | 0 |
-| generated tokens from research agents (excludes preflight) | 2094 |
-| generation calls by research agents (excludes preflight) | 9 |
+| generated tokens from research agents (excludes preflight) | 3337 |
+| generation calls by research agents (excludes preflight) | 41 |
 | validated artifacts | 0 |
 | invalid artifacts | 0 |
 | invalid artifact rate | Not measured |
 | optimizer steps | 0 |
 | recorded training groups | 0 |
 | peak allocated bytes | 5136889856 |
-| evaluation seconds | 377.29 |
+| evaluation seconds | 360.033 |
 | training group seconds | 0 |
-| pass to pass regressions | Not measured |
-| regression scored records | 0 |
+| pass to pass regressions | 0 |
+| regression scored records | 1 |
 
 ## Claims and implications
 
@@ -229,7 +229,7 @@ The saved artifacts establish what ran and what was measured. Not evaluated: no 
   "hypothesis": "Trained team improves held-out human bug resolution over frozen initialization",
   "phase_code_commits": {
     "preflight": "05d7f357458d9eee1ec64637ff0277464839be06",
-    "pilot": "e49e7442f0243efcbd00879327525c4f04639a0b"
+    "pilot": "109dfa67740ff9f0260d22be9407d047d90565f7"
   }
 }
 ```
