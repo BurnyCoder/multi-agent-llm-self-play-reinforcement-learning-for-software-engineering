@@ -150,6 +150,9 @@ class LocalPolicy:
         # Its compiler otherwise suppresses raw training logits by default:
         # https://github.com/unslothai/unsloth-zoo/blob/main/unsloth_zoo/compiler.py
         os.environ["UNSLOTH_RETURN_LOGITS"] = "1"
+        # Skip Unsloth's auxiliary usage/availability repository downloads:
+        # https://github.com/unslothai/unsloth/issues/14366
+        os.environ["UNSLOTH_DISABLE_STATISTICS"] = "1"
         from unsloth import FastVisionModel  # isort: skip
 
         import torch
