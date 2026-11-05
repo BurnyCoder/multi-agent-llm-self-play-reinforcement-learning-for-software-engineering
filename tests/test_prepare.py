@@ -14,6 +14,40 @@ from multi_agent_ssr import prepare
 from multi_agent_ssr.contracts import RepoSpec
 
 
+@pytest.mark.parametrize("drive", ["d", "e"])
+def test_unmounted_windows_data_drive_is_rejected_before_preparation(monkeypatch, drive):
+    monkeypatch.setenv("SSR_DATA_DIR", f"/mnt/{drive}/AI/multi-agent-ssr")
+    checked = []
+
+    def absent_mount(path):
+        checked.append(path)
+        return False
+
+    monkeypatch.setattr(Path, "is_mount", absent_mount)
+    with pytest.raises(RuntimeError, match="Reconnect.*mount"):
+        prepare.data_directory()
+    assert checked == [Path(f"/mnt/{drive}")]
+
+
+def test_mounted_windows_data_drive_keeps_the_configured_location(monkeypatch):
+    destination = Path("/mnt/d/AI/multi-agent-ssr")
+    monkeypatch.setenv("SSR_DATA_DIR", str(destination))
+    monkeypatch.setattr(Path, "is_mount", lambda path: path == Path("/mnt/d"))
+    assert prepare.data_directory() == destination
+
+
+def test_native_linux_data_directory_needs_no_drive_mount(tmp_path, monkeypatch):
+    destination = tmp_path / "projects" / "multi-agent-ssr"
+    monkeypatch.setenv("SSR_DATA_DIR", str(destination))
+
+    def unexpected_check(path):
+        raise AssertionError("Native Linux paths do not require a Windows mount")
+
+    monkeypatch.setattr(Path, "is_mount", unexpected_check)
+    assert prepare.data_directory() == destination
+    assert not destination.exists()
+
+
 @pytest.fixture
 def manifests(tmp_path, monkeypatch):
     directory = tmp_path / "manifests"
