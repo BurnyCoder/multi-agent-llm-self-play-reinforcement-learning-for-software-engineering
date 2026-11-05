@@ -252,6 +252,27 @@ class LocalPolicy:
         )
         return self.tokenizer.encode(rendered, add_special_tokens=False)
 
+    def _generation_config(self, max_new_tokens: int) -> Any:
+        """Use identical unfiltered sampling settings for generation and replay."""
+        from transformers import GenerationConfig
+
+        if not 1 <= max_new_tokens <= self.config.action_tokens:
+            raise ValueError(f"max_new_tokens must be between 1 and {self.config.action_tokens}")
+        defaults = self.model.generation_config
+        eos = defaults.eos_token_id
+        pad = self.tokenizer.pad_token_id
+        if pad is None:
+            pad = eos[0] if isinstance(eos, list) else eos
+        # A fresh config prevents inherited top-k or repetition penalties from
+        # changing the distribution whose action likelihoods are optimized.
+        return GenerationConfig(
+            do_sample=True, temperature=1.0, top_p=1.0, top_k=0,
+            repetition_penalty=1.0, max_new_tokens=max_new_tokens,
+            eos_token_id=eos, pad_token_id=pad,
+            bos_token_id=defaults.bos_token_id, use_cache=True,
+            output_scores=False, return_dict_in_generate=False,
+        )
+
     def generate(self, messages: list[dict[str, Any]], *, max_new_tokens: int,
                  tools: list[dict[str, Any]] | None = None) -> Generation:
         """Sample once, preserving exact action IDs and sampling log probabilities.
@@ -262,7 +283,6 @@ class LocalPolicy:
         https://huggingface.co/docs/transformers/main_classes/text_generation .
         """
         from transformers import (
-            GenerationConfig,
             LogitsProcessor,
             LogitsProcessorList,
             TextStreamer,
@@ -313,20 +333,7 @@ class LocalPolicy:
 
             recorder = Recorder()
             input_ids = self.torch.tensor([prompt_ids], device=self.device, dtype=self.torch.long)
-            defaults = self.model.generation_config
-            eos = defaults.eos_token_id
-            pad = self.tokenizer.pad_token_id
-            if pad is None:
-                pad = eos[0] if isinstance(eos, list) else eos
-            # Construct a fresh config: inherited top-k or repetition penalties
-            # would make the scored policy differ from the sampling distribution.
-            generation_config = GenerationConfig(
-                do_sample=True, temperature=1.0, top_p=1.0, top_k=0,
-                repetition_penalty=1.0, max_new_tokens=max_new_tokens,
-                eos_token_id=eos, pad_token_id=pad,
-                bos_token_id=defaults.bos_token_id, use_cache=True,
-                output_scores=False, return_dict_in_generate=False,
-            )
+            generation_config = self._generation_config(max_new_tokens)
             self._backend.for_inference(self.model)
             try:
                 with self.torch.inference_mode():
@@ -351,6 +358,94 @@ class LocalPolicy:
             self.log_event("generation_complete", **asdict(result))
             return result
 
+    def replay_behavior_logprobs(self, generation: Generation, *, max_new_tokens: int) -> list[float]:
+        """Diagnose cached likelihoods without sampling a new research action.
+
+        Call the same Unsloth generation wrapper with the original token budget
+        so its static cache has the same capacity. Record each saved token's
+        probability before forcing that token. The additional stopping criterion
+        ends at the saved continuation boundary, including non-EOS budget stops.
+        No cache is supplied: Unsloth clears generation caches on wrapper entry
+        and exit. This diagnostic never replaces the original behavior records.
+        https://huggingface.co/docs/transformers/internal/generation_utils
+        """
+        from transformers import (
+            LogitsProcessor,
+            LogitsProcessorList,
+            StoppingCriteria,
+            StoppingCriteriaList,
+        )
+
+        torch = self.torch
+        if not generation.prompt_ids or not generation.completion_ids:
+            raise ValueError("A replay requires both prompt and completion IDs")
+        if len(generation.completion_ids) > max_new_tokens:
+            raise ValueError("Replay token budget cannot be shorter than the saved completion")
+        if len(generation.prompt_ids) + max_new_tokens > self.config.context_tokens:
+            raise ContextLimitError("Replay exceeds the original context capacity")
+        with self.lock:
+            if generation.policy_version != self.version:
+                raise ValueError("Replay requires the original behavior policy version")
+            generation_config = self._generation_config(max_new_tokens)
+            started = time.monotonic()
+            prompt_length = len(generation.prompt_ids)
+            completion = generation.completion_ids
+            values: list[float] = []
+
+            class ReplayProcessor(LogitsProcessor):
+                """Inspect the raw distribution, then force only the saved action."""
+
+                def __call__(self, input_ids: Any, scores: Any) -> Any:
+                    index = input_ids.shape[1] - prompt_length
+                    if index != len(values) or index >= len(completion):
+                        raise RuntimeError("Replay generation steps are not aligned")
+                    token = completion[index]
+                    values.append(float(scores.detach().float().log_softmax(-1)[0, token].item()))
+                    forced = torch.full_like(scores, -torch.inf)
+                    forced[0, token] = 0
+                    return forced
+
+            class ReplayBoundary(StoppingCriteria):
+                """Retain cache capacity while ending at the actual saved length."""
+
+                def __call__(self, input_ids: Any, scores: Any, **kwargs: Any) -> Any:
+                    finished = input_ids.shape[1] >= prompt_length + len(completion)
+                    return torch.full((input_ids.shape[0],), finished, dtype=torch.bool, device=input_ids.device)
+
+            self.log_event("behavior_replay_requested", prompt_ids=generation.prompt_ids,
+                           completion_ids=completion, max_new_tokens=max_new_tokens,
+                           policy_version=self.version, diagnostic_only=True)
+            device = torch.device(self.device)
+            devices = [device.index if device.index is not None else torch.cuda.current_device()] if device.type == "cuda" else []
+            was_training = self.model.training
+            try:
+                self._backend.for_inference(self.model)
+                # Forced multinomial draws still advance RNG; isolate them from
+                # subsequent research sampling, including when replay fails.
+                with torch.random.fork_rng(devices=devices), torch.inference_mode():
+                    ids = torch.tensor([generation.prompt_ids], device=self.device, dtype=torch.long)
+                    output = self.model.generate(
+                        input_ids=ids, attention_mask=torch.ones_like(ids),
+                        generation_config=generation_config,
+                        logits_processor=LogitsProcessorList([ReplayProcessor()]),
+                        stopping_criteria=StoppingCriteriaList([ReplayBoundary()]),
+                    )
+                actual = output[0, prompt_length:].tolist()
+                if actual != completion or len(values) != len(completion):
+                    raise RuntimeError("Replay did not reproduce the exact saved continuation")
+                if not all(math.isfinite(value) for value in values):
+                    raise RuntimeError("Replay produced a nonfinite behavior likelihood")
+            finally:
+                if was_training:
+                    self._backend.for_training(self.model)
+                else:
+                    self._backend.for_inference(self.model)
+            self.log_event("behavior_replay_complete", prompt_ids=generation.prompt_ids,
+                           completion_ids=actual, replayed_logprobs=values,
+                           max_new_tokens=max_new_tokens, policy_version=self.version,
+                           diagnostic_only=True, elapsed_seconds=time.monotonic() - started)
+            return values
+
     def action_logprobs(self, generation: Generation) -> Any:
         """Score only sampled continuation targets, retaining a gradient graph.
 
@@ -370,8 +465,13 @@ class LocalPolicy:
             ids = torch.tensor([generation.prompt_ids + generation.completion_ids],
                                dtype=torch.long, device=self.device)
             count = len(generation.completion_ids)
-            output = self.model(input_ids=ids, attention_mask=torch.ones_like(ids),
-                                use_cache=False, logits_to_keep=count + 1)
+            # Match Unsloth's generation wrapper: BF16 autocast changes matrix
+            # operations even when intermediate tensors were explicitly FP32.
+            # Normalize logits outside autocast; callers also backpropagate outside.
+            # https://docs.pytorch.org/docs/2.14/amp.html
+            with torch.autocast(device_type=torch.device(self.device).type, dtype=torch.bfloat16):
+                output = self.model(input_ids=ids, attention_mask=torch.ones_like(ids),
+                                    use_cache=False, logits_to_keep=count + 1)
             logits = output.logits
             if not isinstance(logits, torch.Tensor) or logits.shape[1] != count + 1:
                 raise RuntimeError("Backend did not honor action-only logits_to_keep")
