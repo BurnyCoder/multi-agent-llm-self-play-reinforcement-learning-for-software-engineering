@@ -269,16 +269,22 @@ class LocalPolicy:
         if not 1 <= max_new_tokens <= self.config.action_tokens:
             raise ValueError(f"max_new_tokens must be between 1 and {self.config.action_tokens}")
         defaults = self.model.generation_config
-        eos = defaults.eos_token_id
+        # The pinned model's base EOS differs from its tokenizer's chat EOS:
+        # https://huggingface.co/Qwen/Qwen3.5-2B/blob/15852e8c16360a2fea060d615a32b45270f8a8fc/config.json
+        # https://huggingface.co/Qwen/Qwen3.5-2B/blob/15852e8c16360a2fea060d615a32b45270f8a8fc/tokenizer_config.json
+        # Stop sampling at either boundary; keep the sampled EOS in the action.
+        eos = list(defaults.eos_token_id) if isinstance(defaults.eos_token_id, (list, tuple)) else [defaults.eos_token_id]
+        eos.append(getattr(self.tokenizer, "eos_token_id", None))
+        eos = list(dict.fromkeys(token for token in eos if token is not None))
         pad = self.tokenizer.pad_token_id
         if pad is None:
-            pad = eos[0] if isinstance(eos, list) else eos
+            pad = eos[0] if eos else None
         # A fresh config prevents inherited top-k or repetition penalties from
         # changing the distribution whose action likelihoods are optimized.
         return GenerationConfig(
             do_sample=True, temperature=1.0, top_p=1.0, top_k=0,
             repetition_penalty=1.0, max_new_tokens=max_new_tokens,
-            eos_token_id=eos, pad_token_id=pad,
+            eos_token_id=eos or None, pad_token_id=pad,
             bos_token_id=defaults.bos_token_id, use_cache=True,
             output_scores=False, return_dict_in_generate=False,
         )
@@ -365,7 +371,8 @@ class LocalPolicy:
                 old_logprobs=old_logprobs, policy_version=self.version,
                 elapsed_seconds=time.monotonic() - started,
             )
-            self.log_event("generation_complete", **asdict(result))
+            self.log_event("generation_complete", **asdict(result),
+                           eos_token_ids=generation_config.eos_token_id or [])
             return result
 
     def replay_behavior_logprobs(self, generation: Generation, *, max_new_tokens: int) -> list[float]:
