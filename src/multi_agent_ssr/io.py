@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import sys
 import threading
 from datetime import UTC, datetime
 from pathlib import Path
@@ -22,6 +23,26 @@ def write_json(path: Path, data: Any) -> None:
     temporary.replace(path)
 
 
+def mirror_terminal(line: str) -> None:
+    """Mirror a saved record without making terminal availability a run dependency.
+
+    Python raises BrokenPipeError when a pipe reader disconnects; the durable
+    file has already received this record. Keep disk errors fatal and do not
+    change SIGPIPE globally, which would affect unrelated library operations.
+    https://docs.python.org/3.12/library/signal.html#note-on-sigpipe
+    """
+    try:
+        try:
+            sys.stdout.write(line + "\n")
+            sys.stdout.flush()
+        except UnicodeEncodeError:
+            sys.stdout.buffer.write((line + "\n").encode("utf-8"))
+            sys.stdout.buffer.flush()
+    except BrokenPipeError:
+        # A live consumer can reconnect later; subsequent records retry mirroring.
+        pass
+
+
 class EventLog:
     """Serialize concurrent root/child events without truncating their content."""
 
@@ -38,5 +59,5 @@ class EventLog:
             with self.path.open("a", encoding="utf-8") as stream:
                 stream.write(line + "\n")
                 stream.flush()
-            print(line, flush=True)
+            mirror_terminal(line)
         return event

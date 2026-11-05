@@ -4,7 +4,7 @@ Train one local language model to introduce and repair bugs in real Python repos
 
 The project adapts [Self-play SWE-RL](https://arxiv.org/html/2512.18552v3), the [CWM training objective](https://arxiv.org/html/2510.02387v1#A3), and [OpenCode's subagent interface](https://github.com/anomalyco/opencode/blob/e761e265d2d5e6ff4a1c0756ab8d8eeee0db501e/packages/core/src/tool/plugin/subagent.ts) to one laptop GPU. It tests whether self-play gains transfer to independently held-out human bugs; [prior work](https://arxiv.org/html/2607.03523v1) shows that synthetic gains alone are insufficient evidence.
 
-**Research status:** implementation and preregistration precede model execution. No improvement or trained-model result is claimed here. Generated results will be linked below after the first bounded pilot. The first delivery executes one pilot, not the larger seed/control study.
+**Research status:** the harness, frozen cohorts and CPU validation are implemented. The initial GPU preflight was interrupted before any saved model generation or checkpoint. A [dated recovery amendment](reports/preregistration.md#recovery-amendment-2026-11-05) preserves that attempt and deducts its compute charge from the recovery allocation. No improvement or trained-model result is claimed. The first delivery executes one pilot, not the larger seed/control study.
 
 <!-- SSR_RESULTS:START -->
 Results have not been measured. The report command will replace this block from saved records.
@@ -53,6 +53,8 @@ uv run --no-sync selfplay report --run runs/pilot
 ```
 
 Preflight verifies real generation, likelihood accounting, maximum-shape backward propagation, an adapter update and checkpoint reload. Its synthetic-check adapter is never the research initialization. The pilot evaluates the unchanged model, collects complete self-play groups, updates the shared adapter, checkpoints, and evaluates the last completed checkpoint. The persisted eight-hour deadline includes preflight and evaluations. Restarting cannot reset it.
+
+The documented restart recovery uses `--config configs/pilot_recovery.toml --run runs/pilot-recovery` for both preflight and pilot, then `selfplay report --run runs/pilot-recovery`. Its separate, reduced deadline and original failure evidence are committed in the recovery manifest. For long runs, redirect the supervisor's stdout/stderr directly to a file and attach a terminal using `tail -f`; closing that display then leaves the worker's output destination intact. Keep the original run directory.
 
 The report command regenerates Markdown, PDF, tables, plots and dashboard data from result files. Raw prompts, complete model outputs, tool events, exact sampled token IDs, behavior log probabilities, policy versions and session-parent identities are timestamped and preserved. Terminal logging is streamed. Observations may be bounded for the model's small context; the underlying log records are not truncated.
 

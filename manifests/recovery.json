@@ -1,0 +1,40 @@
+{
+  "prior_run": "runs/pilot",
+  "prior_status": "preflight_failed",
+  "prior_budget": {
+    "started_epoch": 1793345484.450111,
+    "budget_seconds": 28800,
+    "deadline_epoch": 1793374284.450111,
+    "started_at": "2026-10-30T07:31:24.450125+00:00"
+  },
+  "prior_events": [
+    {
+      "timestamp": "2026-10-30T07:31:26.384084+00:00",
+      "event": "phase_started",
+      "phase": "preflight",
+      "code_commit": "a49d13369ec17c005c844af17b88aa6dff66d86a",
+      "remaining_seconds": 28798.066036701202
+    },
+    {
+      "timestamp": "2026-10-30T07:39:23.513025+00:00",
+      "event": "phase_failed",
+      "phase": "preflight",
+      "error": "BrokenPipeError: [Errno 32] Broken pipe"
+    }
+  ],
+  "prior_attempt_elapsed_seconds": 479.0629141330719,
+  "charged_prior_seconds": 600,
+  "recovery_budget_seconds": 28200,
+  "total_active_allocation_seconds": 28800,
+  "original_deadline_preserved": true,
+  "saved_model_generations": 0,
+  "saved_checkpoints": 0,
+  "saved_evaluations": 0,
+  "original_record_sha256": {
+    "budget.json": "c2efc46ea1aa4ee59e82a08855ddfb74b3bb4811a45b39b625b55d1bed5202e4",
+    "events.jsonl": "0387ecd61f92982dc0ccdd31746f45b8f276885d72b20318c66c45bac00ecc27",
+    "manifest.json": "15d1cfe5cd7cd423c536b23b5e0b60644258ed9e72b99d2c0c1a447d429a0160",
+    "terminal.log": "b529901c78267e59030d5ee1fdd0687a60970ab8b3867a0f40a3cb63200af8fd"
+  },
+  "reason": "User requested recovery after OS restart. Original preflight failed with BrokenPipeError; original wall-clock deadline expired. Offline interval is excluded only by the dated preregistration amendment."
+}
