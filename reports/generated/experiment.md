@@ -1,6 +1,6 @@
 # Experiment: pilot-recovery
 
-Status: **pilot_interrupted**. This report is generated from saved records; absent measurements remain unknown. All tables and diagnostics are derived from the [machine-readable analysis](summary.json). The [committed preregistration](preregistration.md) defines the hypotheses and decision rules.
+Status: **pilot_running**. This report is generated from saved records; absent measurements remain unknown. All tables and diagnostics are derived from the [machine-readable analysis](summary.json). The [committed preregistration](preregistration.md) defines the hypotheses and decision rules.
 
 Recorded failure history (retained after later successful phases):
 
@@ -27,7 +27,7 @@ These are unscored harness diagnostics, excluded from benchmark success and trai
 
 | Bug source | Condition | Planned | Attempted | Resolved / scored | Rate | Unscored recorded | Unrecorded |
 | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| human | base | 32 | 1 | Not evaluated | Not evaluated | 1 | 31 |
+| human | base | 32 | 1 | 0 / 1 | 0.0% | 0 | 31 |
 | human | trained | 32 | 0 | Not evaluated | Not evaluated | 0 | 32 |
 | synthetic | base | 16 | 0 | Not evaluated | Not evaluated | 0 | 16 |
 | synthetic | trained | 16 | 0 | Not evaluated | Not evaluated | 0 | 16 |
@@ -54,23 +54,23 @@ Not evaluated: no tasks have completed outcomes for both conditions.
 
 | Recorded diagnostic | Value |
 | --- | ---: |
-| episodes | 1 |
+| episodes | 2 |
 | child sessions | 0 |
 | episodes with children | 0 |
 | delegation rate | 0 |
 | delegation calls | 0 |
-| generated tokens from research agents (excludes preflight) | 2094 |
-| generation calls by research agents (excludes preflight) | 9 |
+| generated tokens from research agents (excludes preflight) | 3337 |
+| generation calls by research agents (excludes preflight) | 41 |
 | validated artifacts | 0 |
 | invalid artifacts | 0 |
 | invalid artifact rate | Not measured |
 | optimizer steps | 0 |
 | recorded training groups | 0 |
 | peak allocated bytes | 5136889856 |
-| evaluation seconds | 377.29 |
+| evaluation seconds | 360.033 |
 | training group seconds | 0 |
-| pass to pass regressions | Not measured |
-| regression scored records | 0 |
+| pass to pass regressions | 0 |
+| regression scored records | 1 |
 
 These are event-level counts, including incomplete collections and unscored protocol diagnostics; memory can include preflight. Unrecorded planned tasks remain missing coverage.
 
@@ -1857,6 +1857,192 @@ One shared model serves the primary agents and asynchronous children. The pilot 
           "stderr": "",
           "returncode": 0
         }
+      },
+      "software_verification": {
+        "started_at": "2026-11-05T22:58:10.574523+00:00",
+        "commit": "109dfa67740ff9f0260d22be9407d047d90565f7",
+        "status": "passed",
+        "commands": [
+          {
+            "name": "pytest",
+            "command": [
+              ".venv/bin/python",
+              "-m",
+              "pytest",
+              "-q",
+              "--junitxml=runs/verification/unit-tests-recovery.xml"
+            ],
+            "started_at": "2026-11-05T22:58:10.583034+00:00",
+            "log": "runs/verification/pytest-recovery.log",
+            "returncode": 0,
+            "finished_at": "2026-11-05T23:02:39.217604+00:00",
+            "elapsed_seconds": 262.11158513199916,
+            "junit_counts": {
+              "tests": 190,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0,
+              "passed": 190
+            },
+            "junit": "runs/verification/unit-tests-recovery.xml"
+          },
+          {
+            "name": "ruff",
+            "command": [
+              ".venv/bin/python",
+              "-m",
+              "ruff",
+              "check",
+              "src",
+              "tests"
+            ],
+            "started_at": "2026-11-05T23:02:39.234967+00:00",
+            "log": "runs/verification/ruff-recovery.log",
+            "returncode": 0,
+            "finished_at": "2026-11-05T23:02:39.731334+00:00",
+            "elapsed_seconds": 0.4963994410009036
+          }
+        ],
+        "execution": "CPU software verification; no research model loaded",
+        "environment_overrides": {
+          "CUDA_VISIBLE_DEVICES": "",
+          "HF_HUB_OFFLINE": "1",
+          "TRANSFORMERS_OFFLINE": "1",
+          "PYTHONUNBUFFERED": "1"
+        },
+        "finished_at": "2026-11-05T23:02:39.740832+00:00",
+        "ending_commit": "109dfa67740ff9f0260d22be9407d047d90565f7",
+        "full_pipeline_fixture": {
+          "name": "test_complete_game_update_evaluation_and_reporting",
+          "classname": "tests.test_pipeline",
+          "elapsed_seconds": 20.227,
+          "status": "passed"
+        }
+      },
+      "chat_eos_correction_verification": {
+        "timestamp": "2026-11-05T23:06:34.878557+00:00",
+        "code_commit": "109dfa67740ff9f0260d22be9407d047d90565f7",
+        "scope": "First completed real model calls after chat-EOS correction; observations only, no additional model execution",
+        "checks": [
+          {
+            "timestamp": "2026-11-05T23:05:43.562+00:00",
+            "generated_tokens": 63,
+            "eos_token_ids": [
+              248044,
+              248046
+            ],
+            "eos_positions": [
+              62
+            ],
+            "no_tokens_after_stop": true,
+            "aligned_finite_behavior_probabilities": true
+          },
+          {
+            "timestamp": "2026-11-05T23:05:51.579+00:00",
+            "generated_tokens": 46,
+            "eos_token_ids": [
+              248044,
+              248046
+            ],
+            "eos_positions": [
+              45
+            ],
+            "no_tokens_after_stop": true,
+            "aligned_finite_behavior_probabilities": true
+          },
+          {
+            "timestamp": "2026-11-05T23:05:56.344+00:00",
+            "generated_tokens": 29,
+            "eos_token_ids": [
+              248044,
+              248046
+            ],
+            "eos_positions": [
+              28
+            ],
+            "no_tokens_after_stop": true,
+            "aligned_finite_behavior_probabilities": true
+          },
+          {
+            "timestamp": "2026-11-05T23:06:00.717+00:00",
+            "generated_tokens": 30,
+            "eos_token_ids": [
+              248044,
+              248046
+            ],
+            "eos_positions": [
+              29
+            ],
+            "no_tokens_after_stop": true,
+            "aligned_finite_behavior_probabilities": true
+          },
+          {
+            "timestamp": "2026-11-05T23:06:04.540+00:00",
+            "generated_tokens": 27,
+            "eos_token_ids": [
+              248044,
+              248046
+            ],
+            "eos_positions": [
+              26
+            ],
+            "no_tokens_after_stop": true,
+            "aligned_finite_behavior_probabilities": true
+          },
+          {
+            "timestamp": "2026-11-05T23:06:13.059+00:00",
+            "generated_tokens": 61,
+            "eos_token_ids": [
+              248044,
+              248046
+            ],
+            "eos_positions": [
+              60
+            ],
+            "no_tokens_after_stop": true,
+            "aligned_finite_behavior_probabilities": true
+          },
+          {
+            "timestamp": "2026-11-05T23:06:21.948+00:00",
+            "generated_tokens": 55,
+            "eos_token_ids": [
+              248044,
+              248046
+            ],
+            "eos_positions": [
+              54
+            ],
+            "no_tokens_after_stop": true,
+            "aligned_finite_behavior_probabilities": true
+          },
+          {
+            "timestamp": "2026-11-05T23:06:28.742+00:00",
+            "generated_tokens": 45,
+            "eos_token_ids": [
+              248044,
+              248046
+            ],
+            "eos_positions": [
+              44
+            ],
+            "no_tokens_after_stop": true,
+            "aligned_finite_behavior_probabilities": true
+          },
+          {
+            "timestamp": "2026-11-05T23:06:33.201+00:00",
+            "generated_tokens": 30,
+            "eos_token_ids": [
+              248044,
+              248046
+            ],
+            "eos_positions": [
+              29
+            ],
+            "no_tokens_after_stop": true,
+            "aligned_finite_behavior_probabilities": true
+          }
+        ],
+        "all_passed": true
       }
     },
     "kernel_review": {
@@ -2033,7 +2219,7 @@ One shared model serves the primary agents and asynchronous children. The pilot 
   "hypothesis": "Trained team improves held-out human bug resolution over frozen initialization",
   "phase_code_commits": {
     "preflight": "05d7f357458d9eee1ec64637ff0277464839be06",
-    "pilot": "e49e7442f0243efcbd00879327525c4f04639a0b"
+    "pilot": "109dfa67740ff9f0260d22be9407d047d90565f7"
   }
 }
 ```
