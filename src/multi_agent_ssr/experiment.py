@@ -88,6 +88,8 @@ def execute(phase: str, config_path: Path, run_dir: Path) -> None:
             raise ValueError("Resume requires the original run configuration and model revision")
     else:
         write_json(manifest_path, {"created_at": utc_now(), "code_commit": commit, "config": config,
+            "recovery": json.loads(Path(settings["recovery_evidence"]).read_text())
+                        if settings.get("recovery_evidence") else None,
             "model": asdict(model_config), "hardware": subprocess.run(
                 ["nvidia-smi", "--query-gpu=name,memory.total,compute_cap", "--format=csv"],
                 capture_output=True, text=True).stdout,
