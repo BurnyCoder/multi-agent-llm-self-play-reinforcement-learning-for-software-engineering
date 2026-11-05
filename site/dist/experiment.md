@@ -1,6 +1,6 @@
 # Experiment: pilot-recovery
 
-Status: **pilot_running**. This report is generated from saved records; absent measurements remain unknown. All tables and diagnostics are derived from the [machine-readable analysis](summary.json). The [committed preregistration](preregistration.md) defines the hypotheses and decision rules.
+Status: **pilot_interrupted**. This report is generated from saved records; absent measurements remain unknown. All tables and diagnostics are derived from the [machine-readable analysis](summary.json). The [committed preregistration](preregistration.md) defines the hypotheses and decision rules.
 
 Recorded failure history (retained after later successful phases):
 
@@ -17,11 +17,17 @@ Check at 2026-11-05T21:58:00.067+00:00: 101 sampled action tokens; maximum cache
 
 Sources: [CWM Appendix C](https://arxiv.org/html/2510.02387v1#A3) and [Qwen numerical analysis](https://github.com/huggingface/transformers/issues/46190).
 
+## Unscored protocol diagnostics
+
+At 2026-11-05T22:49:05.240382+00:00, episode 97baaad7b45b4308bd6fed5b9fdcc085, task pytest-dev__pytest-5631, code e49e7442f0243efcbd00879327525c4f04639a0b: chat_eos_mismatch; status interrupted_unscored. Recorded model calls: 9; generated tokens: 2094; calls continuing after chat EOS: 9. Source-model EOS IDs: [248044]; tokenizer EOS ID: 248046. Stopped at 2026-11-05T22:47:26.520168+00:00. Recorded reason: Pinned model text config stops only on endoftext; tokenizer ends assistant turns with im_end. Model generated im_end then continued fabricating user/tool observations. No completed benchmark outcome or research update preceded correction. Incomplete streaming call, if any, remains in model.jsonl but lacks a completed action record.. Correction: Stop on the deduplicated union of model and tokenizer EOS IDs. Retain stop token and its behavior log probability. No post-hoc truncation of saved trajectories; retry same task from fresh base initialization. Both evaluation conditions and all training agents use the corrected stop contract..
+
+These are unscored harness diagnostics, excluded from benchmark success and training. Their recorded calls and tokens remain visible as physical model usage; action-event counters retain the corresponding diagnostic events without adding these summaries again. Model-authored role or observation text is generated text; only recorded harness tool events establish actual tool execution.
+
 ## Evaluation
 
 | Bug source | Condition | Planned | Attempted | Resolved / scored | Rate | Unscored recorded | Unrecorded |
 | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| human | base | 32 | 0 | Not evaluated | Not evaluated | 0 | 32 |
+| human | base | 32 | 1 | Not evaluated | Not evaluated | 1 | 31 |
 | human | trained | 32 | 0 | Not evaluated | Not evaluated | 0 | 32 |
 | synthetic | base | 16 | 0 | Not evaluated | Not evaluated | 0 | 16 |
 | synthetic | trained | 16 | 0 | Not evaluated | Not evaluated | 0 | 16 |
@@ -48,25 +54,25 @@ Not evaluated: no tasks have completed outcomes for both conditions.
 
 | Recorded diagnostic | Value |
 | --- | ---: |
-| episodes | 0 |
+| episodes | 1 |
 | child sessions | 0 |
 | episodes with children | 0 |
-| delegation rate | Not measured |
+| delegation rate | 0 |
 | delegation calls | 0 |
-| generated tokens from research agents (excludes preflight) | 0 |
-| generation calls by research agents (excludes preflight) | 0 |
+| generated tokens from research agents (excludes preflight) | 2094 |
+| generation calls by research agents (excludes preflight) | 9 |
 | validated artifacts | 0 |
 | invalid artifacts | 0 |
 | invalid artifact rate | Not measured |
 | optimizer steps | 0 |
 | recorded training groups | 0 |
 | peak allocated bytes | 5136889856 |
-| evaluation seconds | 0 |
+| evaluation seconds | 377.29 |
 | training group seconds | 0 |
 | pass to pass regressions | Not measured |
 | regression scored records | 0 |
 
-These are event-level counts, including incomplete collections; memory can include preflight. Unrecorded planned tasks remain missing coverage.
+These are event-level counts, including incomplete collections and unscored protocol diagnostics; memory can include preflight. Unrecorded planned tasks remain missing coverage.
 
 Invalidity reasons: `{}`. Untrained-group reasons: `{}`.
 
@@ -1133,10 +1139,288 @@ One shared model serves the primary agents and asynchronous children. The pilot 
       "finite": true
     }
   ],
+  "protocol_diagnostics": [
+    {
+      "timestamp": "2026-11-05T22:49:05.240382+00:00",
+      "kind": "chat_eos_mismatch",
+      "episode_id": "97baaad7b45b4308bd6fed5b9fdcc085",
+      "task_id": "pytest-dev__pytest-5631",
+      "code_commit": "e49e7442f0243efcbd00879327525c4f04639a0b",
+      "source_model_eos_ids": [
+        248044
+      ],
+      "tokenizer_eos_id": 248046,
+      "observed_calls": 9,
+      "generated_tokens": 2094,
+      "calls_continuing_after_chat_eos": 9,
+      "examples": [
+        {
+          "call_id": "c7b4a76f25844162976aef147a927ca0",
+          "first_chat_eos_index": 62,
+          "length": 256,
+          "tokens_after_chat_eos": 193
+        },
+        {
+          "call_id": "98a8f0d7e2064172a92c6cb6489bed8a",
+          "first_chat_eos_index": 22,
+          "length": 256,
+          "tokens_after_chat_eos": 233
+        },
+        {
+          "call_id": "163ddbd334af43d5b8832decb2379614",
+          "first_chat_eos_index": 69,
+          "length": 256,
+          "tokens_after_chat_eos": 186
+        },
+        {
+          "call_id": "2814c6745aff45bdb4559cf0f4ee5b1e",
+          "first_chat_eos_index": 32,
+          "length": 256,
+          "tokens_after_chat_eos": 223
+        },
+        {
+          "call_id": "5b9c291acdd14517bccfdc85b0ecd5ff",
+          "first_chat_eos_index": 43,
+          "length": 46,
+          "tokens_after_chat_eos": 2
+        },
+        {
+          "call_id": "e497642cae2f439c881f281c2e9cbd3a",
+          "first_chat_eos_index": 30,
+          "length": 256,
+          "tokens_after_chat_eos": 225
+        },
+        {
+          "call_id": "d1db2d4988dc48f3aa886193f61cab4a",
+          "first_chat_eos_index": 50,
+          "length": 256,
+          "tokens_after_chat_eos": 205
+        },
+        {
+          "call_id": "639f9a26e4da4dda9b4f8b18eaa47bcb",
+          "first_chat_eos_index": 86,
+          "length": 256,
+          "tokens_after_chat_eos": 169
+        },
+        {
+          "call_id": "e1b81c13c6624f92a189d16f0ceec762",
+          "first_chat_eos_index": 31,
+          "length": 256,
+          "tokens_after_chat_eos": 224
+        }
+      ],
+      "status": "interrupted_unscored",
+      "stop_time": "2026-11-05T22:47:26.520168+00:00",
+      "reason": "Pinned model text config stops only on endoftext; tokenizer ends assistant turns with im_end. Model generated im_end then continued fabricating user/tool observations. No completed benchmark outcome or research update preceded correction. Incomplete streaming call, if any, remains in model.jsonl but lacks a completed action record.",
+      "correction": "Stop on the deduplicated union of model and tokenizer EOS IDs. Retain stop token and its behavior log probability. No post-hoc truncation of saved trajectories; retry same task from fresh base initialization. Both evaluation conditions and all training agents use the corrected stop contract.",
+      "source_artifact_sha256": {
+        "events.jsonl": "98cf07e0363be45119dbe50bad2c65a3a43731dec47fd1d01a6eb21f64e606c6",
+        "model.jsonl": "b140c305eef0dd9a5d76f63a33f238dc8b862c615d3d788f982f61068db04d6a"
+      }
+    }
+  ],
   "preparation": {
     "preparation": {
       "human_environments_ready": 32,
       "human_environments_planned": 32,
+      "docker_images_checked": 65,
+      "dependency_image_ids": [
+        "sha256:b8fef3d5548b4335261bfd34df24fc30b8645ee8c0258ba13d46e96ccd21ebba"
+      ],
+      "human_image_identities": [
+        {
+          "instance_id": "pytest-dev__pytest-5631",
+          "base_commit": "cb828ebe70b4fa35cd5f9a7ee024272237eab351",
+          "image_digest": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-5631@sha256:c76510e12a1765211e064f6e8de09e51ac0f7839f60d72305b374e004308b6a1",
+          "agent_image": "sha256:d406f85fdcd9d47f4620ece233023a1c35d58923852e1d3224cf893a776a1089"
+        },
+        {
+          "instance_id": "pylint-dev__pylint-7080",
+          "base_commit": "3c5eca2ded3dd2b59ebaf23eb289453b5d2930f0",
+          "image_digest": "swebench/sweb.eval.x86_64.pylint-dev_1776_pylint-7080@sha256:3389f0d1319ca611d04a209fc30990c131e0bae9acfeb2163938c75ad23479fe",
+          "agent_image": "sha256:42f05ab793962ba47174f06bbb45d4edff0f7195926e1894f73fc5f5a719d786"
+        },
+        {
+          "instance_id": "pylint-dev__pylint-6386",
+          "base_commit": "754b487f4d892e3d4872b6fc7468a71db4e31c13",
+          "image_digest": "swebench/sweb.eval.x86_64.pylint-dev_1776_pylint-6386@sha256:fda08a7a0a711af33163d53ed09b8401d84b7c9bb76b31e25a81357c98e6aeed",
+          "agent_image": "sha256:3f40d8a8838da4932cde8ef8332795cea4bf8aadf183640bb5e0873dfed10b96"
+        },
+        {
+          "instance_id": "pytest-dev__pytest-7982",
+          "base_commit": "a7e38c5c61928033a2dc1915cbee8caa8544a4d0",
+          "image_digest": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-7982@sha256:1b6cd660102de29c36d28954eb2f6158b93d11b855a9bbfc577a55eb67a8f375",
+          "agent_image": "sha256:5997ab00e184c436b0d7cc20c9735094e2a28e7af71b03f0196ef104e336bfe4"
+        },
+        {
+          "instance_id": "pylint-dev__pylint-4970",
+          "base_commit": "40cc2ffd7887959157aaf469e09585ec2be7f528",
+          "image_digest": "swebench/sweb.eval.x86_64.pylint-dev_1776_pylint-4970@sha256:5d331d487e49480c4098366cd094aae9dd2e8d365f0412174d5e1a2e9a3d5893",
+          "agent_image": "sha256:138f9998b316914dc6c300eae39e3e44373523c5c2110d2abf51c6e254ae82ed"
+        },
+        {
+          "instance_id": "psf__requests-2931",
+          "base_commit": "5f7a3a74aab1625c2bb65f643197ee885e3da576",
+          "image_digest": "swebench/sweb.eval.x86_64.psf_1776_requests-2931@sha256:705258c23c73d25bc78ed6fa4b14836078d848a64ab9c3ea3032d1d523d7cca4",
+          "agent_image": "sha256:18f7dadce3c6a98a59574576943e5e4d675adbb47095be77c31d9b24443a540e"
+        },
+        {
+          "instance_id": "pytest-dev__pytest-7432",
+          "base_commit": "e6e300e729dd33956e5448d8be9a0b1540b4e53a",
+          "image_digest": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-7432@sha256:5ec7065f9477542610ea5137247539d8f1c9762112803b0690d5ccb2e64d2f07",
+          "agent_image": "sha256:127f8edee0c5a2202545ff41515e2ccba56e99a880e1a1898cc04bb39b56d4ad"
+        },
+        {
+          "instance_id": "pytest-dev__pytest-5809",
+          "base_commit": "8aba863a634f40560e25055d179220f0eefabe9a",
+          "image_digest": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-5809@sha256:0185f5d9efb9cf1364122a7eff7fc5f02227698d01f7e4f2d593917816df42d3",
+          "agent_image": "sha256:3b5eb007834e00896ff314d01275171b10a7d7ad559aadc63a7babd6d65b7e44"
+        },
+        {
+          "instance_id": "pytest-dev__pytest-7521",
+          "base_commit": "41d211c24a6781843b174379d6d6538f5c17adb9",
+          "image_digest": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-7521@sha256:570a5872f1a0250ef52d735285f64dff43ce02ba79f7750e7c4dd9de9c7ebcb5",
+          "agent_image": "sha256:f57404d0415b432e189c731cb34e55994946622c3dd2ace71225972170bda707"
+        },
+        {
+          "instance_id": "pylint-dev__pylint-6903",
+          "base_commit": "ca80f03a43bc39e4cc2c67dc99817b3c9f13b8a6",
+          "image_digest": "swebench/sweb.eval.x86_64.pylint-dev_1776_pylint-6903@sha256:bad80b1c20eeb5d49a6e82dc485ee40fbd67b91df47b56740e1be5471b678f5b",
+          "agent_image": "sha256:17025e0e41f81fd7fb06d46dd965e7de101241e76802b72b95819aa6a75adb2f"
+        },
+        {
+          "instance_id": "pytest-dev__pytest-5262",
+          "base_commit": "58e6a09db49f34886ff13f3b7520dd0bcd7063cd",
+          "image_digest": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-5262@sha256:0d6480e4b7519e81cdc8359fedfeb5389e1949f31a8bc9da7869b0d66a7ce2a4",
+          "agent_image": "sha256:c2ad1e9ec0b5220690fd36fdeac2ad8c971079789f6ddb44216725e99e352f3c"
+        },
+        {
+          "instance_id": "pytest-dev__pytest-10356",
+          "base_commit": "3c1534944cbd34e8a41bc9e76818018fadefc9a1",
+          "image_digest": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-10356@sha256:363458d4698f5d985f6476d189d3f1cf902253cd9518705fd395516cd30138da",
+          "agent_image": "sha256:e88592c98412f6548b2f909deb9ef6612325373f807a281e16dc2b1c6e4a941a"
+        },
+        {
+          "instance_id": "pylint-dev__pylint-4661",
+          "base_commit": "1d1619ef913b99b06647d2030bddff4800abdf63",
+          "image_digest": "swebench/sweb.eval.x86_64.pylint-dev_1776_pylint-4661@sha256:92b83a19cbeaac3d64a0efab6cd73011c68f48e1c720b1b64f75b8bb436bf0ee",
+          "agent_image": "sha256:bd7b99132346490652de2ddaeaeb22f1b390941e8d718e24518b17f2cffde58c"
+        },
+        {
+          "instance_id": "pytest-dev__pytest-10051",
+          "base_commit": "aa55975c7d3f6c9f6d7f68accc41bb7cadf0eb9a",
+          "image_digest": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-10051@sha256:e38365e835d4ba57f3e7331778894f51ac20bf6c5893827065da8657525e123f",
+          "agent_image": "sha256:76c39118190016957db302fac61202608fb175a265ef7a27164c6f2a0cacf8c6"
+        },
+        {
+          "instance_id": "psf__requests-1142",
+          "base_commit": "22623bd8c265b78b161542663ee980738441c307",
+          "image_digest": "swebench/sweb.eval.x86_64.psf_1776_requests-1142@sha256:b2733e57feb4cfaeac24ab5ec496d4cb89a37db53bd0ca72eaededdb2ce19d1c",
+          "agent_image": "sha256:a50a6ec8ae26241cbeab3375f8eebea99301b33366be8562a00feb09fc67ff05"
+        },
+        {
+          "instance_id": "psf__requests-1921",
+          "base_commit": "3c88e520da24ae6f736929a750876e7654accc3d",
+          "image_digest": "swebench/sweb.eval.x86_64.psf_1776_requests-1921@sha256:2ee0a4c706f04d2926a1622ec51b53d4ce6010b80d3ee10d414ea2a276c26cc9",
+          "agent_image": "sha256:21c979a65a84531d9fc458de9501f1295691c77eaebf42aa8112e603ab06e51c"
+        },
+        {
+          "instance_id": "pytest-dev__pytest-6202",
+          "base_commit": "3a668ea6ff24b0c8f00498c3144c63bac561d925",
+          "image_digest": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-6202@sha256:d2d9f0bf1ed8a5f50799291be86144768c3f7ad9400482d6dab7f05830f3e226",
+          "agent_image": "sha256:8bbea3f8f069bb15226689f301cf9f3f53211347208ee3ddb0038ef59d86a568"
+        },
+        {
+          "instance_id": "pylint-dev__pylint-4551",
+          "base_commit": "99589b08de8c5a2c6cc61e13a37420a868c80599",
+          "image_digest": "swebench/sweb.eval.x86_64.pylint-dev_1776_pylint-4551@sha256:910cb070fc5e1c02b715b561c2f5783bb5f5e5935d9a169b4c91bdcfdd015f52",
+          "agent_image": "sha256:b1037a1587e04f1ea24c35a222b242078251d54c34329fc83afed0ce5ed6ee00"
+        },
+        {
+          "instance_id": "psf__requests-1766",
+          "base_commit": "847735553aeda6e6633f2b32e14ba14ba86887a4",
+          "image_digest": "swebench/sweb.eval.x86_64.psf_1776_requests-1766@sha256:0618949b48408350dfae74d27e47ff9df8192fbf03248aa4f10650e0a36f52eb",
+          "agent_image": "sha256:3c6a48b96199aefa49249e1f748e7cab5789e3d38216723747fe5a750c27f34f"
+        },
+        {
+          "instance_id": "psf__requests-5414",
+          "base_commit": "39d0fdd9096f7dceccbc8f82e1eda7dd64717a8e",
+          "image_digest": "swebench/sweb.eval.x86_64.psf_1776_requests-5414@sha256:71c78211f16803c111ed1807ded20f8defd5f6917fb958ace4e076d5ea7d8b10",
+          "agent_image": "sha256:0b92552bbe43e74626f6f5ed8e66c9963d5a9dfef50847abc786c283d72f09db"
+        },
+        {
+          "instance_id": "pytest-dev__pytest-7205",
+          "base_commit": "5e7f1ab4bf58e473e5d7f878eb2b499d7deabd29",
+          "image_digest": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-7205@sha256:1c6124cd5254db8831df455575eff2795b0cbeb849d10846388e30e00870e495",
+          "agent_image": "sha256:31a2c68e280f2a284dfae7121a5a7b77888d39a184a0ff818842d976da5b60e3"
+        },
+        {
+          "instance_id": "pylint-dev__pylint-6528",
+          "base_commit": "273a8b25620467c1e5686aa8d2a1dbb8c02c78d0",
+          "image_digest": "swebench/sweb.eval.x86_64.pylint-dev_1776_pylint-6528@sha256:47e14a7e2b6d5f6d24ab4632ac11bd1493ab57030a8c6becdc3083c7574d0604",
+          "agent_image": "sha256:201f3399708f7382282c967d09e6f3c45ff8a6fb5fd26069b1f634729c4ee065"
+        },
+        {
+          "instance_id": "pytest-dev__pytest-5787",
+          "base_commit": "955e54221008aba577ecbaefa15679f6777d3bf8",
+          "image_digest": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-5787@sha256:48c6ca4406eb36dae43e08dc2137b750239b8ad8f9ccdf2924e8fc2177fca241",
+          "agent_image": "sha256:65808333dd7df3da499391d928884f67fb7b2df787088b7938e7e47e09d2a293"
+        },
+        {
+          "instance_id": "psf__requests-6028",
+          "base_commit": "0192aac24123735b3eaf9b08df46429bb770c283",
+          "image_digest": "swebench/sweb.eval.x86_64.psf_1776_requests-6028@sha256:639088346355ea7076bc6faf2eadb23b1e1f1ed4f34b291e843061b2fc87cbe2",
+          "agent_image": "sha256:797792e3412afb1615a293149224944bdb651f83efca7ca9600febdcf7fbf6f4"
+        },
+        {
+          "instance_id": "psf__requests-2317",
+          "base_commit": "091991be0da19de9108dbe5e3752917fea3d7fdc",
+          "image_digest": "swebench/sweb.eval.x86_64.psf_1776_requests-2317@sha256:c6b5c8846507b5e48e307decca28dbdfa4f5ef17070c1087aacde765e8c4b178",
+          "agent_image": "sha256:852f1bf1fd9c9f39b894be755d998700b5a86f24a66d8b8b5a9fa1679364f743"
+        },
+        {
+          "instance_id": "pallets__flask-5014",
+          "base_commit": "7ee9ceb71e868944a46e1ff00b506772a53a4f1d",
+          "image_digest": "swebench/sweb.eval.x86_64.pallets_1776_flask-5014@sha256:bde4fbdafa36141d4396944da88ec37aabdef612ed36920090675bccd0ca5d72",
+          "agent_image": "sha256:ff8bdd9e231bc027882dd79725c953cf1e504c0fbba44071a9a3ba2304294fe7"
+        },
+        {
+          "instance_id": "pytest-dev__pytest-7490",
+          "base_commit": "7f7a36478abe7dd1fa993b115d22606aa0e35e88",
+          "image_digest": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-7490@sha256:9e10d2e75d41e6f6325949d19d6a8a033d1f5d5fd6d4ce53ad483eb8951a417f",
+          "agent_image": "sha256:88f71d141197763a8090fc2c97cd3de47d4cfa78446e43a7acd9bb10c430452c"
+        },
+        {
+          "instance_id": "pytest-dev__pytest-7571",
+          "base_commit": "422685d0bdc110547535036c1ff398b5e1c44145",
+          "image_digest": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-7571@sha256:0a1f84cd32e2c8332f90bfad6f3fd16304f25c01384adb4ffd4f7250316bd60a",
+          "agent_image": "sha256:abb5e916fe57001a48e067f77918385e314aa9b8c93e4a1acf1fefc63b97bee0"
+        },
+        {
+          "instance_id": "pytest-dev__pytest-6197",
+          "base_commit": "e856638ba086fcf5bebf1bebea32d5cf78de87b4",
+          "image_digest": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-6197@sha256:5dbfbcf23210a5a0ccdc4dbf1a55c894255b28fe6c56c13c9a4724d6c13bab4e",
+          "agent_image": "sha256:d50adef9d8fbc2c83d3d4cd52aedd09c8b7c1ee4864ea235f68b2a2b2a4a032b"
+        },
+        {
+          "instance_id": "pylint-dev__pylint-8898",
+          "base_commit": "1f8c4d9eb185c16a2c1d881c054f015e1c2eb334",
+          "image_digest": "swebench/sweb.eval.x86_64.pylint-dev_1776_pylint-8898@sha256:a78e6034f627c1ae69c67b5a25ae5420192afb7279a4fd032a74095752e707d7",
+          "agent_image": "sha256:1f73efb6e45f422cd3b2d972e454bddba7b81696c64a5aad90294e03c1d6374b"
+        },
+        {
+          "instance_id": "psf__requests-1724",
+          "base_commit": "1ba83c47ce7b177efe90d5f51f7760680f72eda0",
+          "image_digest": "swebench/sweb.eval.x86_64.psf_1776_requests-1724@sha256:e369005d38858ea90f843d853cb8427a2681b7513b846d12a34cb8d52c00763e",
+          "agent_image": "sha256:5730e3a9d7d4c3437ed165b30e60a72fa1b855a6724a2f0c4492b1a211e68219"
+        },
+        {
+          "instance_id": "pytest-dev__pytest-7236",
+          "base_commit": "c98bc4cd3d687fe9b392d8eecd905627191d4f06",
+          "image_digest": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-7236@sha256:54f89a5c1611eac42d3d7b7c03e17a43e9e70c604cd8439f45bf68102fc3ff09",
+          "agent_image": "sha256:c162e82051e95f2f65ce7a580637449caf2c140b81feb88afb0d6414e5e7e570"
+        }
+      ],
       "synthetic_validated_tasks": 16,
       "synthetic_distinct_functions": 16,
       "synthetic_clean_test_counts": [
@@ -1268,7 +1552,312 @@ One shared model serves the primary agents and asynchronous children. The pilot 
       "runtime_backend_messages": [
         "Unsloth: xformers is installed but cannot load with torch 2.14.1+cu130 (it was built for 2.10.0+cu128), so PyTorch attention is used instead.",
         "`causal_conv1d_fn` is falling back to its reference PyTorch implementation because `causal_conv1d` is not installed. This is correct but much slower; install `causal_conv1d` for the optimized kernel."
-      ]
+      ],
+      "restored_image_reconciliation": {
+        "timestamp": "2026-11-05T22:29:28.101454+00:00",
+        "method": "Reuse existing task tags after verifying pinned base layers, expected image configuration, and empty original checkout; no pulls or downloads",
+        "tasks": [
+          {
+            "instance_id": "pytest-dev__pytest-5631",
+            "pinned_oracle_digest": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-5631@sha256:c76510e12a1765211e064f6e8de09e51ac0f7839f60d72305b374e004308b6a1",
+            "old_agent_image": "sha256:ed7f361fcb531e59912f03acc531333cde78537b6f1bd3a33ca1b32e192f9bfc",
+            "verified_agent_image": "sha256:d406f85fdcd9d47f4620ece233023a1c35d58923852e1d3224cf893a776a1089",
+            "pinned_parent_layers_match": true,
+            "original_checkout_absent": true,
+            "python_version": "Python 3.9.20"
+          },
+          {
+            "instance_id": "pylint-dev__pylint-7080",
+            "pinned_oracle_digest": "swebench/sweb.eval.x86_64.pylint-dev_1776_pylint-7080@sha256:3389f0d1319ca611d04a209fc30990c131e0bae9acfeb2163938c75ad23479fe",
+            "old_agent_image": "sha256:9d1e98f8f92ee4a17df8cc115fb01bc56ee8b5d9ecd40ff100853b3e5c1bab71",
+            "verified_agent_image": "sha256:42f05ab793962ba47174f06bbb45d4edff0f7195926e1894f73fc5f5a719d786",
+            "pinned_parent_layers_match": true,
+            "original_checkout_absent": true,
+            "python_version": "Python 3.9.20"
+          },
+          {
+            "instance_id": "pylint-dev__pylint-6386",
+            "pinned_oracle_digest": "swebench/sweb.eval.x86_64.pylint-dev_1776_pylint-6386@sha256:fda08a7a0a711af33163d53ed09b8401d84b7c9bb76b31e25a81357c98e6aeed",
+            "old_agent_image": "sha256:fc98089c98693682fbd33ca8a51a8db1398663765abc57ccd22f4933bab853d1",
+            "verified_agent_image": "sha256:3f40d8a8838da4932cde8ef8332795cea4bf8aadf183640bb5e0873dfed10b96",
+            "pinned_parent_layers_match": true,
+            "original_checkout_absent": true,
+            "python_version": "Python 3.9.20"
+          },
+          {
+            "instance_id": "pytest-dev__pytest-7982",
+            "pinned_oracle_digest": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-7982@sha256:1b6cd660102de29c36d28954eb2f6158b93d11b855a9bbfc577a55eb67a8f375",
+            "old_agent_image": "sha256:819c73018ffa5cc45c7f3013dcea5334019ed1cb5810b0331735e036dac9cc1d",
+            "verified_agent_image": "sha256:5997ab00e184c436b0d7cc20c9735094e2a28e7af71b03f0196ef104e336bfe4",
+            "pinned_parent_layers_match": true,
+            "original_checkout_absent": true,
+            "python_version": "Python 3.9.20"
+          },
+          {
+            "instance_id": "pylint-dev__pylint-4970",
+            "pinned_oracle_digest": "swebench/sweb.eval.x86_64.pylint-dev_1776_pylint-4970@sha256:5d331d487e49480c4098366cd094aae9dd2e8d365f0412174d5e1a2e9a3d5893",
+            "old_agent_image": "sha256:86b86d0a433d707f5e20d0030f4f3e58abba31290a9ac04b668ce23c6749ef2d",
+            "verified_agent_image": "sha256:138f9998b316914dc6c300eae39e3e44373523c5c2110d2abf51c6e254ae82ed",
+            "pinned_parent_layers_match": true,
+            "original_checkout_absent": true,
+            "python_version": "Python 3.9.20"
+          },
+          {
+            "instance_id": "psf__requests-2931",
+            "pinned_oracle_digest": "swebench/sweb.eval.x86_64.psf_1776_requests-2931@sha256:705258c23c73d25bc78ed6fa4b14836078d848a64ab9c3ea3032d1d523d7cca4",
+            "old_agent_image": "sha256:bd14c838c81baf3ac54ffe6af76169e744db13d0281a88e34c57706853ee3bcb",
+            "verified_agent_image": "sha256:18f7dadce3c6a98a59574576943e5e4d675adbb47095be77c31d9b24443a540e",
+            "pinned_parent_layers_match": true,
+            "original_checkout_absent": true,
+            "python_version": "Python 3.9.20"
+          },
+          {
+            "instance_id": "pytest-dev__pytest-7432",
+            "pinned_oracle_digest": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-7432@sha256:5ec7065f9477542610ea5137247539d8f1c9762112803b0690d5ccb2e64d2f07",
+            "old_agent_image": "sha256:5eab96b75b3cb3f7e563ae67c2db4d6f904d28ec70dfa1b8919ed331155303bd",
+            "verified_agent_image": "sha256:127f8edee0c5a2202545ff41515e2ccba56e99a880e1a1898cc04bb39b56d4ad",
+            "pinned_parent_layers_match": true,
+            "original_checkout_absent": true,
+            "python_version": "Python 3.9.20"
+          },
+          {
+            "instance_id": "pytest-dev__pytest-5809",
+            "pinned_oracle_digest": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-5809@sha256:0185f5d9efb9cf1364122a7eff7fc5f02227698d01f7e4f2d593917816df42d3",
+            "old_agent_image": "sha256:f67a7810c44848172bceda49f909c0d79d3b13b174d4455d7ad58f99fec75c58",
+            "verified_agent_image": "sha256:3b5eb007834e00896ff314d01275171b10a7d7ad559aadc63a7babd6d65b7e44",
+            "pinned_parent_layers_match": true,
+            "original_checkout_absent": true,
+            "python_version": "Python 3.9.20"
+          },
+          {
+            "instance_id": "pytest-dev__pytest-7521",
+            "pinned_oracle_digest": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-7521@sha256:570a5872f1a0250ef52d735285f64dff43ce02ba79f7750e7c4dd9de9c7ebcb5",
+            "old_agent_image": "sha256:292be5367ac512e9be189c75d44daffbba8ceed35263289db54e01e0c98e9846",
+            "verified_agent_image": "sha256:f57404d0415b432e189c731cb34e55994946622c3dd2ace71225972170bda707",
+            "pinned_parent_layers_match": true,
+            "original_checkout_absent": true,
+            "python_version": "Python 3.9.20"
+          },
+          {
+            "instance_id": "pylint-dev__pylint-6903",
+            "pinned_oracle_digest": "swebench/sweb.eval.x86_64.pylint-dev_1776_pylint-6903@sha256:bad80b1c20eeb5d49a6e82dc485ee40fbd67b91df47b56740e1be5471b678f5b",
+            "old_agent_image": "sha256:a06d0ee01d3b891ef8d47f365494221bde915167d977cdb71ef43e39ce41267e",
+            "verified_agent_image": "sha256:17025e0e41f81fd7fb06d46dd965e7de101241e76802b72b95819aa6a75adb2f",
+            "pinned_parent_layers_match": true,
+            "original_checkout_absent": true,
+            "python_version": "Python 3.9.20"
+          },
+          {
+            "instance_id": "pytest-dev__pytest-5262",
+            "pinned_oracle_digest": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-5262@sha256:0d6480e4b7519e81cdc8359fedfeb5389e1949f31a8bc9da7869b0d66a7ce2a4",
+            "old_agent_image": "sha256:0053ada89bd083623e0bbbdd85486fa8f76d98ba45f3d30961394d919c42ba7f",
+            "verified_agent_image": "sha256:c2ad1e9ec0b5220690fd36fdeac2ad8c971079789f6ddb44216725e99e352f3c",
+            "pinned_parent_layers_match": true,
+            "original_checkout_absent": true,
+            "python_version": "Python 3.9.20"
+          },
+          {
+            "instance_id": "pytest-dev__pytest-10356",
+            "pinned_oracle_digest": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-10356@sha256:363458d4698f5d985f6476d189d3f1cf902253cd9518705fd395516cd30138da",
+            "old_agent_image": "sha256:5f62903230fa3e25d3219872e7f7c81f2872f11b99765ed808db2e9b2d86843e",
+            "verified_agent_image": "sha256:e88592c98412f6548b2f909deb9ef6612325373f807a281e16dc2b1c6e4a941a",
+            "pinned_parent_layers_match": true,
+            "original_checkout_absent": true,
+            "python_version": "Python 3.9.20"
+          },
+          {
+            "instance_id": "pylint-dev__pylint-4661",
+            "pinned_oracle_digest": "swebench/sweb.eval.x86_64.pylint-dev_1776_pylint-4661@sha256:92b83a19cbeaac3d64a0efab6cd73011c68f48e1c720b1b64f75b8bb436bf0ee",
+            "old_agent_image": "sha256:9b2c7342fd29a0ad97333768a2259ee900ead534f03fec9902b4a5082f1fae74",
+            "verified_agent_image": "sha256:bd7b99132346490652de2ddaeaeb22f1b390941e8d718e24518b17f2cffde58c",
+            "pinned_parent_layers_match": true,
+            "original_checkout_absent": true,
+            "python_version": "Python 3.9.20"
+          },
+          {
+            "instance_id": "pytest-dev__pytest-10051",
+            "pinned_oracle_digest": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-10051@sha256:e38365e835d4ba57f3e7331778894f51ac20bf6c5893827065da8657525e123f",
+            "old_agent_image": "sha256:d01982631e4964865114e374b78ad22f11b71412a4ca5c249745f355fb9196e9",
+            "verified_agent_image": "sha256:76c39118190016957db302fac61202608fb175a265ef7a27164c6f2a0cacf8c6",
+            "pinned_parent_layers_match": true,
+            "original_checkout_absent": true,
+            "python_version": "Python 3.9.20"
+          },
+          {
+            "instance_id": "psf__requests-1142",
+            "pinned_oracle_digest": "swebench/sweb.eval.x86_64.psf_1776_requests-1142@sha256:b2733e57feb4cfaeac24ab5ec496d4cb89a37db53bd0ca72eaededdb2ce19d1c",
+            "old_agent_image": "sha256:41a46bfe1f0820321181450943a9ed3f628c5e359f738c7b3bcec49ec59d4a47",
+            "verified_agent_image": "sha256:a50a6ec8ae26241cbeab3375f8eebea99301b33366be8562a00feb09fc67ff05",
+            "pinned_parent_layers_match": true,
+            "original_checkout_absent": true,
+            "python_version": "Python 3.9.20"
+          },
+          {
+            "instance_id": "psf__requests-1921",
+            "pinned_oracle_digest": "swebench/sweb.eval.x86_64.psf_1776_requests-1921@sha256:2ee0a4c706f04d2926a1622ec51b53d4ce6010b80d3ee10d414ea2a276c26cc9",
+            "old_agent_image": "sha256:f6b10ad081b19605266225ae944ad9b16bb27c4c0ecde31016237b8c63ba3614",
+            "verified_agent_image": "sha256:21c979a65a84531d9fc458de9501f1295691c77eaebf42aa8112e603ab06e51c",
+            "pinned_parent_layers_match": true,
+            "original_checkout_absent": true,
+            "python_version": "Python 3.9.20"
+          },
+          {
+            "instance_id": "pytest-dev__pytest-6202",
+            "pinned_oracle_digest": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-6202@sha256:d2d9f0bf1ed8a5f50799291be86144768c3f7ad9400482d6dab7f05830f3e226",
+            "old_agent_image": "sha256:0b3ff08a7ecbbed7736160843200884d9225bb1389871031b1725ac0a3e3b3a4",
+            "verified_agent_image": "sha256:8bbea3f8f069bb15226689f301cf9f3f53211347208ee3ddb0038ef59d86a568",
+            "pinned_parent_layers_match": true,
+            "original_checkout_absent": true,
+            "python_version": "Python 3.9.20"
+          },
+          {
+            "instance_id": "pylint-dev__pylint-4551",
+            "pinned_oracle_digest": "swebench/sweb.eval.x86_64.pylint-dev_1776_pylint-4551@sha256:910cb070fc5e1c02b715b561c2f5783bb5f5e5935d9a169b4c91bdcfdd015f52",
+            "old_agent_image": "sha256:1defe3773eaae36c4914cfddbdb38b7bb0c3d1a7c507ea7f8c6d44dd8ee3cef9",
+            "verified_agent_image": "sha256:b1037a1587e04f1ea24c35a222b242078251d54c34329fc83afed0ce5ed6ee00",
+            "pinned_parent_layers_match": true,
+            "original_checkout_absent": true,
+            "python_version": "Python 3.9.20"
+          },
+          {
+            "instance_id": "psf__requests-1766",
+            "pinned_oracle_digest": "swebench/sweb.eval.x86_64.psf_1776_requests-1766@sha256:0618949b48408350dfae74d27e47ff9df8192fbf03248aa4f10650e0a36f52eb",
+            "old_agent_image": "sha256:ec9c24bc62772108ef51eef817f6eeb2a3bc6455ee3c1aeb8ed2cf17426a09f4",
+            "verified_agent_image": "sha256:3c6a48b96199aefa49249e1f748e7cab5789e3d38216723747fe5a750c27f34f",
+            "pinned_parent_layers_match": true,
+            "original_checkout_absent": true,
+            "python_version": "Python 3.9.20"
+          },
+          {
+            "instance_id": "psf__requests-5414",
+            "pinned_oracle_digest": "swebench/sweb.eval.x86_64.psf_1776_requests-5414@sha256:71c78211f16803c111ed1807ded20f8defd5f6917fb958ace4e076d5ea7d8b10",
+            "old_agent_image": "sha256:a8d419e7b0be4259446a12e6a4284a878804fc8cbfec21744f934cfbbe94e5db",
+            "verified_agent_image": "sha256:0b92552bbe43e74626f6f5ed8e66c9963d5a9dfef50847abc786c283d72f09db",
+            "pinned_parent_layers_match": true,
+            "original_checkout_absent": true,
+            "python_version": "Python 3.9.20"
+          },
+          {
+            "instance_id": "pytest-dev__pytest-7205",
+            "pinned_oracle_digest": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-7205@sha256:1c6124cd5254db8831df455575eff2795b0cbeb849d10846388e30e00870e495",
+            "old_agent_image": "sha256:6b0e8e8eaa1125c27fee3c01642b5457b60bf873609f8d5ba2f4924b846cb83e",
+            "verified_agent_image": "sha256:31a2c68e280f2a284dfae7121a5a7b77888d39a184a0ff818842d976da5b60e3",
+            "pinned_parent_layers_match": true,
+            "original_checkout_absent": true,
+            "python_version": "Python 3.9.20"
+          },
+          {
+            "instance_id": "pylint-dev__pylint-6528",
+            "pinned_oracle_digest": "swebench/sweb.eval.x86_64.pylint-dev_1776_pylint-6528@sha256:47e14a7e2b6d5f6d24ab4632ac11bd1493ab57030a8c6becdc3083c7574d0604",
+            "old_agent_image": "sha256:cec24796dea96705f70ff671bee4c03233970ac5c518ed933c2b59222048cabd",
+            "verified_agent_image": "sha256:201f3399708f7382282c967d09e6f3c45ff8a6fb5fd26069b1f634729c4ee065",
+            "pinned_parent_layers_match": true,
+            "original_checkout_absent": true,
+            "python_version": "Python 3.9.20"
+          },
+          {
+            "instance_id": "pytest-dev__pytest-5787",
+            "pinned_oracle_digest": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-5787@sha256:48c6ca4406eb36dae43e08dc2137b750239b8ad8f9ccdf2924e8fc2177fca241",
+            "old_agent_image": "sha256:a9003949065761da59af0e73dcd83286a16e6a8955d6faa1af403898585b1a54",
+            "verified_agent_image": "sha256:65808333dd7df3da499391d928884f67fb7b2df787088b7938e7e47e09d2a293",
+            "pinned_parent_layers_match": true,
+            "original_checkout_absent": true,
+            "python_version": "Python 3.9.20"
+          },
+          {
+            "instance_id": "psf__requests-6028",
+            "pinned_oracle_digest": "swebench/sweb.eval.x86_64.psf_1776_requests-6028@sha256:639088346355ea7076bc6faf2eadb23b1e1f1ed4f34b291e843061b2fc87cbe2",
+            "old_agent_image": "sha256:b90bee1bb0fdc0f1ef94540d406c26930c9c93f76ed1ac10e1aaee54e0df2759",
+            "verified_agent_image": "sha256:797792e3412afb1615a293149224944bdb651f83efca7ca9600febdcf7fbf6f4",
+            "pinned_parent_layers_match": true,
+            "original_checkout_absent": true,
+            "python_version": "Python 3.9.20"
+          },
+          {
+            "instance_id": "psf__requests-2317",
+            "pinned_oracle_digest": "swebench/sweb.eval.x86_64.psf_1776_requests-2317@sha256:c6b5c8846507b5e48e307decca28dbdfa4f5ef17070c1087aacde765e8c4b178",
+            "old_agent_image": "sha256:bd666138e04a06e14dde30fd272993fca10b42560c87b612701ebfc723c4fe1f",
+            "verified_agent_image": "sha256:852f1bf1fd9c9f39b894be755d998700b5a86f24a66d8b8b5a9fa1679364f743",
+            "pinned_parent_layers_match": true,
+            "original_checkout_absent": true,
+            "python_version": "Python 3.9.20"
+          },
+          {
+            "instance_id": "pallets__flask-5014",
+            "pinned_oracle_digest": "swebench/sweb.eval.x86_64.pallets_1776_flask-5014@sha256:bde4fbdafa36141d4396944da88ec37aabdef612ed36920090675bccd0ca5d72",
+            "old_agent_image": "sha256:40526c08342432d8a658fb1fde639915183e1b0af28e8b2f5d74263b56b847ed",
+            "verified_agent_image": "sha256:ff8bdd9e231bc027882dd79725c953cf1e504c0fbba44071a9a3ba2304294fe7",
+            "pinned_parent_layers_match": true,
+            "original_checkout_absent": true,
+            "python_version": "Python 3.11.10"
+          },
+          {
+            "instance_id": "pytest-dev__pytest-7490",
+            "pinned_oracle_digest": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-7490@sha256:9e10d2e75d41e6f6325949d19d6a8a033d1f5d5fd6d4ce53ad483eb8951a417f",
+            "old_agent_image": "sha256:dcf8182195b0d606ba93fccfd168b5fca4d1a9c5f69f69f6adaba8097c48bdb3",
+            "verified_agent_image": "sha256:88f71d141197763a8090fc2c97cd3de47d4cfa78446e43a7acd9bb10c430452c",
+            "pinned_parent_layers_match": true,
+            "original_checkout_absent": true,
+            "python_version": "Python 3.9.20"
+          },
+          {
+            "instance_id": "pytest-dev__pytest-7571",
+            "pinned_oracle_digest": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-7571@sha256:0a1f84cd32e2c8332f90bfad6f3fd16304f25c01384adb4ffd4f7250316bd60a",
+            "old_agent_image": "sha256:33819ab8ae4c71e7acd7d0b1239cfd0060767eaf427c931964ce3146f770d6c9",
+            "verified_agent_image": "sha256:abb5e916fe57001a48e067f77918385e314aa9b8c93e4a1acf1fefc63b97bee0",
+            "pinned_parent_layers_match": true,
+            "original_checkout_absent": true,
+            "python_version": "Python 3.9.20"
+          },
+          {
+            "instance_id": "pytest-dev__pytest-6197",
+            "pinned_oracle_digest": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-6197@sha256:5dbfbcf23210a5a0ccdc4dbf1a55c894255b28fe6c56c13c9a4724d6c13bab4e",
+            "old_agent_image": "sha256:ba642302bd07f6f59691ab4bee37de0677530faee1c05a4983cda81566e2b1f4",
+            "verified_agent_image": "sha256:d50adef9d8fbc2c83d3d4cd52aedd09c8b7c1ee4864ea235f68b2a2b2a4a032b",
+            "pinned_parent_layers_match": true,
+            "original_checkout_absent": true,
+            "python_version": "Python 3.9.20"
+          },
+          {
+            "instance_id": "pylint-dev__pylint-8898",
+            "pinned_oracle_digest": "swebench/sweb.eval.x86_64.pylint-dev_1776_pylint-8898@sha256:a78e6034f627c1ae69c67b5a25ae5420192afb7279a4fd032a74095752e707d7",
+            "old_agent_image": "sha256:e39638dfa85fe2bbcb3917f5bd6516d94f8fbca6efb0d6f68fab54b048fe9544",
+            "verified_agent_image": "sha256:1f73efb6e45f422cd3b2d972e454bddba7b81696c64a5aad90294e03c1d6374b",
+            "pinned_parent_layers_match": true,
+            "original_checkout_absent": true,
+            "python_version": "Python 3.9.20"
+          },
+          {
+            "instance_id": "psf__requests-1724",
+            "pinned_oracle_digest": "swebench/sweb.eval.x86_64.psf_1776_requests-1724@sha256:e369005d38858ea90f843d853cb8427a2681b7513b846d12a34cb8d52c00763e",
+            "old_agent_image": "sha256:08809020f35ddc63449bb37700a873448bfa169ab4ad5c2c14a2ae86cd6f926c",
+            "verified_agent_image": "sha256:5730e3a9d7d4c3437ed165b30e60a72fa1b855a6724a2f0c4492b1a211e68219",
+            "pinned_parent_layers_match": true,
+            "original_checkout_absent": true,
+            "python_version": "Python 2.7.18 :: Anaconda, Inc."
+          },
+          {
+            "instance_id": "pytest-dev__pytest-7236",
+            "pinned_oracle_digest": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-7236@sha256:54f89a5c1611eac42d3d7b7c03e17a43e9e70c604cd8439f45bf68102fc3ff09",
+            "old_agent_image": "sha256:fb9cebc570abd59efae72d40d4f855974288bdfd577466bc07469476c88ace80",
+            "verified_agent_image": "sha256:c162e82051e95f2f65ce7a580637449caf2c140b81feb88afb0d6414e5e7e570",
+            "pinned_parent_layers_match": true,
+            "original_checkout_absent": true,
+            "python_version": "Python 3.9.20"
+          }
+        ]
+      },
+      "restored_agent_sandbox_smoke": {
+        "timestamp": "2026-11-05T22:31:45.294245+00:00",
+        "instance_id": "pytest-dev__pytest-5631",
+        "agent_image": "sha256:d406f85fdcd9d47f4620ece233023a1c35d58923852e1d3224cf893a776a1089",
+        "success": true,
+        "result": {
+          "stdout": "5.0.2.dev58+gcb828ebe7\n/repo/src/pytest.py\n",
+          "stderr": "",
+          "returncode": 0
+        }
+      }
     },
     "kernel_review": {
       "review_date": "2026-11-05",
@@ -1444,7 +2033,7 @@ One shared model serves the primary agents and asynchronous children. The pilot 
   "hypothesis": "Trained team improves held-out human bug resolution over frozen initialization",
   "phase_code_commits": {
     "preflight": "05d7f357458d9eee1ec64637ff0277464839be06",
-    "pilot": "05d7f357458d9eee1ec64637ff0277464839be06"
+    "pilot": "e49e7442f0243efcbd00879327525c4f04639a0b"
   }
 }
 ```

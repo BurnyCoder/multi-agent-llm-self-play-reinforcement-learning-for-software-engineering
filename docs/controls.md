@@ -24,6 +24,11 @@ uv run --no-sync selfplay report --run runs/single-agent --output reports/single
 Replace the configuration and run directory consistently for other training
 controls. Repair-only reads `runs/pilot/artifact_records`; if the pilot produced
 no valid bugs, it fails explicitly rather than silently changing the control.
+For the documented recovery run, set `corpus_run = "runs/pilot-recovery"`
+in a committed copy of the repair-only configuration. Likewise, set
+`checkpoint_run = "runs/pilot-recovery"` in the evaluation-only configuration
+to use the recovery's initial and final checkpoints. Do not use the expired
+original attempt or the preflight-only adapter as a substitute.
 Procedural training uses the same mutation operator implementation as the
 diagnostic generator on **different repositories**, validating all selected
 clean tests before admitting a mutant. This is a separately labeled control,

@@ -196,6 +196,58 @@ def test_likelihood_history_retains_checks_and_derives_drift_without_counting_pr
     assert "BF16 mixed-precision LoRA training" in paper and "BF16 adapters" not in paper
 
 
+def test_protocol_diagnostics_preserve_usage_and_mark_unscored_traces(tmp_path, monkeypatch):
+    """A harness failure remains visible without turning generated role text into tools."""
+    run = tmp_path / "run"
+    run.mkdir()
+    records = [{"timestamp": "2020-01-01", "kind": "chat_eos_mismatch", "episode_id": "diagnostic",
+                "task_id": "fixture-task", "code_commit": "fixture-commit", "source_model_eos_ids": [9, 10],
+                "tokenizer_eos_id": 11, "observed_calls": 2, "generated_tokens": 5,
+                "calls_continuing_after_chat_eos": 1, "status": "interrupted_unscored",
+                "reason": "fixture role continuation", "stop_time": "2020-01-01T00:01:00Z",
+                "correction": "fixture explicit chat EOS"},
+               {"timestamp": "2020-01-02", "kind": "chat_eos_mismatch", "episode_id": "later-diagnostic",
+                "task_id": "later-task", "observed_calls": 1, "generated_tokens": 4,
+                "calls_continuing_after_chat_eos": 1, "status": "interrupted_unscored",
+                "reason": "later fixture diagnostic"}]
+    (run / "protocol_diagnostics.json").write_text(json.dumps(records))
+    events = [{"event": "session_started", "episode_id": "diagnostic", "session_id": "session"},
+              {"event": "generation", "episode_id": "diagnostic", "session_id": "session", "call_id": "a",
+               "generation": {"completion_ids": [1, 2, 3], "text": "fabricated subagent tool observation"}},
+              {"event": "generation", "episode_id": "diagnostic", "session_id": "session", "call_id": "b",
+               "generation": {"completion_ids": [4, 5]}},
+              {"event": "tool_started", "session_id": "session", "name": "read"},
+              {"event": "generation", "episode_id": "later-diagnostic", "call_id": "c",
+               "generation": {"completion_ids": [6, 7, 8, 9]}},
+              {"event": "generation", "episode_id": "ordinary", "call_id": "d",
+               "generation": {"completion_ids": [10]}}]
+    raw_events = "".join(json.dumps(event) + "\n" for event in events)
+    (run / "events.jsonl").write_text(raw_events)
+    (run / "evaluation.jsonl").write_text(json.dumps(record("fixture-task", "base", None, "interrupted_unscored")) + "\n")
+    sections = []
+    monkeypatch.setattr("multi_agent_ssr.reporting.render_figures", lambda *args: {})
+    monkeypatch.setattr("multi_agent_ssr.reporting.render_paper", lambda payload, current, *args: sections.extend(current))
+    generate_report(run, tmp_path / "report", tmp_path / "site")
+    data = json.loads((tmp_path / "site" / "data.json").read_text())
+    assert data["protocol_diagnostics"] == records
+    assert data["diagnostics"]["generation_calls"] == 4
+    assert data["diagnostics"]["generated_action_tokens"] == 10
+    assert data["diagnostics"]["delegation_calls"] == data["diagnostics"]["optimizer_steps"] == 0
+    assert data["analysis"]["conditions"]["human"]["base"]["completed"] == 0
+    assert data["events"][3]["protocol_diagnostic"]["status"] == "interrupted_unscored"
+    assert "protocol_diagnostic" not in data["events"][-1]
+    assert (run / "events.jsonl").read_text() == raw_events
+    disclosure = data["protocol_disclosure"]
+    assert "Recorded model calls: 2; generated tokens: 5" in disclosure
+    assert "Recorded model calls: 1; generated tokens: 4" in disclosure
+    assert "fixture explicit chat EOS" in disclosure and "later fixture diagnostic" in disclosure
+    assert "excluded from benchmark success and training" in disclosure
+    assert "only recorded harness tool events establish actual tool execution" in disclosure
+    assert ("Unscored protocol diagnostics", disclosure) in sections
+    for name in ("experiment.md", "experiments-summary.md", "paper.md"):
+        assert disclosure in (tmp_path / "report" / name).read_text()
+
+
 def test_recovery_disclosure_preserves_failed_attempt_after_success(tmp_path, monkeypatch):
     """A successful recovery cannot erase a failed attempt or its compute charge."""
     run = tmp_path / "recovery"
