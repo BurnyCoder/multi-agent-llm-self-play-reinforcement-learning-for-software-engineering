@@ -780,7 +780,7 @@ def generate_report(run_dir: Path, output_dir: Path, site_dir: Path, *, readme_p
             links = (f"\n\n![Recorded evaluation outcomes]({relative}/figures/scores.png)\n\n"
                      f"[Experiment report]({relative}/experiment.md) · [PDF paper]({relative}/paper.pdf)")
         _update_readme(readme_path, f"Recorded run status: **{status}**.\n\n" + failure_text + recovery_text + table + "\n\n" +
-                       details + "\n\n" + controls + links + "\n\nRegenerate all results with `uv run selfplay report --run <run-directory>`. ")
+                       details + "\n\n" + controls + links + "\n\nRegenerate all results with `uv run selfplay report --run <run-directory>`.")
     (site_dir / ".nojekyll").write_text("", encoding="utf-8")
     return {"summary.json": str(output_dir / "summary.json"), "experiment.md": str(output_dir / "experiment.md"),
             "paper.pdf": str(output_dir / "paper.pdf"), "index.html": str(site_dir / "index.html")}

@@ -28,8 +28,18 @@ REPOSITORIES = [
 
 
 def data_directory() -> Path:
-    """An explicit task directory avoids unrelated projects and global model state."""
-    return Path(os.environ.get("SSR_DATA_DIR", "data")).resolve()
+    """Keep the configured destination and reject disconnected WSL drive mounts."""
+    destination = Path(os.environ.get("SSR_DATA_DIR", "data")).absolute()
+    parts = destination.parts
+    if len(parts) >= 3 and parts[:2] == ("/", "mnt") and re.fullmatch(r"[A-Za-z]", parts[2]):
+        drive = Path(*parts[:3])
+        # Existence alone is insufficient: an ordinary directory would put data
+        # on the Linux root filesystem. Never create or relocate it implicitly.
+        # https://docs.python.org/3.12/library/pathlib.html#pathlib.Path.is_mount
+        if not drive.is_mount():
+            raise RuntimeError(f"Configured data drive {drive} is not mounted. "
+                               "Reconnect the drive and mount it in WSL before continuing.")
+    return destination.resolve()
 
 
 def preparation_evidence() -> dict:
