@@ -7,7 +7,44 @@ The project adapts [Self-play SWE-RL](https://arxiv.org/html/2512.18552v3), the 
 **Research status:** the harness, frozen cohorts and CPU validation are implemented. The initial GPU preflight was interrupted before any saved model generation or checkpoint. A [dated recovery amendment](reports/preregistration.md#recovery-amendment-2026-11-05) preserves that attempt and deducts its compute charge from the recovery allocation. No improvement or trained-model result is claimed. The first delivery executes one pilot, not the larger seed/control study.
 
 <!-- SSR_RESULTS:START -->
-Results have not been measured. The report command will replace this block from saved records.
+
+Recorded run status: **not_evaluated**.
+
+No failure metadata is recorded. This alone does not establish successful execution.
+
+## Interrupted attempt and recovery amendment
+
+Prior attempt runs/pilot has recorded status preflight_failed. Its original wall-clock deadline was 2026-10-30T15:31:24.450111+00:00; original deadline preserved: True. Recorded prior failure: preflight: BrokenPipeError: [Errno 32] Broken pipe. The prior attempt's recorded elapsed time was 479.063 seconds. The recovery amendment charges 600 seconds for that attempt and allocates 28200 seconds to this recovery, within 28800 seconds of total active allocation. The amendment excludes the offline interval; it does not erase the expired original attempt. Saved prior artifacts: model outputs 0, evaluations 0, checkpoints 0. Recorded reason: User requested recovery after OS restart. Original preflight failed with BrokenPipeError; original wall-clock deadline expired. Offline interval is excluded only by the dated preregistration amendment.
+
+| Bug source | Condition | Planned | Attempted | Resolved / scored | Rate | Unscored recorded | Unrecorded |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| human | base | 32 | 0 | Not evaluated | Not evaluated | 0 | 32 |
+| human | trained | 32 | 0 | Not evaluated | Not evaluated | 0 | 32 |
+| synthetic | base | 16 | 0 | Not evaluated | Not evaluated | 0 | 16 |
+| synthetic | trained | 16 | 0 | Not evaluated | Not evaluated | 0 | 16 |
+
+### Human bugs
+
+Not evaluated: no tasks have completed outcomes for both conditions.
+
+### Synthetic bugs
+
+Not evaluated: no tasks have completed outcomes for both conditions.
+
+| Deferred condition | Purpose | Result |
+| --- | --- | --- |
+| single-agent self-play | Separate delegation from self-play training | Not run |
+| repair-only training | Control for updating the injector | Not run |
+| procedural-mutation training | Control the training bug distribution | Not run |
+| no-delegation evaluation | Measure inference-time delegation dependence | Not run |
+| seed sensitivity | Measure training-seed variation | Not run |
+
+![Recorded evaluation outcomes](reports/generated/figures/scores.png)
+
+[Experiment report](reports/generated/experiment.md) · [PDF paper](reports/generated/paper.pdf)
+
+Regenerate all results with `uv run selfplay report --run <run-directory>`.
+
 <!-- SSR_RESULTS:END -->
 
 ```mermaid
