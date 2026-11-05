@@ -15,9 +15,15 @@ Check at 2026-11-05T21:58:00.067+00:00: 101 sampled action tokens; maximum cache
 
 Sources: [CWM Appendix C](https://arxiv.org/html/2510.02387v1#A3) and [Qwen numerical analysis](https://github.com/huggingface/transformers/issues/46190).
 
+## Unscored protocol diagnostics
+
+At 2026-11-05T22:49:05.240382+00:00, episode 97baaad7b45b4308bd6fed5b9fdcc085, task pytest-dev__pytest-5631, code e49e7442f0243efcbd00879327525c4f04639a0b: chat_eos_mismatch; status interrupted_unscored. Recorded model calls: 9; generated tokens: 2094; calls continuing after chat EOS: 9. Source-model EOS IDs: [248044]; tokenizer EOS ID: 248046. Stopped at 2026-11-05T22:47:26.520168+00:00. Recorded reason: Pinned model text config stops only on endoftext; tokenizer ends assistant turns with im_end. Model generated im_end then continued fabricating user/tool observations. No completed benchmark outcome or research update preceded correction. Incomplete streaming call, if any, remains in model.jsonl but lacks a completed action record.. Correction: Stop on the deduplicated union of model and tokenizer EOS IDs. Retain stop token and its behavior log probability. No post-hoc truncation of saved trajectories; retry same task from fresh base initialization. Both evaluation conditions and all training agents use the corrected stop contract..
+
+These are unscored harness diagnostics, excluded from benchmark success and training. Their recorded calls and tokens remain visible as physical model usage; action-event counters retain the corresponding diagnostic events without adding these summaries again. Model-authored role or observation text is generated text; only recorded harness tool events establish actual tool execution.
+
 | Bug source | Condition | Planned | Attempted | Resolved / scored | Rate | Unscored recorded | Unrecorded |
 | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| human | base | 32 | 0 | Not evaluated | Not evaluated | 0 | 32 |
+| human | base | 32 | 1 | Not evaluated | Not evaluated | 1 | 31 |
 | human | trained | 32 | 0 | Not evaluated | Not evaluated | 0 | 32 |
 | synthetic | base | 16 | 0 | Not evaluated | Not evaluated | 0 | 16 |
 | synthetic | trained | 16 | 0 | Not evaluated | Not evaluated | 0 | 16 |
@@ -44,20 +50,20 @@ Not evaluated: no tasks have completed outcomes for both conditions.
 
 | Recorded diagnostic | Value |
 | --- | ---: |
-| episodes | 0 |
+| episodes | 1 |
 | child sessions | 0 |
 | episodes with children | 0 |
-| delegation rate | Not measured |
+| delegation rate | 0 |
 | delegation calls | 0 |
-| generated tokens from research agents (excludes preflight) | 0 |
-| generation calls by research agents (excludes preflight) | 0 |
+| generated tokens from research agents (excludes preflight) | 2094 |
+| generation calls by research agents (excludes preflight) | 9 |
 | validated artifacts | 0 |
 | invalid artifacts | 0 |
 | invalid artifact rate | Not measured |
 | optimizer steps | 0 |
 | recorded training groups | 0 |
 | peak allocated bytes | 5136889856 |
-| evaluation seconds | 0 |
+| evaluation seconds | 377.29 |
 | training group seconds | 0 |
 | pass to pass regressions | Not measured |
 | regression scored records | 0 |

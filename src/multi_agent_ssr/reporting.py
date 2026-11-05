@@ -179,6 +179,29 @@ def _likelihood_text(history: list[dict[str, Any]], latest: dict[str, Any]) -> s
         "single-prompt software diagnostic; it does not bound drift in training contexts or establish training quality.")
 
 
+def _protocol_text(records: list[dict[str, Any]]) -> str:
+    """Disclose unscored harness incidents without erasing their physical usage."""
+    if not records:
+        return ""
+    descriptions = []
+    for row in records:
+        descriptions.append(
+            f"At {row.get('timestamp', 'unrecorded time')}, episode {row.get('episode_id', 'unrecorded')}, "
+            f"task {row.get('task_id', 'unrecorded')}, code {row.get('code_commit', 'unrecorded')}: "
+            f"{row.get('kind', 'unrecorded')}; status {row.get('status', 'unrecorded')}. "
+            f"Recorded model calls: {row.get('observed_calls', 'unrecorded')}; generated tokens: "
+            f"{row.get('generated_tokens', 'unrecorded')}; calls continuing after chat EOS: "
+            f"{row.get('calls_continuing_after_chat_eos', 'unrecorded')}. Source-model EOS IDs: "
+            f"{row.get('source_model_eos_ids', 'unrecorded')}; tokenizer EOS ID: "
+            f"{row.get('tokenizer_eos_id', 'unrecorded')}. Stopped at {row.get('stop_time', 'unrecorded')}. "
+            f"Recorded reason: {row.get('reason', 'unrecorded')}. Correction: {row.get('correction', 'unrecorded')}.")
+    return "\n\n".join(descriptions) + (
+        "\n\nThese are unscored harness diagnostics, excluded from benchmark success and training. "
+        "Their recorded calls and tokens remain visible as physical model usage; action-event counters retain "
+        "the corresponding diagnostic events without adding these summaries again. Model-authored role or observation text is generated text; "
+        "only recorded harness tool events establish actual tool execution.")
+
+
 def _display_event(event: dict[str, Any]) -> dict[str, Any]:
     """Keep complete event text, but omit huge token arrays from the browser copy.
 
@@ -545,7 +568,7 @@ def _paper_sections(payload: dict[str, Any]) -> list[tuple[str, str]]:
          "objective is extended from trajectories to complete action trees using the exact original contexts [2].")),
         ("Results", state + "\n\n" + primary + "\n\nSynthetic diagnostic set: " + secondary),
         ("Observed execution diagnostics", "The following diagnostics are derived from saved event, evaluation, "
-         "and optimizer streams, including incomplete collections. Counts describe recorded activity, not "
+         "and optimizer streams, including incomplete collections and unscored protocol diagnostics. Counts describe recorded activity, not "
          "generalization. Preflight memory belongs to a software check, not a trained-model evaluation. "
          f"Recorded action tokens from research agents (excluding preflight): "
          f"{payload['diagnostics']['generated_action_tokens']}; actual subagent tool "
@@ -574,6 +597,9 @@ def _paper_sections(payload: dict[str, Any]) -> list[tuple[str, str]]:
     if payload.get("likelihood_disclosure"):
         position = next(index for index, (title, _) in enumerate(sections) if title == "Observed execution diagnostics")
         sections.insert(position, ("Preflight likelihood diagnostics", payload["likelihood_disclosure"]))
+    if payload.get("protocol_disclosure"):
+        position = next(index for index, (title, _) in enumerate(sections) if title == "Results")
+        sections.insert(position, ("Unscored protocol diagnostics", payload["protocol_disclosure"]))
     return sections
 
 
@@ -768,6 +794,17 @@ def generate_report(run_dir: Path, output_dir: Path, site_dir: Path, *, readme_p
     latest_model_load = max(model_loads, key=lambda event: event.get("timestamp", ""), default={})
     metrics = load_jsonl(run_dir / "metrics.jsonl")
     events = _run_events(run_dir)
+    protocol_path = run_dir / "protocol_diagnostics.json"
+    protocol_diagnostics = json.loads(protocol_path.read_text(encoding="utf-8")) if protocol_path.exists() else []
+    if not isinstance(protocol_diagnostics, list) or any(not isinstance(row, dict) for row in protocol_diagnostics):
+        raise TypeError("protocol_diagnostics.json must contain a list of objects")
+    diagnostic_episodes = {row["episode_id"]: row for row in protocol_diagnostics if row.get("episode_id")}
+    session_episodes = {event["session_id"]: event["episode_id"] for event in events
+                        if event.get("session_id") and event.get("episode_id")}
+    for event in events:
+        diagnostic = diagnostic_episodes.get(event.get("episode_id") or session_episodes.get(event.get("session_id")))
+        if diagnostic:
+            event["protocol_diagnostic"] = {key: diagnostic.get(key, "unrecorded") for key in ("kind", "status")}
     phase_status, failure_history = _phase_history(events, failure)
     evaluations = load_jsonl(run_dir / "evaluation.jsonl")
     settings = manifest.get("config", {}).get("experiment", {})
@@ -794,6 +831,8 @@ def generate_report(run_dir: Path, output_dir: Path, site_dir: Path, *, readme_p
                                if event.get("event") == "likelihood_checked"],
         "recovery": manifest.get("recovery", {}),
         "recovery_disclosure": _recovery_text(manifest.get("recovery", {})),
+        "protocol_diagnostics": protocol_diagnostics,
+        "protocol_disclosure": _protocol_text(protocol_diagnostics),
         "analysis": analysis, "metrics": metrics,
         "events": events, "patches": _run_patches(run_dir), "controls": _controls(),
         "diagnostics": _diagnostics(events, metrics, preflight, analysis["records"]),
@@ -818,16 +857,18 @@ def generate_report(run_dir: Path, output_dir: Path, site_dir: Path, *, readme_p
                       f"\n\nSources: [CWM Appendix C]({SOURCES[1][1]}) and "
                       f"[Qwen numerical analysis]({SOURCES[9][1]}).\n\n"
                       if payload["likelihood_disclosure"] else "")
+    protocol_text = ("## Unscored protocol diagnostics\n\n" + payload["protocol_disclosure"] + "\n\n"
+                     if payload["protocol_disclosure"] else "")
     details = "\n\n".join(f"### {source.title()} bugs\n\n{_effect_text(comparison)}"
                             for source, comparison in payload["analysis"]["comparisons"].items())
     report = (f"# Experiment: {payload['run_id']}\n\nStatus: **{payload['status']}**. "
               "This report is generated from saved records; absent measurements remain unknown. "
               "All tables and diagnostics are derived from the [machine-readable analysis](summary.json). "
               "The [committed preregistration](preregistration.md) defines the hypotheses and decision rules.\n\n"
-              + failure_text + recovery_text + likelihood_text + f"## Evaluation\n\n{table}\n\n{details}\n\n"
+              + failure_text + recovery_text + likelihood_text + protocol_text + f"## Evaluation\n\n{table}\n\n{details}\n\n"
               f"## Deferred controls\n\n{controls}\n\n"
               f"## Execution diagnostics\n\n{diagnostics}\n\n"
-              "These are event-level counts, including incomplete collections; memory can include preflight. "
+              "These are event-level counts, including incomplete collections and unscored protocol diagnostics; memory can include preflight. "
               "Unrecorded planned tasks remain missing coverage.\n\n"
               f"Invalidity reasons: `{json.dumps(payload['diagnostics']['invalid_reasons'], ensure_ascii=False)}`. "
               f"Untrained-group reasons: `{json.dumps(payload['diagnostics']['untrained_group_reasons'], ensure_ascii=False)}`.\n\n"
@@ -837,7 +878,7 @@ def generate_report(run_dir: Path, output_dir: Path, site_dir: Path, *, readme_p
               "below for observed failures, decisions, and completed work. No unrun control has a reported score.\n\n"
               f"```json\n{json.dumps(run_summary, ensure_ascii=False, indent=2)}\n```\n\n"
               "## Failure, preflight, and preparation records\n\n"
-              f"```json\n{json.dumps({'failure': failure, 'failure_history': failure_history, 'preflight': preflight, 'likelihood': payload['likelihood'], 'likelihood_history': payload['likelihood_history'], 'preparation': payload['preparation']}, ensure_ascii=False, indent=2)}\n```\n\n"
+              f"```json\n{json.dumps({'failure': failure, 'failure_history': failure_history, 'preflight': preflight, 'likelihood': payload['likelihood'], 'likelihood_history': payload['likelihood_history'], 'protocol_diagnostics': protocol_diagnostics, 'preparation': payload['preparation']}, ensure_ascii=False, indent=2)}\n```\n\n"
               "## Recorded configuration\n\n"
               f"```json\n{json.dumps(manifest, ensure_ascii=False, indent=2)}\n```\n\n"
               "## Reproduction and limitations\n\n"
@@ -849,7 +890,7 @@ def generate_report(run_dir: Path, output_dir: Path, site_dir: Path, *, readme_p
               "\n".join(f"- [{title}]({url})" for title, url in SOURCES) + "\n")
     (output_dir / "experiment.md").write_text(report, encoding="utf-8")
     (output_dir / "experiments-summary.md").write_text(
-        "# Experiments recorded in this run\n\n" + failure_text + recovery_text + likelihood_text + table + "\n\n" + details +
+        "# Experiments recorded in this run\n\n" + failure_text + recovery_text + likelihood_text + protocol_text + table + "\n\n" + details +
         "\n\n## Deferred controls\n\n" + controls + "\n\n## Recorded diagnostics\n\n" + diagnostics +
         "\n\n## Network and experiment design\n\n"
         "| Condition | Architecture | Training in this experiment | Objective | Data and domain |\n"
@@ -902,7 +943,7 @@ def generate_report(run_dir: Path, output_dir: Path, site_dir: Path, *, readme_p
             relative = output_dir.resolve().relative_to(readme_path.resolve().parent).as_posix()
             links = (f"\n\n![Recorded evaluation outcomes]({relative}/figures/scores.png)\n\n"
                      f"[Experiment report]({relative}/experiment.md) · [PDF paper]({relative}/paper.pdf)")
-        _update_readme(readme_path, f"Recorded run status: **{status}**.\n\n" + failure_text + recovery_text + table + "\n\n" +
+        _update_readme(readme_path, f"Recorded run status: **{status}**.\n\n" + failure_text + recovery_text + protocol_text + table + "\n\n" +
                        details + "\n\n" + controls + links + "\n\nRegenerate all results with `uv run selfplay report --run <run-directory>`.")
     (site_dir / ".nojekyll").write_text("", encoding="utf-8")
     return {"summary.json": str(output_dir / "summary.json"), "experiment.md": str(output_dir / "experiment.md"),
