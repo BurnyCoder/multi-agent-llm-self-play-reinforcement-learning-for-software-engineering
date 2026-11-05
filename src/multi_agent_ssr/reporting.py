@@ -65,13 +65,13 @@ def _write_json(path: Path, value: Any) -> None:
 
 
 def _phase_history(events: list[dict[str, Any]], failure: dict[str, Any]) -> tuple[str | None, list[dict[str, Any]]]:
-    """Derive current state from ordered terminal evidence, retaining old failures.
+    """Derive current state from ordered phase evidence, retaining old failures.
 
     The supervisor can write failure.json without a worker event. Normal worker
     failures appear in both files; retain that evidence once in the history.
     """
     phases = [event for event in events if event.get("event") in
-              {"phase_started", "phase_completed", "phase_failed", "pilot_complete", "budget_exhausted"}]
+              {"phase_started", "phase_completed", "phase_failed", "phase_interrupted", "pilot_complete", "budget_exhausted"}]
     failures = [event for event in phases if event["event"] == "phase_failed"]
     if failure:
         before_failure = [event for event in phases if event.get("timestamp", "") <= failure.get("timestamp", "")]
@@ -82,14 +82,14 @@ def _phase_history(events: list[dict[str, Any]], failure: dict[str, Any]) -> tup
         # Include the standalone file in state ordering even when it duplicates
         # a worker event; a newer supervisor failure must override old success.
         phases.append({**failure, "event": "phase_failed"})
-    terminals = sorted((event for event in phases if event["event"] != "phase_started"),
-                       key=lambda event: event.get("timestamp", ""))
+    ordered = sorted(phases, key=lambda event: event.get("timestamp", ""))
     failures.sort(key=lambda event: event.get("timestamp", ""))
-    if not terminals:
+    if not ordered:
         return None, failures
-    latest = terminals[-1]
-    if latest["event"] == "phase_failed":
-        status = f"{latest.get('phase', 'run')}_failed"
+    latest = ordered[-1]
+    phase_states = {"phase_failed": "failed", "phase_started": "running", "phase_interrupted": "interrupted"}
+    if latest["event"] in phase_states:
+        status = f"{latest.get('phase', 'run')}_{phase_states[latest['event']]}"
     elif latest["event"] == "phase_completed":
         status = "preflight_passed" if latest.get("phase") == "preflight" else f"{latest.get('phase', 'run')}_completed"
     else:
@@ -437,6 +437,10 @@ def _paper_sections(payload: dict[str, Any]) -> list[tuple[str, str]]:
     model = payload["manifest"].get("model", config.get("model", {}))
     limits = config.get("limits", {})
     settings = config.get("experiment", {})
+    dtype_counts = payload.get("parameter_dtype_counts", {})
+    storage_text = ("Recorded parameter storage counts (scalar elements, separate from compute dtype): " +
+                    ", ".join(f"{name} = {count}" for name, count in sorted(dtype_counts.items())) + ".\n\n"
+                    if dtype_counts else "")
     def value(data, key):
         return str(data.get(key, "unrecorded"))
     state = f"Recorded run status: {payload['status']}."
@@ -495,6 +499,7 @@ def _paper_sections(payload: dict[str, Any]) -> list[tuple[str, str]]:
          f"{value(model, 'learning_rate')}; recorded training seed is {value(model, 'seed')}. "
          "The implementation uses BF16 mixed-precision LoRA training with dropout zero, a frozen base, frozen vision tower, embeddings "
          "and output head, and language-model attention/MLP adapters only [4, 5].\n\n"
+         f"{storage_text}"
          f"A call has at most {value(model, 'context_tokens')} input-plus-action tokens and "
          f"{value(model, 'action_tokens')} generated tokens. Each team shares a generated-token cap of "
          f"{value(limits, 'generated_tokens')}, a tool-call cap of {value(limits, 'tool_calls')}, and "
@@ -757,6 +762,10 @@ def generate_report(run_dir: Path, output_dir: Path, site_dir: Path, *, readme_p
     run_summary = _json(run_dir / "summary.json")
     failure = _json(run_dir / "failure.json")
     preflight = _json(run_dir / "preflight.json") or _json(run_dir / "preflight" / "preflight.json")
+    preflight_model_events = load_jsonl(run_dir / "preflight" / "model.jsonl")
+    model_loads = [event for event in preflight_model_events + load_jsonl(run_dir / "model.jsonl")
+                   if event.get("event") == "model_loaded"]
+    latest_model_load = max(model_loads, key=lambda event: event.get("timestamp", ""), default={})
     metrics = load_jsonl(run_dir / "metrics.jsonl")
     events = _run_events(run_dir)
     phase_status, failure_history = _phase_history(events, failure)
@@ -779,8 +788,9 @@ def generate_report(run_dir: Path, output_dir: Path, site_dir: Path, *, readme_p
                         ("preparation", "preparation_validation", "environment_validation", "validation")
                         if (run_dir / f"{name}.json").exists()},
         "manifest": manifest, "run_summary": run_summary, "preflight": preflight,
+        "parameter_dtype_counts": latest_model_load.get("parameter_dtype_counts", {}),
         "likelihood": _json(run_dir / "preflight" / "likelihood.json"),
-        "likelihood_history": [event for event in load_jsonl(run_dir / "preflight" / "model.jsonl")
+        "likelihood_history": [event for event in preflight_model_events
                                if event.get("event") == "likelihood_checked"],
         "recovery": manifest.get("recovery", {}),
         "recovery_disclosure": _recovery_text(manifest.get("recovery", {})),

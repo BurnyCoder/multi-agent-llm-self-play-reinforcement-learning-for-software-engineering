@@ -8,7 +8,7 @@ The project adapts [Self-play SWE-RL](https://arxiv.org/html/2512.18552v3), the 
 
 <!-- SSR_RESULTS:START -->
 
-Recorded run status: **preflight_failed**.
+Recorded run status: **pilot_running**.
 
 Recorded failure history (retained after later successful phases):
 

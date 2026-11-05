@@ -227,6 +227,60 @@ def test_recovery_disclosure_preserves_failed_attempt_after_success(tmp_path, mo
         assert "model outputs 0, evaluations 0, checkpoints 0" in text
 
 
+@pytest.mark.parametrize("later_events,new_failure,expected", [
+    ([("phase_started", "preflight")], False, "preflight_running"),
+    ([("phase_completed", "preflight"), ("phase_started", "pilot")], False, "pilot_running"),
+    ([("phase_completed", "preflight"), ("phase_started", "pilot"),
+      ("phase_interrupted", "pilot")], False, "pilot_interrupted"),
+    ([("phase_completed", "preflight"), ("phase_started", "pilot")], True, "pilot_failed"),
+])
+def test_running_and_interrupted_phases_supersede_older_terminal_state(tmp_path, monkeypatch, later_events, new_failure, expected):
+    """Active recovery is not an old success/failure, while newer failures still win."""
+    run = tmp_path / "run"
+    run.mkdir()
+    original = {"timestamp": "2020-01-01T00:00:01Z", "phase": "preflight", "error": "original failure"}
+    events = [{**original, "event": "phase_failed"}]
+    events.extend({"timestamp": f"2020-01-01T00:00:{index:02d}Z", "event": event, "phase": phase}
+                  for index, (event, phase) in enumerate(later_events, 2))
+    (run / "events.jsonl").write_text("".join(json.dumps(event) + "\n" for event in events))
+    failure = ({"timestamp": "2020-01-01T00:00:09Z", "phase": "pilot", "error": "new supervisor failure"}
+               if new_failure else original)
+    (run / "failure.json").write_text(json.dumps(failure))
+    (run / "summary.json").write_text(json.dumps({"status": "completed"}))
+    monkeypatch.setattr("multi_agent_ssr.reporting.render_figures", lambda *args: {})
+    monkeypatch.setattr("multi_agent_ssr.reporting.render_paper", lambda *args: None)
+    generate_report(run, tmp_path / "report", tmp_path / "site")
+    data = json.loads((tmp_path / "site" / "data.json").read_text())
+    assert data["status"] == expected
+    assert [row["error"] for row in data["failure_history"]] == ["original failure"] + (
+        ["new supervisor failure"] if new_failure else [])
+    assert expected in (tmp_path / "report" / "paper.md").read_text()
+
+
+@pytest.mark.parametrize("latest_source", ["preflight", "research"])
+def test_parameter_storage_dtypes_use_latest_model_record_without_counting_actions(tmp_path, monkeypatch, latest_source):
+    """Storage evidence may come from either model log, independently of action accounting."""
+    run = tmp_path / "run"
+    (run / "preflight").mkdir(parents=True)
+    expected = {"frozen:torch.bfloat16": 100, "frozen:torch.float32": 2, "trainable:torch.float32": 7}
+    for source, path in (("preflight", run / "preflight" / "model.jsonl"), ("research", run / "model.jsonl")):
+        event = {"event": "model_loaded", "timestamp": "2020-01-02" if source == latest_source else "2020-01-01",
+                 "parameter_dtype_counts": expected if source == latest_source else {"trainable:torch.float32": 3}}
+        other = {"event": "generation_complete", "completion_ids": [1, 2, 3]}
+        path.write_text(json.dumps(event) + "\n" + json.dumps(other) + "\n")
+    monkeypatch.setattr("multi_agent_ssr.reporting.render_figures", lambda *args: {})
+    monkeypatch.setattr("multi_agent_ssr.reporting.render_paper", lambda *args: None)
+    generate_report(run, tmp_path / "report", tmp_path / "site")
+    data = json.loads((tmp_path / "site" / "data.json").read_text())
+    assert data["parameter_dtype_counts"] == expected
+    assert not data["events"]
+    assert data["diagnostics"]["generation_calls"] == 0
+    assert data["diagnostics"]["generated_action_tokens"] == 0
+    paper = (tmp_path / "report" / "paper.md").read_text()
+    assert "Recorded parameter storage counts" in paper
+    assert all(f"{name} = {count}" in paper for name, count in expected.items())
+
+
 @pytest.mark.parametrize("later_failure", [None, "pilot", "supervisor"])
 def test_preflight_recovery_status_uses_latest_phase_and_retains_failures(tmp_path, monkeypatch, later_failure):
     """Exercise failed then successful preflight orchestration without an LLM."""

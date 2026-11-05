@@ -11,7 +11,7 @@ Prior attempt runs/pilot has recorded status preflight_failed. Its original wall
 
 ## Preflight likelihood diagnostics
 
-Check at 2026-11-05T21:58:00.067+00:00: 101 sampled action tokens; maximum cached-replay log-probability difference 0; maximum trainer-versus-sampling log-probability difference 0.152151. Pre-update scoring/behavior ratio range [0.858858, 1.10626]; 0/101 tokens outside [0.8, 1.25]. Recorded trainer guard: absolute log-probability difference limit 0.05; cached-replay difference limit 0.05. CWM retains sampled behavior probabilities in the denominator [2]. Upstream Qwen analysis attributes some BF16 cached/full-forward differences to rounding [10]. Each check is a single-prompt software diagnostic; it does not bound drift in training contexts or establish training quality.
+Check at 2026-11-05T21:58:00.067+00:00: 101 sampled action tokens; maximum cached-replay log-probability difference 0; maximum trainer-versus-sampling log-probability difference 0.152151. Pre-update scoring/behavior ratio range [0.858858, 1.10626]; 0/101 tokens outside [0.8, 1.25]. Recorded trainer guard: absolute log-probability difference limit 0.05; cached-replay difference limit 0.05. Check at 2026-11-05T22:16:41.480+00:00: 101 sampled action tokens; maximum cached-replay log-probability difference 0; maximum trainer-versus-sampling log-probability difference 0.151829. Pre-update scoring/behavior ratio range [0.859135, 1.06795]; 0/101 tokens outside [0.8, 1.25]. Recorded trainer guard: preupdate_ratios_inside_clip_interval with interval [0.8, 1.25]; cached-replay difference limit 0.05. CWM retains sampled behavior probabilities in the denominator [2]. Upstream Qwen analysis attributes some BF16 cached/full-forward differences to rounding [10]. Each check is a single-prompt software diagnostic; it does not bound drift in training contexts or establish training quality.
 
 Sources: [CWM Appendix C](https://arxiv.org/html/2510.02387v1#A3) and [Qwen numerical analysis](https://github.com/huggingface/transformers/issues/46190).
 
@@ -56,7 +56,7 @@ Not evaluated: no tasks have completed outcomes for both conditions.
 | invalid artifact rate | Not measured |
 | optimizer steps | 0 |
 | recorded training groups | 0 |
-| peak allocated bytes | Not measured |
+| peak allocated bytes | 5136889856 |
 | evaluation seconds | 0 |
 | training group seconds | 0 |
 | pass to pass regressions | Not measured |
