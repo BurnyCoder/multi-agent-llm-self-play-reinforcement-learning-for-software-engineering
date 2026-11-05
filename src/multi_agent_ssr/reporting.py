@@ -27,6 +27,7 @@ SOURCES = [
     ("Anchored Self-Play: synthetic-to-human bug distribution shift", "https://arxiv.org/html/2607.03523v1"),
     ("Paired percentile bootstrap procedure", "https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.bootstrap.html"),
     ("Committed preregistration and analysis plan", "https://github.com/BurnyCoder/multi-agent-llm-self-play-reinforcement-learning-for-software-engineering/blob/main/reports/preregistration.md"),
+    ("Qwen3.5 cached/full-forward BF16 numerical analysis", "https://github.com/huggingface/transformers/issues/46190"),
 ]
 
 AI_STATEMENT = (
@@ -125,6 +126,57 @@ def _recovery_text(recovery: dict[str, Any]) -> str:
              f"evaluations {recovery.get('saved_evaluations', 'unrecorded')}, "
              f"checkpoints {recovery.get('saved_checkpoints', 'unrecorded')}. ")
     return text + f"Recorded reason: {recovery.get('reason', 'unrecorded')}"
+
+
+def _likelihood_text(history: list[dict[str, Any]], latest: dict[str, Any]) -> str:
+    """Separate immutable sampling evidence from trainer drift and guard changes.
+
+    Derive ratio summaries from saved arrays even for older checks that did not
+    store them. The fallback clipping interval is the registered CWM objective,
+    not a retrospectively chosen numerical tolerance.
+    """
+    checks = history or ([latest] if latest else [])
+    if not checks:
+        return ""
+
+    def shown(value: Any) -> str:
+        return "unrecorded" if value is None else f"{value:.6g}" if isinstance(value, (int, float)) else str(value)
+
+    def ratio(log_ratio: float) -> str:
+        try:
+            return shown(math.exp(log_ratio))
+        except OverflowError:
+            return "overflow"
+
+    descriptions = []
+    for check in checks:
+        sampled, scored = check.get("sampled_logprobs"), check.get("scoring_logprobs")
+        count = len(sampled) if isinstance(sampled, list) else "unrecorded"
+        guard = check.get("scoring_guard", {})
+        lower, upper = guard.get("ratio_lower", 0.8), guard.get("ratio_upper", 1.25)
+        aligned = (isinstance(sampled, list) and isinstance(scored, list) and bool(sampled)
+                   and len(sampled) == len(scored)
+                   and all(type(value) in (int, float) and math.isfinite(value) for value in sampled + scored))
+        ratios = "Pre-update ratio diagnostics are unavailable from finite aligned arrays."
+        if aligned:
+            differences = [new - old for new, old in zip(scored, sampled, strict=True)]
+            clipped = sum(delta < math.log(lower) or delta > math.log(upper) for delta in differences)
+            ratios = (f"Pre-update scoring/behavior ratio range [{ratio(min(differences))}, "
+                      f"{ratio(max(differences))}]; {clipped}/{count} tokens outside "
+                      f"[{shown(lower)}, {shown(upper)}].")
+        guard_text = (f"{guard['kind']} with interval [{shown(lower)}, {shown(upper)}]" if guard.get("kind") else
+                      f"absolute log-probability difference limit {shown(check['difference_limit'])}"
+                      if check.get("difference_limit") is not None else "unrecorded")
+        descriptions.append(
+            f"Check at {check.get('timestamp', 'unrecorded time')}: {count} sampled action tokens; "
+            f"maximum cached-replay log-probability difference {shown(check.get('replay_max_abs_difference'))}; "
+            f"maximum trainer-versus-sampling log-probability difference {shown(check.get('scoring_max_abs_difference'))}. "
+            f"{ratios} Recorded trainer guard: {guard_text}; cached-replay difference limit "
+            f"{shown(check.get('replay_limit', check.get('difference_limit')))}.")
+    return " ".join(descriptions) + (
+        " CWM retains sampled behavior probabilities in the denominator [2]. Upstream Qwen analysis "
+        "attributes some BF16 cached/full-forward differences to rounding [10]. Each check is a "
+        "single-prompt software diagnostic; it does not bound drift in training contexts or establish training quality.")
 
 
 def _display_event(event: dict[str, Any]) -> dict[str, Any]:
@@ -441,7 +493,7 @@ def _paper_sections(payload: dict[str, Any]) -> list[tuple[str, str]]:
          f"The recorded model is {value(model, 'model_id')} at revision {value(model, 'revision')}. "
          f"LoRA rank is {value(model, 'lora_rank')}, alpha {value(model, 'lora_alpha')}, and learning rate "
          f"{value(model, 'learning_rate')}; recorded training seed is {value(model, 'seed')}. "
-         "The implementation uses BF16 adapters with dropout zero, a frozen base, frozen vision tower, embeddings "
+         "The implementation uses BF16 mixed-precision LoRA training with dropout zero, a frozen base, frozen vision tower, embeddings "
          "and output head, and language-model attention/MLP adapters only [4, 5].\n\n"
          f"A call has at most {value(model, 'context_tokens')} input-plus-action tokens and "
          f"{value(model, 'action_tokens')} generated tokens. Each team shares a generated-token cap of "
@@ -514,6 +566,9 @@ def _paper_sections(payload: dict[str, Any]) -> list[tuple[str, str]]:
     if payload.get("recovery_disclosure"):
         position = next(index for index, (title, _) in enumerate(sections) if title == "Results")
         sections.insert(position, ("Interrupted attempt and recovery amendment", payload["recovery_disclosure"]))
+    if payload.get("likelihood_disclosure"):
+        position = next(index for index, (title, _) in enumerate(sections) if title == "Observed execution diagnostics")
+        sections.insert(position, ("Preflight likelihood diagnostics", payload["likelihood_disclosure"]))
     return sections
 
 
@@ -725,6 +780,8 @@ def generate_report(run_dir: Path, output_dir: Path, site_dir: Path, *, readme_p
                         if (run_dir / f"{name}.json").exists()},
         "manifest": manifest, "run_summary": run_summary, "preflight": preflight,
         "likelihood": _json(run_dir / "preflight" / "likelihood.json"),
+        "likelihood_history": [event for event in load_jsonl(run_dir / "preflight" / "model.jsonl")
+                               if event.get("event") == "likelihood_checked"],
         "recovery": manifest.get("recovery", {}),
         "recovery_disclosure": _recovery_text(manifest.get("recovery", {})),
         "analysis": analysis, "metrics": metrics,
@@ -732,6 +789,7 @@ def generate_report(run_dir: Path, output_dir: Path, site_dir: Path, *, readme_p
         "diagnostics": _diagnostics(events, metrics, preflight, analysis["records"]),
         "sources": [{"title": title, "url": url} for title, url in SOURCES],
     }
+    payload["likelihood_disclosure"] = _likelihood_text(payload["likelihood_history"], payload["likelihood"])
     if (run_dir / "kernel-review.json").exists():
         payload["preparation"]["kernel_review"] = _json(run_dir / "kernel-review.json")
     figures = render_figures(payload, output_dir / "figures")
@@ -746,13 +804,17 @@ def generate_report(run_dir: Path, output_dir: Path, site_dir: Path, *, readme_p
         "No failure metadata is recorded. This alone does not establish successful execution.\n\n")
     recovery_text = ("## Interrupted attempt and recovery amendment\n\n" + payload["recovery_disclosure"] + "\n\n"
                      if payload["recovery_disclosure"] else "")
+    likelihood_text = ("## Preflight likelihood diagnostics\n\n" + payload["likelihood_disclosure"] +
+                      f"\n\nSources: [CWM Appendix C]({SOURCES[1][1]}) and "
+                      f"[Qwen numerical analysis]({SOURCES[9][1]}).\n\n"
+                      if payload["likelihood_disclosure"] else "")
     details = "\n\n".join(f"### {source.title()} bugs\n\n{_effect_text(comparison)}"
                             for source, comparison in payload["analysis"]["comparisons"].items())
     report = (f"# Experiment: {payload['run_id']}\n\nStatus: **{payload['status']}**. "
               "This report is generated from saved records; absent measurements remain unknown. "
               "All tables and diagnostics are derived from the [machine-readable analysis](summary.json). "
               "The [committed preregistration](preregistration.md) defines the hypotheses and decision rules.\n\n"
-              + failure_text + recovery_text + f"## Evaluation\n\n{table}\n\n{details}\n\n"
+              + failure_text + recovery_text + likelihood_text + f"## Evaluation\n\n{table}\n\n{details}\n\n"
               f"## Deferred controls\n\n{controls}\n\n"
               f"## Execution diagnostics\n\n{diagnostics}\n\n"
               "These are event-level counts, including incomplete collections; memory can include preflight. "
@@ -765,7 +827,7 @@ def generate_report(run_dir: Path, output_dir: Path, site_dir: Path, *, readme_p
               "below for observed failures, decisions, and completed work. No unrun control has a reported score.\n\n"
               f"```json\n{json.dumps(run_summary, ensure_ascii=False, indent=2)}\n```\n\n"
               "## Failure, preflight, and preparation records\n\n"
-              f"```json\n{json.dumps({'failure': failure, 'failure_history': failure_history, 'preflight': preflight, 'likelihood': payload['likelihood'], 'preparation': payload['preparation']}, ensure_ascii=False, indent=2)}\n```\n\n"
+              f"```json\n{json.dumps({'failure': failure, 'failure_history': failure_history, 'preflight': preflight, 'likelihood': payload['likelihood'], 'likelihood_history': payload['likelihood_history'], 'preparation': payload['preparation']}, ensure_ascii=False, indent=2)}\n```\n\n"
               "## Recorded configuration\n\n"
               f"```json\n{json.dumps(manifest, ensure_ascii=False, indent=2)}\n```\n\n"
               "## Reproduction and limitations\n\n"
@@ -777,7 +839,7 @@ def generate_report(run_dir: Path, output_dir: Path, site_dir: Path, *, readme_p
               "\n".join(f"- [{title}]({url})" for title, url in SOURCES) + "\n")
     (output_dir / "experiment.md").write_text(report, encoding="utf-8")
     (output_dir / "experiments-summary.md").write_text(
-        "# Experiments recorded in this run\n\n" + failure_text + recovery_text + table + "\n\n" + details +
+        "# Experiments recorded in this run\n\n" + failure_text + recovery_text + likelihood_text + table + "\n\n" + details +
         "\n\n## Deferred controls\n\n" + controls + "\n\n## Recorded diagnostics\n\n" + diagnostics +
         "\n\n## Network and experiment design\n\n"
         "| Condition | Architecture | Training in this experiment | Objective | Data and domain |\n"

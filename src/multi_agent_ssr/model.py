@@ -203,8 +203,15 @@ class LocalPolicy:
         self._validate_trainable_scope()
         if checkpoint is not None:
             self.load_checkpoint(checkpoint)
+        # Mixed-precision compute does not imply identical parameter storage
+        # dtypes; record the actual library result rather than infer it from AMP.
+        parameter_dtypes: dict[str, int] = {}
+        for parameter in self.model.parameters():
+            key = f"{'trainable' if parameter.requires_grad else 'frozen'}:{parameter.dtype}"
+            parameter_dtypes[key] = parameter_dtypes.get(key, 0) + parameter.numel()
         self.log_event("model_loaded", model=asdict(config), policy_version=self.version,
                        adapter_fingerprint=self.adapter_fingerprint(),
+                       parameter_dtype_counts=parameter_dtypes,
                        trainable_parameters=sum(p.numel() for p in self.trainable_parameters()))
 
     def log_event(self, event: str, **fields: Any) -> None:
