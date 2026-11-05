@@ -195,6 +195,52 @@ def update_policy(policy: Any, groups: list[list[Episode]], optimizer: Any,
         return metrics
 
 
+def _likelihood_diagnostics(sampled: list[float], scoring: list[float], replayed: list[float]) -> dict[str, Any]:
+    """Summarize every saved position without replacing behavior probabilities.
+
+    CWM uses trainer/scorer probabilities over sampled inference probabilities:
+    https://arxiv.org/html/2510.02387v1#A3 ; its clip bounds are specified in
+    https://arxiv.org/html/2510.02387v1#S5.SS2 . Our preflight engineering gate
+    requires ratios to start inside that interval, not equal one.
+    BF16 cached/full-forward divergence is discussed in the upstream analysis:
+    https://github.com/huggingface/transformers/issues/46190 .
+    """
+    log_ratios = [new - old for new, old in zip(scoring, sampled, strict=True)]
+    replay_differences = [new - old for new, old in zip(replayed, sampled, strict=True)]
+    scoring_finite = all(math.isfinite(value) for value in log_ratios)
+    replay_finite = all(math.isfinite(value) for value in replay_differences)
+    lower, upper = math.log(0.8), math.log(1.25)
+    clipped = sum(value < lower or value > upper for value in log_ratios) if scoring_finite else None
+
+    def ratio(value: float) -> float | str:
+        """Overflow is diagnostic evidence, never an exception before saving."""
+        try:
+            return math.exp(value)
+        except OverflowError:
+            return "inf"
+
+    return {
+        **{name: [value if math.isfinite(value) else str(value) for value in values]
+           for name, values in (("sampled_logprobs", sampled), ("scoring_logprobs", scoring),
+                                ("replayed_logprobs", replayed))},
+        "scoring_max_abs_difference": max(map(abs, log_ratios)) if scoring_finite else None,
+        "replay_max_abs_difference": max(map(abs, replay_differences)) if replay_finite else None,
+        "scoring_log_ratio_min": min(log_ratios) if scoring_finite else None,
+        "scoring_log_ratio_max": max(log_ratios) if scoring_finite else None,
+        "scoring_log_ratio_mean": math.fsum(value / len(log_ratios) for value in log_ratios) if scoring_finite else None,
+        "scoring_ratio_min": ratio(min(log_ratios)) if scoring_finite else None,
+        "scoring_ratio_max": ratio(max(log_ratios)) if scoring_finite else None,
+        "scoring_clipped_tokens": clipped,
+        "scoring_clipped_fraction": clipped / len(log_ratios) if scoring_finite else None,
+        # Retain the legacy key as null: there is no absolute scoring cutoff.
+        "difference_limit": None, "replay_limit": 0.05,
+        "scoring_guard": {"kind": "preupdate_ratios_inside_clip_interval",
+                          "ratio_lower": 0.8, "ratio_upper": 1.25,
+                          "log_ratio_lower": lower, "log_ratio_upper": upper},
+        "finite": scoring_finite and replay_finite,
+    }
+
+
 def run_preflight(config: ModelConfig, run_dir: Path) -> dict[str, Any]:
     """Measure a real local forward/backward/save/reload before the pilot.
 
@@ -220,33 +266,25 @@ def run_preflight(config: ModelConfig, run_dir: Path) -> dict[str, Any]:
         # Re-score exactly the sampled token sequence before any optimizer step.
         with torch.no_grad():
             rescored = policy.action_logprobs(generation)
-            sampled = torch.tensor(generation.old_logprobs, device=rescored.device)
-            mismatch = float((rescored - sampled).abs().max().item())
             scoring_values = rescored.detach().cpu().tolist()
         # Replay the actual cached sampling path separately from the trainer's
         # full forward. CWM keeps inference probabilities as the denominator;
         # these diagnostics must never overwrite the original behavior record.
         replayed = policy.replay_behavior_logprobs(generation, max_new_tokens=config.action_tokens)
-        replay_mismatch = max(abs(a - b) for a, b in zip(replayed, generation.old_logprobs, strict=True))
-        finite = all(math.isfinite(value) for value in scoring_values + replayed)
-        likelihood = {
-            "sampled_logprobs": generation.old_logprobs,
-            "scoring_logprobs": [value if math.isfinite(value) else str(value) for value in scoring_values],
-            "replayed_logprobs": [value if math.isfinite(value) else str(value) for value in replayed],
-            "scoring_max_abs_difference": mismatch if math.isfinite(mismatch) else None,
-            "replay_max_abs_difference": replay_mismatch if math.isfinite(replay_mismatch) else None,
-            "difference_limit": 0.05, "finite": finite,
-        }
+        likelihood = _likelihood_diagnostics(generation.old_logprobs, scoring_values, replayed)
         write_json(run_dir / "likelihood.json", likelihood)
         policy.log_event("likelihood_checked", **likelihood)
-        if not finite:
+        if not likelihood["finite"]:
             raise FloatingPointError("Preflight log probabilities must be finite")
-        if replay_mismatch > 0.05:
+        replay_mismatch = likelihood["replay_max_abs_difference"]
+        if replay_mismatch > likelihood["replay_limit"]:
             raise RuntimeError(f"Generation/replay log probabilities disagree: {replay_mismatch:.6g}")
-        # Cached generation and full BF16 forwards may differ numerically. Large
-        # discrepancies invalidate importance ratios and fail the preflight.
-        if mismatch > 0.05:
-            raise RuntimeError(f"Generation/scoring log probabilities disagree: {mismatch:.6g}")
+        # Compare signed log ratios, avoiding overflow and requiring no token to
+        # be clipped before an update. This does not require BF16 paths to match.
+        if likelihood["scoring_clipped_tokens"]:
+            raise RuntimeError("Pre-update scoring ratios exceed [0.8, 1.25]: "
+                               f"{likelihood['scoring_clipped_tokens']} tokens; log-ratio range "
+                               f"[{likelihood['scoring_log_ratio_min']}, {likelihood['scoring_log_ratio_max']}]")
 
         # Exercise the maximum allowed context and action dimensions without
         # assuming that a naturally generated answer reaches the token ceiling.
@@ -284,9 +322,12 @@ def run_preflight(config: ModelConfig, run_dir: Path) -> dict[str, Any]:
             "model_config": asdict(config),
             "generation_seconds": generation.elapsed_seconds,
             "generated_tokens": len(generation.completion_ids),
-            "old_logprob_max_abs_difference": mismatch,
-            "old_logprob_difference_limit": 0.05,
+            "old_logprob_max_abs_difference": likelihood["scoring_max_abs_difference"],
+            "old_logprob_difference_limit": None,
             "old_logprob_replay_max_abs_difference": replay_mismatch,
+            "old_logprob_replay_difference_limit": likelihood["replay_limit"],
+            "likelihood_diagnostics": {key: value for key, value in likelihood.items()
+                                       if not key.endswith("_logprobs")},
             "stress_context_tokens": config.context_tokens,
             "stress_action_tokens": config.action_tokens,
             "stress_loss": float(loss.detach()), "gradient_norm": float(grad_norm),
