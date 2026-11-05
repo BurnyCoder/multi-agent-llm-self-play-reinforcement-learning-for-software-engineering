@@ -8,7 +8,7 @@ The project adapts [Self-play SWE-RL](https://arxiv.org/html/2512.18552v3), the 
 
 <!-- SSR_RESULTS:START -->
 
-Recorded run status: **pilot_interrupted**.
+Recorded run status: **pilot_running**.
 
 Recorded failure history (retained after later successful phases):
 
@@ -27,7 +27,7 @@ These are unscored harness diagnostics, excluded from benchmark success and trai
 
 | Bug source | Condition | Planned | Attempted | Resolved / scored | Rate | Unscored recorded | Unrecorded |
 | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| human | base | 32 | 1 | Not evaluated | Not evaluated | 1 | 31 |
+| human | base | 32 | 1 | 0 / 1 | 0.0% | 0 | 31 |
 | human | trained | 32 | 0 | Not evaluated | Not evaluated | 0 | 32 |
 | synthetic | base | 16 | 0 | Not evaluated | Not evaluated | 0 | 16 |
 | synthetic | trained | 16 | 0 | Not evaluated | Not evaluated | 0 | 16 |
