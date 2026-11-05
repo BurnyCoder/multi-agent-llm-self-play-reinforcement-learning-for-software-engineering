@@ -43,14 +43,41 @@ def data_directory() -> Path:
 
 
 def preparation_evidence() -> dict:
-    """Summarize existing executable setup checks without exposing oracle patches."""
+    """Verify local prerequisites before model loading, without oracle patches."""
     destination = data_directory()
     human = json.loads((destination / "human_envs.json").read_text())
     synthetic = json.loads((destination / "synthetic/tasks.json").read_text())
+    ready = [row for row in human["tasks"] if row.get("status") == "ready"]
+    repositories = load_repositories()
+    pins = {row["instance_id"]: row for row in _read_manifest("image_pins")["tasks"]}
+    for row in ready:
+        if row["image_digest"] != pins.get(row["instance_id"], {}).get("image_digest"):
+            raise ValueError(f"Prepared oracle digest differs from committed pin: {row['instance_id']}")
+    sources = [(row["instance_id"], row["source_path"]) for row in ready]
+    sources.extend((spec.name, spec.source_path) for spec in repositories)
+    for name, source in sources:
+        if not Path(source).is_dir():
+            raise FileNotFoundError(f"Prepared source is unavailable for {name}: {source}")
+    dependency_images = {spec.image_digest or spec.image for spec in repositories}
+    images = sorted(dependency_images | {row[key] for row in ready for key in ("agent_image", "image_digest")})
+    # Inspect only recorded inputs, in one read-only batch; never pull or rebuild.
+    # https://docs.docker.com/reference/cli/docker/image/inspect/
+    try:
+        inspected = command(["docker", "image", "inspect", "--format", "{{.Id}}", *images]).splitlines()
+    except subprocess.CalledProcessError as exc:
+        raise RuntimeError("Prepared Docker images are unavailable; restore matching images or rerun preparation. "
+                           + (exc.stderr or str(exc)).strip()) from exc
+    if len(inspected) != len(images) or any(not re.fullmatch(r"sha256:[0-9a-f]{64}", value) for value in inspected):
+        raise RuntimeError("Docker inspection did not return every prepared image identity")
+    image_ids = dict(zip(images, inspected, strict=True))
     control_file = destination / "validation/human-grader-smoke/results.json"
     controls = json.loads(control_file.read_text()) if control_file.exists() else []
-    result = {"human_environments_ready": sum(row.get("status") == "ready" for row in human["tasks"]),
+    result = {"human_environments_ready": len(ready),
         "human_environments_planned": len(_read_manifest("evaluation")["tasks"]),
+        "docker_images_checked": len(images),
+        "dependency_image_ids": sorted({image_ids[image] for image in dependency_images}),
+        "human_image_identities": [{**{key: row[key] for key in ("instance_id", "base_commit", "image_digest")},
+                                    "agent_image": image_ids[row["agent_image"]]} for row in ready],
         "synthetic_validated_tasks": len(synthetic),
         "synthetic_distinct_functions": len({row["cluster_id"] for row in synthetic}),
         "synthetic_clean_test_counts": sorted({len(row["clean_results"]) for row in synthetic}),
