@@ -1,6 +1,8 @@
 # Experiments recorded in this run
 
-No failure metadata is recorded. This alone does not establish successful execution.
+Recorded failure history (retained after later successful phases):
+
+- 2026-11-05T21:30:15.600645+00:00, **preflight**: RuntimeError: Generation/scoring log probabilities disagree: 0.152308.
 
 ## Interrupted attempt and recovery amendment
 

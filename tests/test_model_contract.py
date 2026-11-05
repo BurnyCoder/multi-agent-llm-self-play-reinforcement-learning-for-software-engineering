@@ -122,6 +122,107 @@ def test_action_logprobs_align_first_completion_and_exclude_observations():
     assert policy.model.logits.grad[4].abs().sum() == 0
 
 
+def test_action_scoring_uses_bf16_forward_and_float32_normalization():
+    """Exercise a real matrix product so autocast cannot be a no-op mock."""
+    torch = pytest.importorskip("torch")
+
+    class MatmulModel(torch.nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.weight = torch.nn.Parameter(torch.arange(35, dtype=torch.float32).reshape(5, 7) / 11)
+
+        def forward(self, input_ids, attention_mask, use_cache, logits_to_keep):
+            output = torch.eye(5) @ self.weight
+            assert torch.is_autocast_enabled("cpu")
+            assert output.dtype == torch.bfloat16
+            return SimpleNamespace(logits=output[-logits_to_keep:].unsqueeze(0))
+
+    policy = LocalPolicy.__new__(LocalPolicy)
+    policy.torch = torch
+    policy.config = ModelConfig(context_tokens=8)
+    policy.device = "cpu"
+    policy.lock = threading.RLock()
+    policy.model = MatmulModel()
+    policy._backend = SimpleNamespace(for_training=lambda model: model.train())
+    generation = Generation("", [1, 2, 3], [4, 5], [0.0, 0.0])
+    actual = policy.action_logprobs(generation)
+    expected = policy.model.weight.detach().to(torch.bfloat16).float().log_softmax(-1)
+    assert actual.dtype == torch.float32
+    assert torch.allclose(actual, expected[[2, 3], [4, 5]], atol=1e-6)
+    assert not torch.is_autocast_enabled("cpu")
+    (-actual.sum()).backward()
+    assert torch.isfinite(policy.model.weight.grad).all()
+    assert policy.model.weight.grad[2:4].abs().sum() > 0
+    assert policy.model.weight.grad[[0, 1, 4]].abs().sum() == 0
+
+
+@pytest.mark.parametrize("initial_training", [False, True])
+@pytest.mark.parametrize("fail", [False, True])
+def test_behavior_replay_measures_before_forcing_and_restores_state(tmp_path, initial_training, fail):
+    """Forced token probability is one; replay must instead report raw probabilities."""
+    torch = pytest.importorskip("torch")
+    pytest.importorskip("transformers")
+
+    class ReplayModel(torch.nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.weight = torch.nn.Parameter(torch.arange(6, dtype=torch.float32))
+            self.generation_config = SimpleNamespace(eos_token_id=5, bos_token_id=1)
+
+        def generate(self, input_ids, attention_mask, generation_config, logits_processor, stopping_criteria):
+            assert not self.training and not torch.is_grad_enabled()
+            assert generation_config.max_new_tokens == 4  # Original capacity, not the saved length.
+            assert generation_config.temperature == 1 and generation_config.top_k == 0
+            assert generation_config.use_cache
+            result = input_ids
+            for step, token in enumerate((1, 3)):
+                scores = self.weight.unsqueeze(0) + step * torch.arange(6)
+                raw = scores.clone()
+                forced = logits_processor(result, scores)
+                assert torch.equal(scores, raw)  # The measurement input is not overwritten.
+                assert forced.softmax(-1)[0, token] == 1
+                sampled = torch.multinomial(forced.softmax(-1), num_samples=1)
+                result = torch.cat((result, sampled), dim=1)
+                assert bool(stopping_criteria(result, None).all()) == (step == 1)
+                if fail:
+                    raise RuntimeError("fixture replay failure")
+            return result
+
+    policy = LocalPolicy.__new__(LocalPolicy)
+    policy.torch = torch
+    policy.config = ModelConfig(context_tokens=32, action_tokens=4)
+    policy.device = torch.device("cpu")
+    policy.lock = threading.RLock()
+    policy._log_lock = threading.RLock()
+    policy.log_path = tmp_path / "replay.jsonl"
+    policy.version = 7
+    policy.model = ReplayModel().train(initial_training)
+    policy.tokenizer = SimpleNamespace(pad_token_id=0)
+    policy._backend = SimpleNamespace(for_inference=lambda model: model.eval(),
+                                      for_training=lambda model: model.train())
+    generation = Generation("fixture", [1, 2], [1, 3], [-5.0, -6.0], policy_version=7)
+    old = generation.old_logprobs.copy()
+    weight = policy.model.weight.detach().clone()
+    rng = torch.get_rng_state().clone()
+    if fail:
+        with pytest.raises(RuntimeError, match="fixture replay failure"):
+            policy.replay_behavior_logprobs(generation, max_new_tokens=4)
+    else:
+        actual = policy.replay_behavior_logprobs(generation, max_new_tokens=4)
+        expected = [torch.arange(6, dtype=torch.float32).log_softmax(0)[1],
+                    (2 * torch.arange(6, dtype=torch.float32)).log_softmax(0)[3]]
+        assert actual == pytest.approx([float(value) for value in expected])
+        event = json.loads(policy.log_path.read_text().splitlines()[-1])
+        assert event["event"] == "behavior_replay_complete"
+        assert event["completion_ids"] == generation.completion_ids
+        assert event["prompt_ids"] == generation.prompt_ids
+    assert generation.old_logprobs == old
+    assert policy.model.training == initial_training
+    assert torch.equal(policy.model.weight, weight)
+    assert policy.model.weight.grad is None
+    assert torch.equal(torch.get_rng_state(), rng)
+
+
 @pytest.mark.parametrize("long_observation", [False, True])
 def test_generation_records_the_actual_sampled_token_probability(tmp_path, monkeypatch, long_observation):
     """Verify the final/EOS-step recorder path without loading any model weights."""
