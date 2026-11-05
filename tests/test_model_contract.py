@@ -1,6 +1,8 @@
 """Check safe context boundaries and exact causal action-probability alignment."""
 
+import builtins
 import json
+import os
 import subprocess
 import sys
 import threading
@@ -88,6 +90,26 @@ def test_importing_harness_backend_does_not_import_ml_libraries():
 def test_unpinned_model_fails_before_any_download(tmp_path):
     with pytest.raises(ValueError, match="revision"):
         LocalPolicy(ModelConfig(), tmp_path / "model.jsonl")
+
+
+def test_statistics_downloads_are_disabled_before_unsloth_import(tmp_path, monkeypatch):
+    """Stop at the import boundary; this test loads no ML library or model."""
+    monkeypatch.delenv("UNSLOTH_DISABLE_STATISTICS", raising=False)
+    monkeypatch.delenv("UNSLOTH_RETURN_LOGITS", raising=False)
+    original_import = builtins.__import__
+
+    class ImportReached(Exception):
+        pass
+
+    def intercept_import(name, *args, **kwargs):
+        if name == "unsloth":
+            assert os.environ.get("UNSLOTH_DISABLE_STATISTICS") == "1"
+            raise ImportReached
+        return original_import(name, *args, **kwargs)
+
+    monkeypatch.setattr(builtins, "__import__", intercept_import)
+    with pytest.raises(ImportReached):
+        LocalPolicy(ModelConfig(revision="fixture-pin"), tmp_path / "model.jsonl")
 
 
 def test_action_logprobs_align_first_completion_and_exclude_observations():
