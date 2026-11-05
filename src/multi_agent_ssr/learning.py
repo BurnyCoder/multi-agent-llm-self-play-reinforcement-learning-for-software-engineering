@@ -50,8 +50,14 @@ def compute_advantages(episodes: list[Episode]) -> dict[str, float]:
         # zero contribution preserves its scored outcomes without inventing
         # gradients; update_policy reports this non-trainable group explicitly.
         return {episode.episode_id: 0.0 for episode in episodes}
-    mean = math.fsum(float(episode.reward) * episode.token_count for episode in episodes) / total
-    return {episode.episode_id: float(episode.reward) - mean for episode in episodes}
+    # Subtract one active return before summation: (r-c) - mean(r-c) = r-mean(r).
+    # Equal active rewards then center to exactly zero, without a tolerance that
+    # could suppress real signal. A zero-action outlier must not set the anchor.
+    # Accurate summation: https://docs.python.org/3.12/library/math.html#math.fsum
+    reference = next(float(episode.reward) for episode in episodes if episode.token_count)
+    mean = math.fsum((float(episode.reward) - reference) * episode.token_count
+                     for episode in episodes if episode.token_count) / total
+    return {episode.episode_id: (float(episode.reward) - reference) - mean for episode in episodes}
 
 
 def clipped_token_loss(new_logps: Any, old_logps: Any, advantage: float,
