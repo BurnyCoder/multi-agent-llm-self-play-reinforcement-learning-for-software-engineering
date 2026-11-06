@@ -140,9 +140,10 @@ def export_checkpoint(run_dir: Path, report_dir: Path, destination: Path) -> Pat
     write_json(destination / "experiment.json", manifest)
     write_json(destination / "evaluation-summary.json", report["analysis"])
     write_json(destination / "selection.json", latest)
-    write_json(destination / "report-summary.json", report)
+    # Preserve the generated report's local analysis/preregistration links.
+    write_json(destination / "summary.json", report)
     files.extend(destination / name for name in
-                 ("experiment.json", "evaluation-summary.json", "selection.json", "report-summary.json"))
+                 ("experiment.json", "evaluation-summary.json", "selection.json", "summary.json"))
     # The original basename preserves reporting's path-derived run_id fallback.
     records_relative = Path("run-records") / run_dir.name
     for path in records:
@@ -150,7 +151,7 @@ def export_checkpoint(run_dir: Path, report_dir: Path, destination: Path) -> Pat
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(path, target)
         files.append(target)
-    for name in ["experiment.md", "paper.pdf"]:
+    for name in ["experiment.md", "paper.pdf", "preregistration.md"]:
         if (report_dir / name).exists():
             shutil.copyfile(report_dir / name, destination / name)
             files.append(destination / name)
