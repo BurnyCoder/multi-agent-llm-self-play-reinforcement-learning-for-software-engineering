@@ -27,18 +27,24 @@ These are unscored harness diagnostics, excluded from benchmark success and trai
 
 | Bug source | Condition | Planned | Attempted | Resolved / scored | Rate | Unscored recorded | Unrecorded |
 | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| human | base | 32 | 1 | 0 / 1 | 0.0% | 0 | 31 |
-| human | trained | 32 | 0 | Not evaluated | Not evaluated | 0 | 32 |
-| synthetic | base | 16 | 0 | Not evaluated | Not evaluated | 0 | 16 |
+| human | base | 32 | 22 | 0 / 21 | 0.0% | 11 | 0 |
+| human | trained | 32 | 1 | 0 / 1 | 0.0% | 0 | 31 |
+| synthetic | base | 16 | 0 | Not evaluated | Not evaluated | 16 | 0 |
 | synthetic | trained | 16 | 0 | Not evaluated | Not evaluated | 0 | 16 |
+
+The final condition received no recorded optimizer updates. Any observed paired differences concern two evaluations of unchanged weights, not an estimated self-play training effect. The primary hypothesis's learning intervention did not occur. The saved trained condition label, confidence intervals and preregistered interval rule remain unchanged.
 
 ### Human bugs
 
-Not evaluated: no tasks have completed outcomes for both conditions.
+Across 1 paired tasks, the trained-minus-base resolution difference was +0.0 percentage points (95% paired bootstrap interval [+0.0, +0.0]). Improved: 0; regressed: 0; unchanged: 1. Under the preregistered interval rule, this comparison contradicts the predicted improvement. The bootstrap interval is degenerate; it does not establish equivalence or rule out a population effect.
 
 ### Synthetic bugs
 
 Not evaluated: no tasks have completed outcomes for both conditions.
+
+## Recorded training outcome
+
+Completed collection groups: 2 (with saved training_group outcomes); valid bugs / injector episodes: 0 / 4; recorded repair attempts: 0; zero-advantage episodes: 4; optimizer steps: 0. Collection groups with sampled actions but only zero advantages: 2. Subtracting the length-weighted group mean turns equal returns into zero advantages. These groups had no nonzero-advantage action tokens and recorded no learning update. Saved invalidity reason counts across all logged artifact checks, including incomplete collections: {"At least one test target is required": 4}.
 
 | Deferred condition | Purpose | Result |
 | --- | --- | --- |
