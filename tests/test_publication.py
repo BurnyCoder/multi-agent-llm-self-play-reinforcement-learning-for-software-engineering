@@ -106,6 +106,23 @@ def test_export_pins_peft_base_revision_without_modifying_saved_checkpoint(tmp_p
     assert "export-transformations.json" in {row["path"] for row in inventory["files"]}
 
 
+def test_model_card_keeps_aggregates_and_links_complete_task_evidence(tmp_path):
+    run, report = _fixture(tmp_path)
+    analysis = {"conditions": {"human": {"base": {"completed": 2, "successes": 1}}},
+                "comparisons": {"human": {"paired_tasks": 2, "difference": 0.0, "ci95": [-1.0, 1.0]}},
+                "bootstrap": {"samples": 20},
+                "records": [{"task_id": "fixture-detailed-task", "official_report": {
+                    "tests_status": {"FAIL_TO_PASS": {"failure": ["fixture-specific-test"]}}}}]}
+    write_json(report / "summary.json", {"status": "completed", "analysis": analysis})
+    bundle = export_checkpoint(run, report, tmp_path / "export")
+    card = (bundle / "README.md").read_text()
+    inline = card.split("## Recorded evaluation", 1)[1].split("```json\n", 1)[1].split("```", 1)[0]
+    assert json.loads(inline) == {key: value for key, value in analysis.items() if key != "records"}
+    assert "fixture-detailed-task" not in card and "fixture-specific-test" not in card
+    assert "[Complete evaluation records](evaluation-summary.json)" in card
+    assert json.loads((bundle / "evaluation-summary.json").read_text()) == analysis
+
+
 def test_exported_records_regenerate_report_and_retain_exact_action_tokens(tmp_path, monkeypatch):
     run, report = _fixture(tmp_path)
     notices = tmp_path / "notices"
