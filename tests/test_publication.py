@@ -1,5 +1,6 @@
 """A software preflight must never be mislabeled as the research checkpoint."""
 import json
+import re
 from dataclasses import asdict
 from hashlib import sha256
 
@@ -40,6 +41,19 @@ def test_export_refuses_preflight_adapter(tmp_path):
     (checkpoint / "checkpoint.json").write_text(json.dumps({"metadata": {"purpose": "preflight_only"}}))
     with pytest.raises(ValueError, match="preflight-only"):
         export_checkpoint(tmp_path, tmp_path, tmp_path / "export")
+
+
+def test_export_preserves_report_local_links_and_preregistration(tmp_path):
+    run, report = _fixture(tmp_path)
+    text = "[Saved analysis](summary.json) and [Preregistration](preregistration.md)\n"
+    (report / "experiment.md").write_text(text)
+    (report / "preregistration.md").write_text("Fixture preregistration\n")
+    bundle = export_checkpoint(run, report, tmp_path / "export")
+    exported = (bundle / "experiment.md").read_text()
+    assert exported == text
+    assert all((bundle / link).is_file() for link in re.findall(r"\]\(([^)]+)\)", exported))
+    assert (bundle / "preregistration.md").read_bytes() == (report / "preregistration.md").read_bytes()
+    assert json.loads((bundle / "summary.json").read_text()) == json.loads((report / "summary.json").read_text())
 
 
 @pytest.mark.parametrize("version", [0, 2])
