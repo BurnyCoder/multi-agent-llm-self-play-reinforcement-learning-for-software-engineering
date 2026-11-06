@@ -26,7 +26,7 @@ function renderEvidence() {
     byId("effect").textContent = `${pair.difference >= 0 ? "+" : ""}${(pair.difference * 100).toFixed(1)} pp`;
     byId("effect-ci").textContent = `95% interval [${(pair.ci95[0] * 100).toFixed(1)}, ${(pair.ci95[1] * 100).toFixed(1)}] · ${pair.paired_tasks} paired tasks`;
     const messages = {
-      positive_task_level_evidence: "The recorded task comparison favors the trained policy. This does not establish seed robustness or the causal benefit of subagents.",
+      positive_task_level_evidence: "The recorded task comparison favors the final condition. This does not establish seed robustness or the causal benefit of subagents.",
       nonpositive_task_level_evidence: "The recorded task comparison does not support the predicted improvement. Negative results remain part of the research record.",
       no_observed_difference: "No difference was observed on the paired tasks. The preregistered interval rule contradicts the predicted improvement, while this degenerate interval does not establish equivalence or rule out an effect beyond this sample.",
       inconclusive: "The paired interval includes zero. This pilot is inconclusive about an improvement in held-out human-bug repair."
