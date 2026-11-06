@@ -1,0 +1,965 @@
+{
+  "format_version": 1,
+  "created_at": "2026-11-06T00:47:31.065339+00:00",
+  "scope": "Exact public benchmark-repository license/notice files and the cached pinned dataset card; no repository implementation, reference fix, evaluation patch or model weights.",
+  "deduplication": "One copied file per SHA256; every original filename, path, repository revision and task association is retained in origins.",
+  "revision_evidence": "Committed evaluation manifest and prepared human_envs records agree on base_commit. The preparation exporter checks tracked source content against that commit before removing Git history; this collection does not repeat that Docker check.",
+  "dataset": {
+    "id": "SWE-bench/SWE-bench_Verified",
+    "revision": "78f471bf655a3137b2e8a75af1501690ec009ec3",
+    "card_path": "files/923e6b481ff75c709737251e602bdc311a9be49235b5c20107366747f5640fe4/README.md",
+    "license_status": "No license declaration or license file was present in the locally cached pinned dataset snapshot. This observation does not establish reuse permission.",
+    "cached_root_entries": [
+      "README.md",
+      "data"
+    ]
+  },
+  "files": [
+    {
+      "path": "files/09e8a9bcec8067104652c168685ab0931e7868f9c8284b66f5ae6edae5f1130b/LICENSE",
+      "sha256": "09e8a9bcec8067104652c168685ab0931e7868f9c8284b66f5ae6edae5f1130b",
+      "bytes": 10142,
+      "origins": [
+        {
+          "repository": "psf/requests",
+          "revision": "39d0fdd9096f7dceccbc8f82e1eda7dd64717a8e",
+          "source_path": "LICENSE",
+          "original_filename": "LICENSE",
+          "source": "https://github.com/psf/requests/blob/39d0fdd9096f7dceccbc8f82e1eda7dd64717a8e/LICENSE",
+          "instance_id": "psf__requests-5414",
+          "image_digest": "swebench/sweb.eval.x86_64.psf_1776_requests-5414@sha256:71c78211f16803c111ed1807ded20f8defd5f6917fb958ace4e076d5ea7d8b10",
+          "local_source": "${TASK_DATA}/human_environments/psf__requests-5414/source/LICENSE"
+        },
+        {
+          "repository": "psf/requests",
+          "revision": "0192aac24123735b3eaf9b08df46429bb770c283",
+          "source_path": "LICENSE",
+          "original_filename": "LICENSE",
+          "source": "https://github.com/psf/requests/blob/0192aac24123735b3eaf9b08df46429bb770c283/LICENSE",
+          "instance_id": "psf__requests-6028",
+          "image_digest": "swebench/sweb.eval.x86_64.psf_1776_requests-6028@sha256:639088346355ea7076bc6faf2eadb23b1e1f1ed4f34b291e843061b2fc87cbe2",
+          "local_source": "${TASK_DATA}/human_environments/psf__requests-6028/source/LICENSE"
+        }
+      ]
+    },
+    {
+      "path": "files/2e63a3bd3a1f97e2fa9fa33bbf4f61bbb56ee16beb125b5346b0012388dc3b49/LICENSE.rst",
+      "sha256": "2e63a3bd3a1f97e2fa9fa33bbf4f61bbb56ee16beb125b5346b0012388dc3b49",
+      "bytes": 780,
+      "origins": [
+        {
+          "repository": "pallets/flask",
+          "revision": "7ee9ceb71e868944a46e1ff00b506772a53a4f1d",
+          "source_path": "artwork/LICENSE.rst",
+          "original_filename": "LICENSE.rst",
+          "source": "https://github.com/pallets/flask/blob/7ee9ceb71e868944a46e1ff00b506772a53a4f1d/artwork/LICENSE.rst",
+          "instance_id": "pallets__flask-5014",
+          "image_digest": "swebench/sweb.eval.x86_64.pallets_1776_flask-5014@sha256:bde4fbdafa36141d4396944da88ec37aabdef612ed36920090675bccd0ca5d72",
+          "local_source": "${TASK_DATA}/human_environments/pallets__flask-5014/source/artwork/LICENSE.rst"
+        }
+      ]
+    },
+    {
+      "path": "files/3172d399cbd8f10609e73fec73d0e0b33eecd3c572a68b0722229d8c7059f725/LICENSE",
+      "sha256": "3172d399cbd8f10609e73fec73d0e0b33eecd3c572a68b0722229d8c7059f725",
+      "bytes": 51,
+      "origins": [
+        {
+          "repository": "psf/requests",
+          "revision": "39d0fdd9096f7dceccbc8f82e1eda7dd64717a8e",
+          "source_path": "ext/LICENSE",
+          "original_filename": "LICENSE",
+          "source": "https://github.com/psf/requests/blob/39d0fdd9096f7dceccbc8f82e1eda7dd64717a8e/ext/LICENSE",
+          "instance_id": "psf__requests-5414",
+          "image_digest": "swebench/sweb.eval.x86_64.psf_1776_requests-5414@sha256:71c78211f16803c111ed1807ded20f8defd5f6917fb958ace4e076d5ea7d8b10",
+          "local_source": "${TASK_DATA}/human_environments/psf__requests-5414/source/ext/LICENSE"
+        },
+        {
+          "repository": "psf/requests",
+          "revision": "0192aac24123735b3eaf9b08df46429bb770c283",
+          "source_path": "ext/LICENSE",
+          "original_filename": "LICENSE",
+          "source": "https://github.com/psf/requests/blob/0192aac24123735b3eaf9b08df46429bb770c283/ext/LICENSE",
+          "instance_id": "psf__requests-6028",
+          "image_digest": "swebench/sweb.eval.x86_64.psf_1776_requests-6028@sha256:639088346355ea7076bc6faf2eadb23b1e1f1ed4f34b291e843061b2fc87cbe2",
+          "local_source": "${TASK_DATA}/human_environments/psf__requests-6028/source/ext/LICENSE"
+        }
+      ]
+    },
+    {
+      "path": "files/3299f3fac35b42fbd3338044d9519ad8fd51ca72466a928a8732c54f8e2c9fd0/NOTICE",
+      "sha256": "3299f3fac35b42fbd3338044d9519ad8fd51ca72466a928a8732c54f8e2c9fd0",
+      "bytes": 2292,
+      "origins": [
+        {
+          "repository": "psf/requests",
+          "revision": "5f7a3a74aab1625c2bb65f643197ee885e3da576",
+          "source_path": "NOTICE",
+          "original_filename": "NOTICE",
+          "source": "https://github.com/psf/requests/blob/5f7a3a74aab1625c2bb65f643197ee885e3da576/NOTICE",
+          "instance_id": "psf__requests-2931",
+          "image_digest": "swebench/sweb.eval.x86_64.psf_1776_requests-2931@sha256:705258c23c73d25bc78ed6fa4b14836078d848a64ab9c3ea3032d1d523d7cca4",
+          "local_source": "${TASK_DATA}/human_environments/psf__requests-2931/source/NOTICE"
+        },
+        {
+          "repository": "psf/requests",
+          "revision": "091991be0da19de9108dbe5e3752917fea3d7fdc",
+          "source_path": "NOTICE",
+          "original_filename": "NOTICE",
+          "source": "https://github.com/psf/requests/blob/091991be0da19de9108dbe5e3752917fea3d7fdc/NOTICE",
+          "instance_id": "psf__requests-2317",
+          "image_digest": "swebench/sweb.eval.x86_64.psf_1776_requests-2317@sha256:c6b5c8846507b5e48e307decca28dbdfa4f5ef17070c1087aacde765e8c4b178",
+          "local_source": "${TASK_DATA}/human_environments/psf__requests-2317/source/NOTICE"
+        }
+      ]
+    },
+    {
+      "path": "files/4158d74a42b099b603e597d24a344f395f47da8e187638f451795900f28d9bc4/NOTICE",
+      "sha256": "4158d74a42b099b603e597d24a344f395f47da8e187638f451795900f28d9bc4",
+      "bytes": 4377,
+      "origins": [
+        {
+          "repository": "psf/requests",
+          "revision": "22623bd8c265b78b161542663ee980738441c307",
+          "source_path": "NOTICE",
+          "original_filename": "NOTICE",
+          "source": "https://github.com/psf/requests/blob/22623bd8c265b78b161542663ee980738441c307/NOTICE",
+          "instance_id": "psf__requests-1142",
+          "image_digest": "swebench/sweb.eval.x86_64.psf_1776_requests-1142@sha256:b2733e57feb4cfaeac24ab5ec496d4cb89a37db53bd0ca72eaededdb2ce19d1c",
+          "local_source": "${TASK_DATA}/human_environments/psf__requests-1142/source/NOTICE"
+        }
+      ]
+    },
+    {
+      "path": "files/45b6addd843b2ed89f9f8f363f61092db2e3c2461e3f178c3c3793648c3c4e07/license.rst",
+      "sha256": "45b6addd843b2ed89f9f8f363f61092db2e3c2461e3f178c3c3793648c3c4e07",
+      "bytes": 1372,
+      "origins": [
+        {
+          "repository": "pytest-dev/pytest",
+          "revision": "3c1534944cbd34e8a41bc9e76818018fadefc9a1",
+          "source_path": "doc/en/license.rst",
+          "original_filename": "license.rst",
+          "source": "https://github.com/pytest-dev/pytest/blob/3c1534944cbd34e8a41bc9e76818018fadefc9a1/doc/en/license.rst",
+          "instance_id": "pytest-dev__pytest-10356",
+          "image_digest": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-10356@sha256:363458d4698f5d985f6476d189d3f1cf902253cd9518705fd395516cd30138da",
+          "local_source": "${TASK_DATA}/human_environments/pytest-dev__pytest-10356/source/doc/en/license.rst"
+        },
+        {
+          "repository": "pytest-dev/pytest",
+          "revision": "aa55975c7d3f6c9f6d7f68accc41bb7cadf0eb9a",
+          "source_path": "doc/en/license.rst",
+          "original_filename": "license.rst",
+          "source": "https://github.com/pytest-dev/pytest/blob/aa55975c7d3f6c9f6d7f68accc41bb7cadf0eb9a/doc/en/license.rst",
+          "instance_id": "pytest-dev__pytest-10051",
+          "image_digest": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-10051@sha256:e38365e835d4ba57f3e7331778894f51ac20bf6c5893827065da8657525e123f",
+          "local_source": "${TASK_DATA}/human_environments/pytest-dev__pytest-10051/source/doc/en/license.rst"
+        }
+      ]
+    },
+    {
+      "path": "files/489a8e1108509ed98a37bb983e11e0f7e1d31f0bd8f99a79c8448e7ff37d07ea/LICENSE.rst",
+      "sha256": "489a8e1108509ed98a37bb983e11e0f7e1d31f0bd8f99a79c8448e7ff37d07ea",
+      "bytes": 1475,
+      "origins": [
+        {
+          "repository": "pallets/flask",
+          "revision": "7ee9ceb71e868944a46e1ff00b506772a53a4f1d",
+          "source_path": "LICENSE.rst",
+          "original_filename": "LICENSE.rst",
+          "source": "https://github.com/pallets/flask/blob/7ee9ceb71e868944a46e1ff00b506772a53a4f1d/LICENSE.rst",
+          "instance_id": "pallets__flask-5014",
+          "image_digest": "swebench/sweb.eval.x86_64.pallets_1776_flask-5014@sha256:bde4fbdafa36141d4396944da88ec37aabdef612ed36920090675bccd0ca5d72",
+          "local_source": "${TASK_DATA}/human_environments/pallets__flask-5014/source/LICENSE.rst"
+        },
+        {
+          "repository": "pallets/flask",
+          "revision": "7ee9ceb71e868944a46e1ff00b506772a53a4f1d",
+          "source_path": "examples/tutorial/LICENSE.rst",
+          "original_filename": "LICENSE.rst",
+          "source": "https://github.com/pallets/flask/blob/7ee9ceb71e868944a46e1ff00b506772a53a4f1d/examples/tutorial/LICENSE.rst",
+          "instance_id": "pallets__flask-5014",
+          "image_digest": "swebench/sweb.eval.x86_64.pallets_1776_flask-5014@sha256:bde4fbdafa36141d4396944da88ec37aabdef612ed36920090675bccd0ca5d72",
+          "local_source": "${TASK_DATA}/human_environments/pallets__flask-5014/source/examples/tutorial/LICENSE.rst"
+        },
+        {
+          "repository": "pallets/flask",
+          "revision": "7ee9ceb71e868944a46e1ff00b506772a53a4f1d",
+          "source_path": "examples/javascript/LICENSE.rst",
+          "original_filename": "LICENSE.rst",
+          "source": "https://github.com/pallets/flask/blob/7ee9ceb71e868944a46e1ff00b506772a53a4f1d/examples/javascript/LICENSE.rst",
+          "instance_id": "pallets__flask-5014",
+          "image_digest": "swebench/sweb.eval.x86_64.pallets_1776_flask-5014@sha256:bde4fbdafa36141d4396944da88ec37aabdef612ed36920090675bccd0ca5d72",
+          "local_source": "${TASK_DATA}/human_environments/pallets__flask-5014/source/examples/javascript/LICENSE.rst"
+        }
+      ]
+    },
+    {
+      "path": "files/4be38574daf05665b6194e4fd84c5ef6ce7c3a2810308a5222d5cdffc2d04d18/LICENSE",
+      "sha256": "4be38574daf05665b6194e4fd84c5ef6ce7c3a2810308a5222d5cdffc2d04d18",
+      "bytes": 1096,
+      "origins": [
+        {
+          "repository": "pytest-dev/pytest",
+          "revision": "cb828ebe70b4fa35cd5f9a7ee024272237eab351",
+          "source_path": "LICENSE",
+          "original_filename": "LICENSE",
+          "source": "https://github.com/pytest-dev/pytest/blob/cb828ebe70b4fa35cd5f9a7ee024272237eab351/LICENSE",
+          "instance_id": "pytest-dev__pytest-5631",
+          "image_digest": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-5631@sha256:c76510e12a1765211e064f6e8de09e51ac0f7839f60d72305b374e004308b6a1",
+          "local_source": "${TASK_DATA}/human_environments/pytest-dev__pytest-5631/source/LICENSE"
+        },
+        {
+          "repository": "pytest-dev/pytest",
+          "revision": "8aba863a634f40560e25055d179220f0eefabe9a",
+          "source_path": "LICENSE",
+          "original_filename": "LICENSE",
+          "source": "https://github.com/pytest-dev/pytest/blob/8aba863a634f40560e25055d179220f0eefabe9a/LICENSE",
+          "instance_id": "pytest-dev__pytest-5809",
+          "image_digest": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-5809@sha256:0185f5d9efb9cf1364122a7eff7fc5f02227698d01f7e4f2d593917816df42d3",
+          "local_source": "${TASK_DATA}/human_environments/pytest-dev__pytest-5809/source/LICENSE"
+        },
+        {
+          "repository": "pytest-dev/pytest",
+          "revision": "58e6a09db49f34886ff13f3b7520dd0bcd7063cd",
+          "source_path": "LICENSE",
+          "original_filename": "LICENSE",
+          "source": "https://github.com/pytest-dev/pytest/blob/58e6a09db49f34886ff13f3b7520dd0bcd7063cd/LICENSE",
+          "instance_id": "pytest-dev__pytest-5262",
+          "image_digest": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-5262@sha256:0d6480e4b7519e81cdc8359fedfeb5389e1949f31a8bc9da7869b0d66a7ce2a4",
+          "local_source": "${TASK_DATA}/human_environments/pytest-dev__pytest-5262/source/LICENSE"
+        },
+        {
+          "repository": "pytest-dev/pytest",
+          "revision": "3a668ea6ff24b0c8f00498c3144c63bac561d925",
+          "source_path": "LICENSE",
+          "original_filename": "LICENSE",
+          "source": "https://github.com/pytest-dev/pytest/blob/3a668ea6ff24b0c8f00498c3144c63bac561d925/LICENSE",
+          "instance_id": "pytest-dev__pytest-6202",
+          "image_digest": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-6202@sha256:d2d9f0bf1ed8a5f50799291be86144768c3f7ad9400482d6dab7f05830f3e226",
+          "local_source": "${TASK_DATA}/human_environments/pytest-dev__pytest-6202/source/LICENSE"
+        },
+        {
+          "repository": "pytest-dev/pytest",
+          "revision": "955e54221008aba577ecbaefa15679f6777d3bf8",
+          "source_path": "LICENSE",
+          "original_filename": "LICENSE",
+          "source": "https://github.com/pytest-dev/pytest/blob/955e54221008aba577ecbaefa15679f6777d3bf8/LICENSE",
+          "instance_id": "pytest-dev__pytest-5787",
+          "image_digest": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-5787@sha256:48c6ca4406eb36dae43e08dc2137b750239b8ad8f9ccdf2924e8fc2177fca241",
+          "local_source": "${TASK_DATA}/human_environments/pytest-dev__pytest-5787/source/LICENSE"
+        },
+        {
+          "repository": "pytest-dev/pytest",
+          "revision": "e856638ba086fcf5bebf1bebea32d5cf78de87b4",
+          "source_path": "LICENSE",
+          "original_filename": "LICENSE",
+          "source": "https://github.com/pytest-dev/pytest/blob/e856638ba086fcf5bebf1bebea32d5cf78de87b4/LICENSE",
+          "instance_id": "pytest-dev__pytest-6197",
+          "image_digest": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-6197@sha256:5dbfbcf23210a5a0ccdc4dbf1a55c894255b28fe6c56c13c9a4724d6c13bab4e",
+          "local_source": "${TASK_DATA}/human_environments/pytest-dev__pytest-6197/source/LICENSE"
+        }
+      ]
+    },
+    {
+      "path": "files/548eb62c9f5f5f7a121d15f26bb0d6a5ebb0cf7260584e0529ad65c56b39e83d/NOTICE",
+      "sha256": "548eb62c9f5f5f7a121d15f26bb0d6a5ebb0cf7260584e0529ad65c56b39e83d",
+      "bytes": 2795,
+      "origins": [
+        {
+          "repository": "psf/requests",
+          "revision": "3c88e520da24ae6f736929a750876e7654accc3d",
+          "source_path": "NOTICE",
+          "original_filename": "NOTICE",
+          "source": "https://github.com/psf/requests/blob/3c88e520da24ae6f736929a750876e7654accc3d/NOTICE",
+          "instance_id": "psf__requests-1921",
+          "image_digest": "swebench/sweb.eval.x86_64.psf_1776_requests-1921@sha256:2ee0a4c706f04d2926a1622ec51b53d4ce6010b80d3ee10d414ea2a276c26cc9",
+          "local_source": "${TASK_DATA}/human_environments/psf__requests-1921/source/NOTICE"
+        }
+      ]
+    },
+    {
+      "path": "files/6afc9d58f919ab52f4806a895a37aefe4d263f8e52278e6a1e87c5d7ec82299c/LICENSE",
+      "sha256": "6afc9d58f919ab52f4806a895a37aefe4d263f8e52278e6a1e87c5d7ec82299c",
+      "bytes": 1861,
+      "origins": [
+        {
+          "repository": "psf/requests",
+          "revision": "5f7a3a74aab1625c2bb65f643197ee885e3da576",
+          "source_path": "docs/_themes/LICENSE",
+          "original_filename": "LICENSE",
+          "source": "https://github.com/psf/requests/blob/5f7a3a74aab1625c2bb65f643197ee885e3da576/docs/_themes/LICENSE",
+          "instance_id": "psf__requests-2931",
+          "image_digest": "swebench/sweb.eval.x86_64.psf_1776_requests-2931@sha256:705258c23c73d25bc78ed6fa4b14836078d848a64ab9c3ea3032d1d523d7cca4",
+          "local_source": "${TASK_DATA}/human_environments/psf__requests-2931/source/docs/_themes/LICENSE"
+        },
+        {
+          "repository": "psf/requests",
+          "revision": "22623bd8c265b78b161542663ee980738441c307",
+          "source_path": "docs/_themes/LICENSE",
+          "original_filename": "LICENSE",
+          "source": "https://github.com/psf/requests/blob/22623bd8c265b78b161542663ee980738441c307/docs/_themes/LICENSE",
+          "instance_id": "psf__requests-1142",
+          "image_digest": "swebench/sweb.eval.x86_64.psf_1776_requests-1142@sha256:b2733e57feb4cfaeac24ab5ec496d4cb89a37db53bd0ca72eaededdb2ce19d1c",
+          "local_source": "${TASK_DATA}/human_environments/psf__requests-1142/source/docs/_themes/LICENSE"
+        },
+        {
+          "repository": "psf/requests",
+          "revision": "3c88e520da24ae6f736929a750876e7654accc3d",
+          "source_path": "docs/_themes/LICENSE",
+          "original_filename": "LICENSE",
+          "source": "https://github.com/psf/requests/blob/3c88e520da24ae6f736929a750876e7654accc3d/docs/_themes/LICENSE",
+          "instance_id": "psf__requests-1921",
+          "image_digest": "swebench/sweb.eval.x86_64.psf_1776_requests-1921@sha256:2ee0a4c706f04d2926a1622ec51b53d4ce6010b80d3ee10d414ea2a276c26cc9",
+          "local_source": "${TASK_DATA}/human_environments/psf__requests-1921/source/docs/_themes/LICENSE"
+        },
+        {
+          "repository": "psf/requests",
+          "revision": "847735553aeda6e6633f2b32e14ba14ba86887a4",
+          "source_path": "docs/_themes/LICENSE",
+          "original_filename": "LICENSE",
+          "source": "https://github.com/psf/requests/blob/847735553aeda6e6633f2b32e14ba14ba86887a4/docs/_themes/LICENSE",
+          "instance_id": "psf__requests-1766",
+          "image_digest": "swebench/sweb.eval.x86_64.psf_1776_requests-1766@sha256:0618949b48408350dfae74d27e47ff9df8192fbf03248aa4f10650e0a36f52eb",
+          "local_source": "${TASK_DATA}/human_environments/psf__requests-1766/source/docs/_themes/LICENSE"
+        },
+        {
+          "repository": "psf/requests",
+          "revision": "39d0fdd9096f7dceccbc8f82e1eda7dd64717a8e",
+          "source_path": "docs/_themes/LICENSE",
+          "original_filename": "LICENSE",
+          "source": "https://github.com/psf/requests/blob/39d0fdd9096f7dceccbc8f82e1eda7dd64717a8e/docs/_themes/LICENSE",
+          "instance_id": "psf__requests-5414",
+          "image_digest": "swebench/sweb.eval.x86_64.psf_1776_requests-5414@sha256:71c78211f16803c111ed1807ded20f8defd5f6917fb958ace4e076d5ea7d8b10",
+          "local_source": "${TASK_DATA}/human_environments/psf__requests-5414/source/docs/_themes/LICENSE"
+        },
+        {
+          "repository": "psf/requests",
+          "revision": "0192aac24123735b3eaf9b08df46429bb770c283",
+          "source_path": "docs/_themes/LICENSE",
+          "original_filename": "LICENSE",
+          "source": "https://github.com/psf/requests/blob/0192aac24123735b3eaf9b08df46429bb770c283/docs/_themes/LICENSE",
+          "instance_id": "psf__requests-6028",
+          "image_digest": "swebench/sweb.eval.x86_64.psf_1776_requests-6028@sha256:639088346355ea7076bc6faf2eadb23b1e1f1ed4f34b291e843061b2fc87cbe2",
+          "local_source": "${TASK_DATA}/human_environments/psf__requests-6028/source/docs/_themes/LICENSE"
+        },
+        {
+          "repository": "psf/requests",
+          "revision": "091991be0da19de9108dbe5e3752917fea3d7fdc",
+          "source_path": "docs/_themes/LICENSE",
+          "original_filename": "LICENSE",
+          "source": "https://github.com/psf/requests/blob/091991be0da19de9108dbe5e3752917fea3d7fdc/docs/_themes/LICENSE",
+          "instance_id": "psf__requests-2317",
+          "image_digest": "swebench/sweb.eval.x86_64.psf_1776_requests-2317@sha256:c6b5c8846507b5e48e307decca28dbdfa4f5ef17070c1087aacde765e8c4b178",
+          "local_source": "${TASK_DATA}/human_environments/psf__requests-2317/source/docs/_themes/LICENSE"
+        },
+        {
+          "repository": "psf/requests",
+          "revision": "1ba83c47ce7b177efe90d5f51f7760680f72eda0",
+          "source_path": "docs/_themes/LICENSE",
+          "original_filename": "LICENSE",
+          "source": "https://github.com/psf/requests/blob/1ba83c47ce7b177efe90d5f51f7760680f72eda0/docs/_themes/LICENSE",
+          "instance_id": "psf__requests-1724",
+          "image_digest": "swebench/sweb.eval.x86_64.psf_1776_requests-1724@sha256:e369005d38858ea90f843d853cb8427a2681b7513b846d12a34cb8d52c00763e",
+          "local_source": "${TASK_DATA}/human_environments/psf__requests-1724/source/docs/_themes/LICENSE"
+        }
+      ]
+    },
+    {
+      "path": "files/7535eac513edd12fb8e33f203c6a403549629e34b363418cdbd6c6ea5464515d/license.rst",
+      "sha256": "7535eac513edd12fb8e33f203c6a403549629e34b363418cdbd6c6ea5464515d",
+      "bytes": 398,
+      "origins": [
+        {
+          "repository": "pallets/flask",
+          "revision": "7ee9ceb71e868944a46e1ff00b506772a53a4f1d",
+          "source_path": "docs/license.rst",
+          "original_filename": "license.rst",
+          "source": "https://github.com/pallets/flask/blob/7ee9ceb71e868944a46e1ff00b506772a53a4f1d/docs/license.rst",
+          "instance_id": "pallets__flask-5014",
+          "image_digest": "swebench/sweb.eval.x86_64.pallets_1776_flask-5014@sha256:bde4fbdafa36141d4396944da88ec37aabdef612ed36920090675bccd0ca5d72",
+          "local_source": "${TASK_DATA}/human_environments/pallets__flask-5014/source/docs/license.rst"
+        }
+      ]
+    },
+    {
+      "path": "files/7898b9b164d4f93fd9a562fd0f592935518b48c4745303964110eb7f7fe64faf/LICENSE",
+      "sha256": "7898b9b164d4f93fd9a562fd0f592935518b48c4745303964110eb7f7fe64faf",
+      "bytes": 1096,
+      "origins": [
+        {
+          "repository": "pytest-dev/pytest",
+          "revision": "a7e38c5c61928033a2dc1915cbee8caa8544a4d0",
+          "source_path": "LICENSE",
+          "original_filename": "LICENSE",
+          "source": "https://github.com/pytest-dev/pytest/blob/a7e38c5c61928033a2dc1915cbee8caa8544a4d0/LICENSE",
+          "instance_id": "pytest-dev__pytest-7982",
+          "image_digest": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-7982@sha256:1b6cd660102de29c36d28954eb2f6158b93d11b855a9bbfc577a55eb67a8f375",
+          "local_source": "${TASK_DATA}/human_environments/pytest-dev__pytest-7982/source/LICENSE"
+        },
+        {
+          "repository": "pytest-dev/pytest",
+          "revision": "e6e300e729dd33956e5448d8be9a0b1540b4e53a",
+          "source_path": "LICENSE",
+          "original_filename": "LICENSE",
+          "source": "https://github.com/pytest-dev/pytest/blob/e6e300e729dd33956e5448d8be9a0b1540b4e53a/LICENSE",
+          "instance_id": "pytest-dev__pytest-7432",
+          "image_digest": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-7432@sha256:5ec7065f9477542610ea5137247539d8f1c9762112803b0690d5ccb2e64d2f07",
+          "local_source": "${TASK_DATA}/human_environments/pytest-dev__pytest-7432/source/LICENSE"
+        },
+        {
+          "repository": "pytest-dev/pytest",
+          "revision": "41d211c24a6781843b174379d6d6538f5c17adb9",
+          "source_path": "LICENSE",
+          "original_filename": "LICENSE",
+          "source": "https://github.com/pytest-dev/pytest/blob/41d211c24a6781843b174379d6d6538f5c17adb9/LICENSE",
+          "instance_id": "pytest-dev__pytest-7521",
+          "image_digest": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-7521@sha256:570a5872f1a0250ef52d735285f64dff43ce02ba79f7750e7c4dd9de9c7ebcb5",
+          "local_source": "${TASK_DATA}/human_environments/pytest-dev__pytest-7521/source/LICENSE"
+        },
+        {
+          "repository": "pytest-dev/pytest",
+          "revision": "5e7f1ab4bf58e473e5d7f878eb2b499d7deabd29",
+          "source_path": "LICENSE",
+          "original_filename": "LICENSE",
+          "source": "https://github.com/pytest-dev/pytest/blob/5e7f1ab4bf58e473e5d7f878eb2b499d7deabd29/LICENSE",
+          "instance_id": "pytest-dev__pytest-7205",
+          "image_digest": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-7205@sha256:1c6124cd5254db8831df455575eff2795b0cbeb849d10846388e30e00870e495",
+          "local_source": "${TASK_DATA}/human_environments/pytest-dev__pytest-7205/source/LICENSE"
+        },
+        {
+          "repository": "pytest-dev/pytest",
+          "revision": "7f7a36478abe7dd1fa993b115d22606aa0e35e88",
+          "source_path": "LICENSE",
+          "original_filename": "LICENSE",
+          "source": "https://github.com/pytest-dev/pytest/blob/7f7a36478abe7dd1fa993b115d22606aa0e35e88/LICENSE",
+          "instance_id": "pytest-dev__pytest-7490",
+          "image_digest": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-7490@sha256:9e10d2e75d41e6f6325949d19d6a8a033d1f5d5fd6d4ce53ad483eb8951a417f",
+          "local_source": "${TASK_DATA}/human_environments/pytest-dev__pytest-7490/source/LICENSE"
+        },
+        {
+          "repository": "pytest-dev/pytest",
+          "revision": "422685d0bdc110547535036c1ff398b5e1c44145",
+          "source_path": "LICENSE",
+          "original_filename": "LICENSE",
+          "source": "https://github.com/pytest-dev/pytest/blob/422685d0bdc110547535036c1ff398b5e1c44145/LICENSE",
+          "instance_id": "pytest-dev__pytest-7571",
+          "image_digest": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-7571@sha256:0a1f84cd32e2c8332f90bfad6f3fd16304f25c01384adb4ffd4f7250316bd60a",
+          "local_source": "${TASK_DATA}/human_environments/pytest-dev__pytest-7571/source/LICENSE"
+        },
+        {
+          "repository": "pytest-dev/pytest",
+          "revision": "c98bc4cd3d687fe9b392d8eecd905627191d4f06",
+          "source_path": "LICENSE",
+          "original_filename": "LICENSE",
+          "source": "https://github.com/pytest-dev/pytest/blob/c98bc4cd3d687fe9b392d8eecd905627191d4f06/LICENSE",
+          "instance_id": "pytest-dev__pytest-7236",
+          "image_digest": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-7236@sha256:54f89a5c1611eac42d3d7b7c03e17a43e9e70c604cd8439f45bf68102fc3ff09",
+          "local_source": "${TASK_DATA}/human_environments/pytest-dev__pytest-7236/source/LICENSE"
+        }
+      ]
+    },
+    {
+      "path": "files/89478f1915fbb6b6585a685d071bf006ba5649d2615fab787f66e9693c622ae4/LICENSE",
+      "sha256": "89478f1915fbb6b6585a685d071bf006ba5649d2615fab787f66e9693c622ae4",
+      "bytes": 581,
+      "origins": [
+        {
+          "repository": "psf/requests",
+          "revision": "3c88e520da24ae6f736929a750876e7654accc3d",
+          "source_path": "LICENSE",
+          "original_filename": "LICENSE",
+          "source": "https://github.com/psf/requests/blob/3c88e520da24ae6f736929a750876e7654accc3d/LICENSE",
+          "instance_id": "psf__requests-1921",
+          "image_digest": "swebench/sweb.eval.x86_64.psf_1776_requests-1921@sha256:2ee0a4c706f04d2926a1622ec51b53d4ce6010b80d3ee10d414ea2a276c26cc9",
+          "local_source": "${TASK_DATA}/human_environments/psf__requests-1921/source/LICENSE"
+        },
+        {
+          "repository": "psf/requests",
+          "revision": "091991be0da19de9108dbe5e3752917fea3d7fdc",
+          "source_path": "LICENSE",
+          "original_filename": "LICENSE",
+          "source": "https://github.com/psf/requests/blob/091991be0da19de9108dbe5e3752917fea3d7fdc/LICENSE",
+          "instance_id": "psf__requests-2317",
+          "image_digest": "swebench/sweb.eval.x86_64.psf_1776_requests-2317@sha256:c6b5c8846507b5e48e307decca28dbdfa4f5ef17070c1087aacde765e8c4b178",
+          "local_source": "${TASK_DATA}/human_environments/psf__requests-2317/source/LICENSE"
+        }
+      ]
+    },
+    {
+      "path": "files/923e6b481ff75c709737251e602bdc311a9be49235b5c20107366747f5640fe4/README.md",
+      "sha256": "923e6b481ff75c709737251e602bdc311a9be49235b5c20107366747f5640fe4",
+      "bytes": 3485,
+      "origins": [
+        {
+          "dataset": "SWE-bench/SWE-bench_Verified",
+          "revision": "78f471bf655a3137b2e8a75af1501690ec009ec3",
+          "source_path": "README.md",
+          "original_filename": "README.md",
+          "source": "https://huggingface.co/datasets/SWE-bench/SWE-bench_Verified/blob/78f471bf655a3137b2e8a75af1501690ec009ec3/README.md",
+          "local_source": "${TASK_DATA}/huggingface/hub/datasets--SWE-bench--SWE-bench_Verified/snapshots/78f471bf655a3137b2e8a75af1501690ec009ec3/README.md"
+        }
+      ]
+    },
+    {
+      "path": "files/9c1e620a5cf8e74fe81c1fd4c55e9cc0b189fc04e677cfc7ef915de746c3f59e/LICENSE",
+      "sha256": "9c1e620a5cf8e74fe81c1fd4c55e9cc0b189fc04e677cfc7ef915de746c3f59e",
+      "bytes": 1789,
+      "origins": [
+        {
+          "repository": "pytest-dev/pytest",
+          "revision": "cb828ebe70b4fa35cd5f9a7ee024272237eab351",
+          "source_path": "doc/en/_themes/LICENSE",
+          "original_filename": "LICENSE",
+          "source": "https://github.com/pytest-dev/pytest/blob/cb828ebe70b4fa35cd5f9a7ee024272237eab351/doc/en/_themes/LICENSE",
+          "instance_id": "pytest-dev__pytest-5631",
+          "image_digest": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-5631@sha256:c76510e12a1765211e064f6e8de09e51ac0f7839f60d72305b374e004308b6a1",
+          "local_source": "${TASK_DATA}/human_environments/pytest-dev__pytest-5631/source/doc/en/_themes/LICENSE"
+        },
+        {
+          "repository": "pytest-dev/pytest",
+          "revision": "8aba863a634f40560e25055d179220f0eefabe9a",
+          "source_path": "doc/en/_themes/LICENSE",
+          "original_filename": "LICENSE",
+          "source": "https://github.com/pytest-dev/pytest/blob/8aba863a634f40560e25055d179220f0eefabe9a/doc/en/_themes/LICENSE",
+          "instance_id": "pytest-dev__pytest-5809",
+          "image_digest": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-5809@sha256:0185f5d9efb9cf1364122a7eff7fc5f02227698d01f7e4f2d593917816df42d3",
+          "local_source": "${TASK_DATA}/human_environments/pytest-dev__pytest-5809/source/doc/en/_themes/LICENSE"
+        },
+        {
+          "repository": "pytest-dev/pytest",
+          "revision": "58e6a09db49f34886ff13f3b7520dd0bcd7063cd",
+          "source_path": "doc/en/_themes/LICENSE",
+          "original_filename": "LICENSE",
+          "source": "https://github.com/pytest-dev/pytest/blob/58e6a09db49f34886ff13f3b7520dd0bcd7063cd/doc/en/_themes/LICENSE",
+          "instance_id": "pytest-dev__pytest-5262",
+          "image_digest": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-5262@sha256:0d6480e4b7519e81cdc8359fedfeb5389e1949f31a8bc9da7869b0d66a7ce2a4",
+          "local_source": "${TASK_DATA}/human_environments/pytest-dev__pytest-5262/source/doc/en/_themes/LICENSE"
+        },
+        {
+          "repository": "pytest-dev/pytest",
+          "revision": "3a668ea6ff24b0c8f00498c3144c63bac561d925",
+          "source_path": "doc/en/_themes/LICENSE",
+          "original_filename": "LICENSE",
+          "source": "https://github.com/pytest-dev/pytest/blob/3a668ea6ff24b0c8f00498c3144c63bac561d925/doc/en/_themes/LICENSE",
+          "instance_id": "pytest-dev__pytest-6202",
+          "image_digest": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-6202@sha256:d2d9f0bf1ed8a5f50799291be86144768c3f7ad9400482d6dab7f05830f3e226",
+          "local_source": "${TASK_DATA}/human_environments/pytest-dev__pytest-6202/source/doc/en/_themes/LICENSE"
+        },
+        {
+          "repository": "pytest-dev/pytest",
+          "revision": "5e7f1ab4bf58e473e5d7f878eb2b499d7deabd29",
+          "source_path": "doc/en/_themes/LICENSE",
+          "original_filename": "LICENSE",
+          "source": "https://github.com/pytest-dev/pytest/blob/5e7f1ab4bf58e473e5d7f878eb2b499d7deabd29/doc/en/_themes/LICENSE",
+          "instance_id": "pytest-dev__pytest-7205",
+          "image_digest": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-7205@sha256:1c6124cd5254db8831df455575eff2795b0cbeb849d10846388e30e00870e495",
+          "local_source": "${TASK_DATA}/human_environments/pytest-dev__pytest-7205/source/doc/en/_themes/LICENSE"
+        },
+        {
+          "repository": "pytest-dev/pytest",
+          "revision": "955e54221008aba577ecbaefa15679f6777d3bf8",
+          "source_path": "doc/en/_themes/LICENSE",
+          "original_filename": "LICENSE",
+          "source": "https://github.com/pytest-dev/pytest/blob/955e54221008aba577ecbaefa15679f6777d3bf8/doc/en/_themes/LICENSE",
+          "instance_id": "pytest-dev__pytest-5787",
+          "image_digest": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-5787@sha256:48c6ca4406eb36dae43e08dc2137b750239b8ad8f9ccdf2924e8fc2177fca241",
+          "local_source": "${TASK_DATA}/human_environments/pytest-dev__pytest-5787/source/doc/en/_themes/LICENSE"
+        },
+        {
+          "repository": "pytest-dev/pytest",
+          "revision": "e856638ba086fcf5bebf1bebea32d5cf78de87b4",
+          "source_path": "doc/en/_themes/LICENSE",
+          "original_filename": "LICENSE",
+          "source": "https://github.com/pytest-dev/pytest/blob/e856638ba086fcf5bebf1bebea32d5cf78de87b4/doc/en/_themes/LICENSE",
+          "instance_id": "pytest-dev__pytest-6197",
+          "image_digest": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-6197@sha256:5dbfbcf23210a5a0ccdc4dbf1a55c894255b28fe6c56c13c9a4724d6c13bab4e",
+          "local_source": "${TASK_DATA}/human_environments/pytest-dev__pytest-6197/source/doc/en/_themes/LICENSE"
+        },
+        {
+          "repository": "pytest-dev/pytest",
+          "revision": "c98bc4cd3d687fe9b392d8eecd905627191d4f06",
+          "source_path": "doc/en/_themes/LICENSE",
+          "original_filename": "LICENSE",
+          "source": "https://github.com/pytest-dev/pytest/blob/c98bc4cd3d687fe9b392d8eecd905627191d4f06/doc/en/_themes/LICENSE",
+          "instance_id": "pytest-dev__pytest-7236",
+          "image_digest": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-7236@sha256:54f89a5c1611eac42d3d7b7c03e17a43e9e70c604cd8439f45bf68102fc3ff09",
+          "local_source": "${TASK_DATA}/human_environments/pytest-dev__pytest-7236/source/doc/en/_themes/LICENSE"
+        }
+      ]
+    },
+    {
+      "path": "files/b081522b6b841e6a5348025fa8897f8ec2b8b7fd2e8da0240a219d78ce955d72/license.rst",
+      "sha256": "b081522b6b841e6a5348025fa8897f8ec2b8b7fd2e8da0240a219d78ce955d72",
+      "bytes": 1379,
+      "origins": [
+        {
+          "repository": "pytest-dev/pytest",
+          "revision": "8aba863a634f40560e25055d179220f0eefabe9a",
+          "source_path": "doc/en/license.rst",
+          "original_filename": "license.rst",
+          "source": "https://github.com/pytest-dev/pytest/blob/8aba863a634f40560e25055d179220f0eefabe9a/doc/en/license.rst",
+          "instance_id": "pytest-dev__pytest-5809",
+          "image_digest": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-5809@sha256:0185f5d9efb9cf1364122a7eff7fc5f02227698d01f7e4f2d593917816df42d3",
+          "local_source": "${TASK_DATA}/human_environments/pytest-dev__pytest-5809/source/doc/en/license.rst"
+        },
+        {
+          "repository": "pytest-dev/pytest",
+          "revision": "58e6a09db49f34886ff13f3b7520dd0bcd7063cd",
+          "source_path": "doc/en/license.rst",
+          "original_filename": "license.rst",
+          "source": "https://github.com/pytest-dev/pytest/blob/58e6a09db49f34886ff13f3b7520dd0bcd7063cd/doc/en/license.rst",
+          "instance_id": "pytest-dev__pytest-5262",
+          "image_digest": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-5262@sha256:0d6480e4b7519e81cdc8359fedfeb5389e1949f31a8bc9da7869b0d66a7ce2a4",
+          "local_source": "${TASK_DATA}/human_environments/pytest-dev__pytest-5262/source/doc/en/license.rst"
+        }
+      ]
+    },
+    {
+      "path": "files/c031540c6951209351ce0b9bcf1cdf689abb277bcb07780d74f448f882a4a869/LICENSE",
+      "sha256": "c031540c6951209351ce0b9bcf1cdf689abb277bcb07780d74f448f882a4a869",
+      "bytes": 581,
+      "origins": [
+        {
+          "repository": "psf/requests",
+          "revision": "5f7a3a74aab1625c2bb65f643197ee885e3da576",
+          "source_path": "LICENSE",
+          "original_filename": "LICENSE",
+          "source": "https://github.com/psf/requests/blob/5f7a3a74aab1625c2bb65f643197ee885e3da576/LICENSE",
+          "instance_id": "psf__requests-2931",
+          "image_digest": "swebench/sweb.eval.x86_64.psf_1776_requests-2931@sha256:705258c23c73d25bc78ed6fa4b14836078d848a64ab9c3ea3032d1d523d7cca4",
+          "local_source": "${TASK_DATA}/human_environments/psf__requests-2931/source/LICENSE"
+        }
+      ]
+    },
+    {
+      "path": "files/c11460418c5164a489643eae3da311d0fb1d61931c71c64ff83090c1cad1184b/LICENSE",
+      "sha256": "c11460418c5164a489643eae3da311d0fb1d61931c71c64ff83090c1cad1184b",
+      "bytes": 581,
+      "origins": [
+        {
+          "repository": "psf/requests",
+          "revision": "22623bd8c265b78b161542663ee980738441c307",
+          "source_path": "LICENSE",
+          "original_filename": "LICENSE",
+          "source": "https://github.com/psf/requests/blob/22623bd8c265b78b161542663ee980738441c307/LICENSE",
+          "instance_id": "psf__requests-1142",
+          "image_digest": "swebench/sweb.eval.x86_64.psf_1776_requests-1142@sha256:b2733e57feb4cfaeac24ab5ec496d4cb89a37db53bd0ca72eaededdb2ce19d1c",
+          "local_source": "${TASK_DATA}/human_environments/psf__requests-1142/source/LICENSE"
+        },
+        {
+          "repository": "psf/requests",
+          "revision": "847735553aeda6e6633f2b32e14ba14ba86887a4",
+          "source_path": "LICENSE",
+          "original_filename": "LICENSE",
+          "source": "https://github.com/psf/requests/blob/847735553aeda6e6633f2b32e14ba14ba86887a4/LICENSE",
+          "instance_id": "psf__requests-1766",
+          "image_digest": "swebench/sweb.eval.x86_64.psf_1776_requests-1766@sha256:0618949b48408350dfae74d27e47ff9df8192fbf03248aa4f10650e0a36f52eb",
+          "local_source": "${TASK_DATA}/human_environments/psf__requests-1766/source/LICENSE"
+        },
+        {
+          "repository": "psf/requests",
+          "revision": "1ba83c47ce7b177efe90d5f51f7760680f72eda0",
+          "source_path": "LICENSE",
+          "original_filename": "LICENSE",
+          "source": "https://github.com/psf/requests/blob/1ba83c47ce7b177efe90d5f51f7760680f72eda0/LICENSE",
+          "instance_id": "psf__requests-1724",
+          "image_digest": "swebench/sweb.eval.x86_64.psf_1776_requests-1724@sha256:e369005d38858ea90f843d853cb8427a2681b7513b846d12a34cb8d52c00763e",
+          "local_source": "${TASK_DATA}/human_environments/psf__requests-1724/source/LICENSE"
+        }
+      ]
+    },
+    {
+      "path": "files/c5a19279faa765293604633bae8b70a06582416c93cdac20b1b81af77a51d957/NOTICE",
+      "sha256": "c5a19279faa765293604633bae8b70a06582416c93cdac20b1b81af77a51d957",
+      "bytes": 4377,
+      "origins": [
+        {
+          "repository": "psf/requests",
+          "revision": "847735553aeda6e6633f2b32e14ba14ba86887a4",
+          "source_path": "NOTICE",
+          "original_filename": "NOTICE",
+          "source": "https://github.com/psf/requests/blob/847735553aeda6e6633f2b32e14ba14ba86887a4/NOTICE",
+          "instance_id": "psf__requests-1766",
+          "image_digest": "swebench/sweb.eval.x86_64.psf_1776_requests-1766@sha256:0618949b48408350dfae74d27e47ff9df8192fbf03248aa4f10650e0a36f52eb",
+          "local_source": "${TASK_DATA}/human_environments/psf__requests-1766/source/NOTICE"
+        },
+        {
+          "repository": "psf/requests",
+          "revision": "1ba83c47ce7b177efe90d5f51f7760680f72eda0",
+          "source_path": "NOTICE",
+          "original_filename": "NOTICE",
+          "source": "https://github.com/psf/requests/blob/1ba83c47ce7b177efe90d5f51f7760680f72eda0/NOTICE",
+          "instance_id": "psf__requests-1724",
+          "image_digest": "swebench/sweb.eval.x86_64.psf_1776_requests-1724@sha256:e369005d38858ea90f843d853cb8427a2681b7513b846d12a34cb8d52c00763e",
+          "local_source": "${TASK_DATA}/human_environments/psf__requests-1724/source/NOTICE"
+        }
+      ]
+    },
+    {
+      "path": "files/ca836a5f9ecca3b2f350230faa20a48fb8b145653b5568d784862df864706b9b/LICENSE",
+      "sha256": "ca836a5f9ecca3b2f350230faa20a48fb8b145653b5568d784862df864706b9b",
+      "bytes": 1091,
+      "origins": [
+        {
+          "repository": "pytest-dev/pytest",
+          "revision": "3c1534944cbd34e8a41bc9e76818018fadefc9a1",
+          "source_path": "LICENSE",
+          "original_filename": "LICENSE",
+          "source": "https://github.com/pytest-dev/pytest/blob/3c1534944cbd34e8a41bc9e76818018fadefc9a1/LICENSE",
+          "instance_id": "pytest-dev__pytest-10356",
+          "image_digest": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-10356@sha256:363458d4698f5d985f6476d189d3f1cf902253cd9518705fd395516cd30138da",
+          "local_source": "${TASK_DATA}/human_environments/pytest-dev__pytest-10356/source/LICENSE"
+        },
+        {
+          "repository": "pytest-dev/pytest",
+          "revision": "aa55975c7d3f6c9f6d7f68accc41bb7cadf0eb9a",
+          "source_path": "LICENSE",
+          "original_filename": "LICENSE",
+          "source": "https://github.com/pytest-dev/pytest/blob/aa55975c7d3f6c9f6d7f68accc41bb7cadf0eb9a/LICENSE",
+          "instance_id": "pytest-dev__pytest-10051",
+          "image_digest": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-10051@sha256:e38365e835d4ba57f3e7331778894f51ac20bf6c5893827065da8657525e123f",
+          "local_source": "${TASK_DATA}/human_environments/pytest-dev__pytest-10051/source/LICENSE"
+        }
+      ]
+    },
+    {
+      "path": "files/d1a0ff0c217e8885134a5759953e971addadafee9cd7f428901d0c22af10a741/license.rst",
+      "sha256": "d1a0ff0c217e8885134a5759953e971addadafee9cd7f428901d0c22af10a741",
+      "bytes": 1379,
+      "origins": [
+        {
+          "repository": "pytest-dev/pytest",
+          "revision": "a7e38c5c61928033a2dc1915cbee8caa8544a4d0",
+          "source_path": "doc/en/license.rst",
+          "original_filename": "license.rst",
+          "source": "https://github.com/pytest-dev/pytest/blob/a7e38c5c61928033a2dc1915cbee8caa8544a4d0/doc/en/license.rst",
+          "instance_id": "pytest-dev__pytest-7982",
+          "image_digest": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-7982@sha256:1b6cd660102de29c36d28954eb2f6158b93d11b855a9bbfc577a55eb67a8f375",
+          "local_source": "${TASK_DATA}/human_environments/pytest-dev__pytest-7982/source/doc/en/license.rst"
+        },
+        {
+          "repository": "pytest-dev/pytest",
+          "revision": "e6e300e729dd33956e5448d8be9a0b1540b4e53a",
+          "source_path": "doc/en/license.rst",
+          "original_filename": "license.rst",
+          "source": "https://github.com/pytest-dev/pytest/blob/e6e300e729dd33956e5448d8be9a0b1540b4e53a/doc/en/license.rst",
+          "instance_id": "pytest-dev__pytest-7432",
+          "image_digest": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-7432@sha256:5ec7065f9477542610ea5137247539d8f1c9762112803b0690d5ccb2e64d2f07",
+          "local_source": "${TASK_DATA}/human_environments/pytest-dev__pytest-7432/source/doc/en/license.rst"
+        },
+        {
+          "repository": "pytest-dev/pytest",
+          "revision": "41d211c24a6781843b174379d6d6538f5c17adb9",
+          "source_path": "doc/en/license.rst",
+          "original_filename": "license.rst",
+          "source": "https://github.com/pytest-dev/pytest/blob/41d211c24a6781843b174379d6d6538f5c17adb9/doc/en/license.rst",
+          "instance_id": "pytest-dev__pytest-7521",
+          "image_digest": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-7521@sha256:570a5872f1a0250ef52d735285f64dff43ce02ba79f7750e7c4dd9de9c7ebcb5",
+          "local_source": "${TASK_DATA}/human_environments/pytest-dev__pytest-7521/source/doc/en/license.rst"
+        },
+        {
+          "repository": "pytest-dev/pytest",
+          "revision": "5e7f1ab4bf58e473e5d7f878eb2b499d7deabd29",
+          "source_path": "doc/en/license.rst",
+          "original_filename": "license.rst",
+          "source": "https://github.com/pytest-dev/pytest/blob/5e7f1ab4bf58e473e5d7f878eb2b499d7deabd29/doc/en/license.rst",
+          "instance_id": "pytest-dev__pytest-7205",
+          "image_digest": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-7205@sha256:1c6124cd5254db8831df455575eff2795b0cbeb849d10846388e30e00870e495",
+          "local_source": "${TASK_DATA}/human_environments/pytest-dev__pytest-7205/source/doc/en/license.rst"
+        },
+        {
+          "repository": "pytest-dev/pytest",
+          "revision": "7f7a36478abe7dd1fa993b115d22606aa0e35e88",
+          "source_path": "doc/en/license.rst",
+          "original_filename": "license.rst",
+          "source": "https://github.com/pytest-dev/pytest/blob/7f7a36478abe7dd1fa993b115d22606aa0e35e88/doc/en/license.rst",
+          "instance_id": "pytest-dev__pytest-7490",
+          "image_digest": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-7490@sha256:9e10d2e75d41e6f6325949d19d6a8a033d1f5d5fd6d4ce53ad483eb8951a417f",
+          "local_source": "${TASK_DATA}/human_environments/pytest-dev__pytest-7490/source/doc/en/license.rst"
+        },
+        {
+          "repository": "pytest-dev/pytest",
+          "revision": "422685d0bdc110547535036c1ff398b5e1c44145",
+          "source_path": "doc/en/license.rst",
+          "original_filename": "license.rst",
+          "source": "https://github.com/pytest-dev/pytest/blob/422685d0bdc110547535036c1ff398b5e1c44145/doc/en/license.rst",
+          "instance_id": "pytest-dev__pytest-7571",
+          "image_digest": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-7571@sha256:0a1f84cd32e2c8332f90bfad6f3fd16304f25c01384adb4ffd4f7250316bd60a",
+          "local_source": "${TASK_DATA}/human_environments/pytest-dev__pytest-7571/source/doc/en/license.rst"
+        },
+        {
+          "repository": "pytest-dev/pytest",
+          "revision": "c98bc4cd3d687fe9b392d8eecd905627191d4f06",
+          "source_path": "doc/en/license.rst",
+          "original_filename": "license.rst",
+          "source": "https://github.com/pytest-dev/pytest/blob/c98bc4cd3d687fe9b392d8eecd905627191d4f06/doc/en/license.rst",
+          "instance_id": "pytest-dev__pytest-7236",
+          "image_digest": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-7236@sha256:54f89a5c1611eac42d3d7b7c03e17a43e9e70c604cd8439f45bf68102fc3ff09",
+          "local_source": "${TASK_DATA}/human_environments/pytest-dev__pytest-7236/source/doc/en/license.rst"
+        }
+      ]
+    },
+    {
+      "path": "files/f5110972dedad2b4e9d314518daf3b7d72d6e02e499acd802181de6f74571dcc/NOTICE",
+      "sha256": "f5110972dedad2b4e9d314518daf3b7d72d6e02e499acd802181de6f74571dcc",
+      "bytes": 38,
+      "origins": [
+        {
+          "repository": "psf/requests",
+          "revision": "39d0fdd9096f7dceccbc8f82e1eda7dd64717a8e",
+          "source_path": "NOTICE",
+          "original_filename": "NOTICE",
+          "source": "https://github.com/psf/requests/blob/39d0fdd9096f7dceccbc8f82e1eda7dd64717a8e/NOTICE",
+          "instance_id": "psf__requests-5414",
+          "image_digest": "swebench/sweb.eval.x86_64.psf_1776_requests-5414@sha256:71c78211f16803c111ed1807ded20f8defd5f6917fb958ace4e076d5ea7d8b10",
+          "local_source": "${TASK_DATA}/human_environments/psf__requests-5414/source/NOTICE"
+        },
+        {
+          "repository": "psf/requests",
+          "revision": "0192aac24123735b3eaf9b08df46429bb770c283",
+          "source_path": "NOTICE",
+          "original_filename": "NOTICE",
+          "source": "https://github.com/psf/requests/blob/0192aac24123735b3eaf9b08df46429bb770c283/NOTICE",
+          "instance_id": "psf__requests-6028",
+          "image_digest": "swebench/sweb.eval.x86_64.psf_1776_requests-6028@sha256:639088346355ea7076bc6faf2eadb23b1e1f1ed4f34b291e843061b2fc87cbe2",
+          "local_source": "${TASK_DATA}/human_environments/psf__requests-6028/source/NOTICE"
+        }
+      ]
+    },
+    {
+      "path": "files/f5984f7fb86791cd3de98fe74008db28c6bf4139323b8912ab5441af5ddc79fe/license.rst",
+      "sha256": "f5984f7fb86791cd3de98fe74008db28c6bf4139323b8912ab5441af5ddc79fe",
+      "bytes": 1379,
+      "origins": [
+        {
+          "repository": "pytest-dev/pytest",
+          "revision": "cb828ebe70b4fa35cd5f9a7ee024272237eab351",
+          "source_path": "doc/en/license.rst",
+          "original_filename": "license.rst",
+          "source": "https://github.com/pytest-dev/pytest/blob/cb828ebe70b4fa35cd5f9a7ee024272237eab351/doc/en/license.rst",
+          "instance_id": "pytest-dev__pytest-5631",
+          "image_digest": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-5631@sha256:c76510e12a1765211e064f6e8de09e51ac0f7839f60d72305b374e004308b6a1",
+          "local_source": "${TASK_DATA}/human_environments/pytest-dev__pytest-5631/source/doc/en/license.rst"
+        },
+        {
+          "repository": "pytest-dev/pytest",
+          "revision": "3a668ea6ff24b0c8f00498c3144c63bac561d925",
+          "source_path": "doc/en/license.rst",
+          "original_filename": "license.rst",
+          "source": "https://github.com/pytest-dev/pytest/blob/3a668ea6ff24b0c8f00498c3144c63bac561d925/doc/en/license.rst",
+          "instance_id": "pytest-dev__pytest-6202",
+          "image_digest": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-6202@sha256:d2d9f0bf1ed8a5f50799291be86144768c3f7ad9400482d6dab7f05830f3e226",
+          "local_source": "${TASK_DATA}/human_environments/pytest-dev__pytest-6202/source/doc/en/license.rst"
+        },
+        {
+          "repository": "pytest-dev/pytest",
+          "revision": "955e54221008aba577ecbaefa15679f6777d3bf8",
+          "source_path": "doc/en/license.rst",
+          "original_filename": "license.rst",
+          "source": "https://github.com/pytest-dev/pytest/blob/955e54221008aba577ecbaefa15679f6777d3bf8/doc/en/license.rst",
+          "instance_id": "pytest-dev__pytest-5787",
+          "image_digest": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-5787@sha256:48c6ca4406eb36dae43e08dc2137b750239b8ad8f9ccdf2924e8fc2177fca241",
+          "local_source": "${TASK_DATA}/human_environments/pytest-dev__pytest-5787/source/doc/en/license.rst"
+        },
+        {
+          "repository": "pytest-dev/pytest",
+          "revision": "e856638ba086fcf5bebf1bebea32d5cf78de87b4",
+          "source_path": "doc/en/license.rst",
+          "original_filename": "license.rst",
+          "source": "https://github.com/pytest-dev/pytest/blob/e856638ba086fcf5bebf1bebea32d5cf78de87b4/doc/en/license.rst",
+          "instance_id": "pytest-dev__pytest-6197",
+          "image_digest": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-6197@sha256:5dbfbcf23210a5a0ccdc4dbf1a55c894255b28fe6c56c13c9a4724d6c13bab4e",
+          "local_source": "${TASK_DATA}/human_environments/pytest-dev__pytest-6197/source/doc/en/license.rst"
+        }
+      ]
+    },
+    {
+      "path": "files/f97b14080de8b8490d60eb3d620ebc419943e0779466d1dd0d5d6f68fe195dcd/LICENSE",
+      "sha256": "f97b14080de8b8490d60eb3d620ebc419943e0779466d1dd0d5d6f68fe195dcd",
+      "bytes": 17984,
+      "origins": [
+        {
+          "repository": "pylint-dev/pylint",
+          "revision": "3c5eca2ded3dd2b59ebaf23eb289453b5d2930f0",
+          "source_path": "LICENSE",
+          "original_filename": "LICENSE",
+          "source": "https://github.com/pylint-dev/pylint/blob/3c5eca2ded3dd2b59ebaf23eb289453b5d2930f0/LICENSE",
+          "instance_id": "pylint-dev__pylint-7080",
+          "image_digest": "swebench/sweb.eval.x86_64.pylint-dev_1776_pylint-7080@sha256:3389f0d1319ca611d04a209fc30990c131e0bae9acfeb2163938c75ad23479fe",
+          "local_source": "${TASK_DATA}/human_environments/pylint-dev__pylint-7080/source/LICENSE"
+        },
+        {
+          "repository": "pylint-dev/pylint",
+          "revision": "754b487f4d892e3d4872b6fc7468a71db4e31c13",
+          "source_path": "LICENSE",
+          "original_filename": "LICENSE",
+          "source": "https://github.com/pylint-dev/pylint/blob/754b487f4d892e3d4872b6fc7468a71db4e31c13/LICENSE",
+          "instance_id": "pylint-dev__pylint-6386",
+          "image_digest": "swebench/sweb.eval.x86_64.pylint-dev_1776_pylint-6386@sha256:fda08a7a0a711af33163d53ed09b8401d84b7c9bb76b31e25a81357c98e6aeed",
+          "local_source": "${TASK_DATA}/human_environments/pylint-dev__pylint-6386/source/LICENSE"
+        },
+        {
+          "repository": "pylint-dev/pylint",
+          "revision": "40cc2ffd7887959157aaf469e09585ec2be7f528",
+          "source_path": "LICENSE",
+          "original_filename": "LICENSE",
+          "source": "https://github.com/pylint-dev/pylint/blob/40cc2ffd7887959157aaf469e09585ec2be7f528/LICENSE",
+          "instance_id": "pylint-dev__pylint-4970",
+          "image_digest": "swebench/sweb.eval.x86_64.pylint-dev_1776_pylint-4970@sha256:5d331d487e49480c4098366cd094aae9dd2e8d365f0412174d5e1a2e9a3d5893",
+          "local_source": "${TASK_DATA}/human_environments/pylint-dev__pylint-4970/source/LICENSE"
+        },
+        {
+          "repository": "pylint-dev/pylint",
+          "revision": "ca80f03a43bc39e4cc2c67dc99817b3c9f13b8a6",
+          "source_path": "LICENSE",
+          "original_filename": "LICENSE",
+          "source": "https://github.com/pylint-dev/pylint/blob/ca80f03a43bc39e4cc2c67dc99817b3c9f13b8a6/LICENSE",
+          "instance_id": "pylint-dev__pylint-6903",
+          "image_digest": "swebench/sweb.eval.x86_64.pylint-dev_1776_pylint-6903@sha256:bad80b1c20eeb5d49a6e82dc485ee40fbd67b91df47b56740e1be5471b678f5b",
+          "local_source": "${TASK_DATA}/human_environments/pylint-dev__pylint-6903/source/LICENSE"
+        },
+        {
+          "repository": "pylint-dev/pylint",
+          "revision": "1d1619ef913b99b06647d2030bddff4800abdf63",
+          "source_path": "LICENSE",
+          "original_filename": "LICENSE",
+          "source": "https://github.com/pylint-dev/pylint/blob/1d1619ef913b99b06647d2030bddff4800abdf63/LICENSE",
+          "instance_id": "pylint-dev__pylint-4661",
+          "image_digest": "swebench/sweb.eval.x86_64.pylint-dev_1776_pylint-4661@sha256:92b83a19cbeaac3d64a0efab6cd73011c68f48e1c720b1b64f75b8bb436bf0ee",
+          "local_source": "${TASK_DATA}/human_environments/pylint-dev__pylint-4661/source/LICENSE"
+        },
+        {
+          "repository": "pylint-dev/pylint",
+          "revision": "99589b08de8c5a2c6cc61e13a37420a868c80599",
+          "source_path": "LICENSE",
+          "original_filename": "LICENSE",
+          "source": "https://github.com/pylint-dev/pylint/blob/99589b08de8c5a2c6cc61e13a37420a868c80599/LICENSE",
+          "instance_id": "pylint-dev__pylint-4551",
+          "image_digest": "swebench/sweb.eval.x86_64.pylint-dev_1776_pylint-4551@sha256:910cb070fc5e1c02b715b561c2f5783bb5f5e5935d9a169b4c91bdcfdd015f52",
+          "local_source": "${TASK_DATA}/human_environments/pylint-dev__pylint-4551/source/LICENSE"
+        },
+        {
+          "repository": "pylint-dev/pylint",
+          "revision": "273a8b25620467c1e5686aa8d2a1dbb8c02c78d0",
+          "source_path": "LICENSE",
+          "original_filename": "LICENSE",
+          "source": "https://github.com/pylint-dev/pylint/blob/273a8b25620467c1e5686aa8d2a1dbb8c02c78d0/LICENSE",
+          "instance_id": "pylint-dev__pylint-6528",
+          "image_digest": "swebench/sweb.eval.x86_64.pylint-dev_1776_pylint-6528@sha256:47e14a7e2b6d5f6d24ab4632ac11bd1493ab57030a8c6becdc3083c7574d0604",
+          "local_source": "${TASK_DATA}/human_environments/pylint-dev__pylint-6528/source/LICENSE"
+        },
+        {
+          "repository": "pylint-dev/pylint",
+          "revision": "1f8c4d9eb185c16a2c1d881c054f015e1c2eb334",
+          "source_path": "LICENSE",
+          "original_filename": "LICENSE",
+          "source": "https://github.com/pylint-dev/pylint/blob/1f8c4d9eb185c16a2c1d881c054f015e1c2eb334/LICENSE",
+          "instance_id": "pylint-dev__pylint-8898",
+          "image_digest": "swebench/sweb.eval.x86_64.pylint-dev_1776_pylint-8898@sha256:a78e6034f627c1ae69c67b5a25ae5420192afb7279a4fd032a74095752e707d7",
+          "local_source": "${TASK_DATA}/human_environments/pylint-dev__pylint-8898/source/LICENSE"
+        }
+      ]
+    }
+  ]
+}
