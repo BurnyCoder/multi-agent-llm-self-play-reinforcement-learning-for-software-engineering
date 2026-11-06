@@ -27,18 +27,24 @@ These are unscored harness diagnostics, excluded from benchmark success and trai
 
 | Bug source | Condition | Planned | Attempted | Resolved / scored | Rate | Unscored recorded | Unrecorded |
 | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| human | base | 32 | 1 | 0 / 1 | 0.0% | 0 | 31 |
-| human | trained | 32 | 0 | Not evaluated | Not evaluated | 0 | 32 |
-| synthetic | base | 16 | 0 | Not evaluated | Not evaluated | 0 | 16 |
+| human | base | 32 | 22 | 0 / 21 | 0.0% | 11 | 0 |
+| human | trained | 32 | 1 | 0 / 1 | 0.0% | 0 | 31 |
+| synthetic | base | 16 | 0 | Not evaluated | Not evaluated | 16 | 0 |
 | synthetic | trained | 16 | 0 | Not evaluated | Not evaluated | 0 | 16 |
+
+The final condition received no recorded optimizer updates. Any observed paired differences concern two evaluations of unchanged weights, not an estimated self-play training effect. The primary hypothesis's learning intervention did not occur. The saved trained condition label, confidence intervals and preregistered interval rule remain unchanged.
 
 ### Human bugs
 
-Not evaluated: no tasks have completed outcomes for both conditions.
+Across 1 paired tasks, the trained-minus-base resolution difference was +0.0 percentage points (95% paired bootstrap interval [+0.0, +0.0]). Improved: 0; regressed: 0; unchanged: 1. Under the preregistered interval rule, this comparison contradicts the predicted improvement. The bootstrap interval is degenerate; it does not establish equivalence or rule out a population effect.
 
 ### Synthetic bugs
 
 Not evaluated: no tasks have completed outcomes for both conditions.
+
+## Recorded training outcome
+
+Completed collection groups: 2 (with saved training_group outcomes); valid bugs / injector episodes: 0 / 4; recorded repair attempts: 0; zero-advantage episodes: 4; optimizer steps: 0. Collection groups with sampled actions but only zero advantages: 2. Subtracting the length-weighted group mean turns equal returns into zero advantages. These groups had no nonzero-advantage action tokens and recorded no learning update. Saved invalidity reason counts across all logged artifact checks, including incomplete collections: {"At least one test target is required": 4}.
 
 ## Deferred controls
 
@@ -54,27 +60,35 @@ Not evaluated: no tasks have completed outcomes for both conditions.
 
 | Recorded diagnostic | Value |
 | --- | ---: |
-| episodes | 2 |
-| child sessions | 0 |
-| episodes with children | 0 |
-| delegation rate | 0 |
-| delegation calls | 0 |
-| generated tokens from research agents (excludes preflight) | 3337 |
-| generation calls by research agents (excludes preflight) | 41 |
-| validated artifacts | 0 |
-| invalid artifacts | 0 |
-| invalid artifact rate | Not measured |
+| episodes | 29 |
+| child sessions | 4 |
+| episodes with children | 4 |
+| delegation rate | 0.137931 |
+| delegation calls | 5 |
+| generated tokens from research agents (excludes preflight) | 35015 |
+| generation calls by research agents (excludes preflight) | 708 |
+| validated artifacts | 4 |
+| invalid artifacts | 4 |
+| invalid artifact rate | 1 |
 | optimizer steps | 0 |
-| recorded training groups | 0 |
+| recorded training groups | 2 |
 | peak allocated bytes | 5136889856 |
-| evaluation seconds | 360.033 |
-| training group seconds | 0 |
-| pass to pass regressions | 0 |
-| regression scored records | 1 |
+| evaluation seconds | 8839.61 |
+| training group seconds | 995.584 |
+| pass to pass regressions | 78 |
+| regression scored records | 22 |
 
 These are event-level counts, including incomplete collections and unscored protocol diagnostics; memory can include preflight. Unrecorded planned tasks remain missing coverage.
 
-Invalidity reasons: `{}`. Untrained-group reasons: `{}`.
+Invalidity reasons: `{"At least one test target is required": 4}`. Untrained-group reasons: `{}`.
+
+## Runtime interface and context diagnostics
+
+This post-hoc descriptive analysis counts 655 actual tool_finished events across recorded phases, excluding protocol-diagnostic episodes. Of these, 222 have result.error values, including 151 ValueError unsafe-path rejections. Generated text and nonzero command/test exit codes alone are not counted as tool errors. Evaluation agent_error counts are separated by source/condition after the report's task deduplication, excluding protocol diagnostics: human/base: 6 ContextLimitError records among 32 retained rows (6 with completed scoring); human/trained: 0 ContextLimitError records among 1 retained rows (0 with completed scoring); synthetic/base: 0 ContextLimitError records among 16 retained rows (0 with completed scoring). Completed scoring can still be recorded after an agent context error.
+
+Native read/edit path arguments require repository-relative paths [11]. The frozen prompt says Work in /repo without explicitly stating that read/edit path arguments must be relative [12]. This interface limitation and the fixed context capacity are potential confounders when interpreting repair outcomes. These counts do not establish a causal explanation for every unresolved result. Prompts, API semantics, and budgets remain fixed after held-out scoring; this analysis does not adapt them to observed benchmark outcomes.
+
+Sources: [pinned path guard](https://github.com/BurnyCoder/multi-agent-llm-self-play-reinforcement-learning-for-software-engineering/blob/109dfa67740ff9f0260d22be9407d047d90565f7/src/multi_agent_ssr/sandbox.py#L29) and [pinned prompt](https://github.com/BurnyCoder/multi-agent-llm-self-play-reinforcement-learning-for-software-engineering/blob/109dfa67740ff9f0260d22be9407d047d90565f7/src/multi_agent_ssr/agents.py#L146).
 
 ## Method and learnings
 
@@ -2043,6 +2057,106 @@ One shared model serves the primary agents and asynchronous children. The pilot 
           }
         ],
         "all_passed": true
+      },
+      "observed_async_delegation": {
+        "timestamp": "2026-11-05T23:29:41.954256+00:00",
+        "episode_id": "91f3211db0814899990e8c00341d21d5",
+        "scope": "Observed repair-team session concurrency; not evidence of repair benefit or simultaneous GPU generation",
+        "observations": [
+          {
+            "child_session_id": "40ad3fa09f2c",
+            "parent_session_id": "e02e8f5dfc75",
+            "child_started": "2026-11-05T23:25:21.919580+00:00",
+            "child_finished": "2026-11-05T23:29:09.842038+00:00",
+            "primary_calls_while_child_active": 16,
+            "primary_call_ids": [
+              "8ab3953f4a91489496e21cc28d62e0bf",
+              "f45618950de04de9a6b44b074ff4c415",
+              "ccc3d25c599b4f9b8fd1fc6456cbdce5",
+              "a262fa248eb748d893b1ddc0d713b5ae",
+              "c787dc521def47e7914f8622c9b888c1",
+              "e190afd2828c4c9aa0e0b6156fa75d94",
+              "2a6bfb2afa27417e8f6a61ff260fb536",
+              "66128619735d4e889f7922cd73c95a60",
+              "b10e2a74a601441ea066ee9d0b7b5a9f",
+              "46b3d77524c64b808e3e21d74e1ca94d",
+              "1fdece220a3144ae8eae5384eec9034f",
+              "0cc120e937e1401990f794cae5001609",
+              "ef4e64d926fd4d9d941d4b4dc1c86c5e",
+              "0389bd004d1d4e2784ddb086c19947ae",
+              "937357903b8d493f9a17049def8e5b45",
+              "dd917144f57e40318d287fa3774e936b"
+            ]
+          }
+        ],
+        "recorded_policy_versions": [
+          0
+        ],
+        "both_sessions_finished": true
+      },
+      "evaluation_timing_observation": {
+        "timestamp": "2026-11-05T23:34:15.050860+00:00",
+        "kind": "posthoc_engineering_observation",
+        "observations": [
+          {
+            "task_id": "pytest-dev__pytest-5631",
+            "condition": "base",
+            "total_evaluation_seconds": 360.03320702899873,
+            "agent_episode_seconds": 262.04940558400085,
+            "summed_generation_seconds": 250.1035344030006,
+            "outside_agent_episode_seconds": 97.98380144499788,
+            "generated_tokens": 1243,
+            "agent_error": null
+          },
+          {
+            "task_id": "pylint-dev__pylint-7080",
+            "condition": "base",
+            "total_evaluation_seconds": 672.572555589999,
+            "agent_episode_seconds": 0.03202667699952144,
+            "summed_generation_seconds": 0,
+            "outside_agent_episode_seconds": 672.5405289129994,
+            "generated_tokens": 0,
+            "agent_error": "ContextLimitError: Required instructions/latest interaction use 8788 tokens; prompt capacity is 1792"
+          }
+        ],
+        "interpretation": "Repository preparation, snapshot/diff processing and official grading account for time outside the agent episode. The worker was observed in p9_client_rpc waits while accessing Windows-mounted project files. This is observational evidence of an I/O concern, not a controlled estimate of filesystem causality or a measurement of GPU utilization.",
+        "external_guidance": "Microsoft recommends Linux-native storage for Linux filesystem-intensive work; the current pilot retains its registered paths and deadline. No model/data cache is copied or downloaded from D to C.",
+        "sources": [
+          "https://learn.microsoft.com/en-us/windows/wsl/filesystems",
+          "https://learn.microsoft.com/en-us/windows/dev-environment/wsl-interop"
+        ],
+        "intervention_performed": false
+      },
+      "local_dashboard_browser_check": {
+        "timestamp": "2026-11-06T00:17:44.458520+00:00",
+        "scope": "Local dashboard interactive visual verification",
+        "backend": "Codex in-app browser",
+        "status": "unavailable",
+        "observed_error": "Failed to connect to browser-use backend iab. No Codex IAB backends were discovered.",
+        "navigation_performed": false,
+        "interactive_controls_verified": false,
+        "other_evidence": "Published-file HTTP/hash checks and PDF visual review are separate evidence, not a browser interaction check."
+      },
+      "selected_checkpoint_verification": {
+        "timestamp": "2026-11-06T01:48:58.389348+00:00",
+        "method": "SHA256 of complete saved safetensors files; no model execution",
+        "selection": {
+          "path": "checkpoints/group-00002",
+          "completed_groups": 2,
+          "policy_version": 0
+        },
+        "initial_adapter_file_sha256": "79a29bf78880fce8ef6ed7924e2b79e7b1f54eabd3556fd7f923acf8cb9899a3",
+        "selected_adapter_file_sha256": "79a29bf78880fce8ef6ed7924e2b79e7b1f54eabd3556fd7f923acf8cb9899a3",
+        "adapter_files_identical": true,
+        "initial_adapter_fingerprint": "9312a507ea4ffa381a7dedfb8b880b1169761ac338a899ce4ed6732b0c503958",
+        "selected_adapter_fingerprint": "9312a507ea4ffa381a7dedfb8b880b1169761ac338a899ce4ed6732b0c503958",
+        "optimizer_steps": 0,
+        "base_revision": "15852e8c16360a2fea060d615a32b45270f8a8fc",
+        "training_state_sha256": "fbd32d521034e237cd6b219afe1896268d31db68122e5d92032580840bdde70d",
+        "baseline_elapsed_seconds": 8537.931396945998,
+        "derived_final_reserve_seconds": 10672.414246182498,
+        "derived_training_deadline_utc": "2026-11-06T01:50:51.383283+00:00",
+        "pilot_deadline_utc": "2026-11-06T04:48:43.797529+00:00"
       }
     },
     "kernel_review": {
@@ -2230,6 +2344,8 @@ Regenerate this report with `uv run selfplay report --run <run-directory>`. Task
 
 ## Sources
 
+[Upstream source notices and provenance](licenses/README.md) accompany repository excerpts in the saved records.
+
 - [Self-play SWE-RL: task construction and rewards](https://arxiv.org/html/2512.18552v3)
 - [CWM: clipped token objective and trajectory masks](https://arxiv.org/html/2510.02387v1#A3)
 - [OpenCode: asynchronous child sessions](https://github.com/anomalyco/opencode/blob/e761e265d2d5e6ff4a1c0756ab8d8eeee0db501e/packages/core/src/tool/plugin/subagent.ts)
@@ -2240,3 +2356,5 @@ Regenerate this report with `uv run selfplay report --run <run-directory>`. Task
 - [Paired percentile bootstrap procedure](https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.bootstrap.html)
 - [Committed preregistration and analysis plan](https://github.com/BurnyCoder/multi-agent-llm-self-play-reinforcement-learning-for-software-engineering/blob/main/reports/preregistration.md)
 - [Qwen3.5 cached/full-forward BF16 numerical analysis](https://github.com/huggingface/transformers/issues/46190)
+- [Frozen repository-relative path guard](https://github.com/BurnyCoder/multi-agent-llm-self-play-reinforcement-learning-for-software-engineering/blob/109dfa67740ff9f0260d22be9407d047d90565f7/src/multi_agent_ssr/sandbox.py#L29)
+- [Frozen agent prompt and native tool descriptions](https://github.com/BurnyCoder/multi-agent-llm-self-play-reinforcement-learning-for-software-engineering/blob/109dfa67740ff9f0260d22be9407d047d90565f7/src/multi_agent_ssr/agents.py#L146)

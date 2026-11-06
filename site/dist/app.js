@@ -35,6 +35,10 @@ function renderEvidence() {
     if (pair.interval_degenerate && pair.interpretation !== "no_observed_difference")
       byId("interpretation").textContent += " The interval is degenerate and should not be interpreted as precise population uncertainty.";
   }
+  if (dataset.training_intervention_disclosure) {
+    const decision = pair.preregistered_decision.replaceAll("_", " ");
+    byId("interpretation").textContent = `${dataset.training_intervention_disclosure} ${byId("interpretation").textContent} Recorded interval-rule decision: ${decision}.`;
+  }
   renderTable();
 }
 
