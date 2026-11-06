@@ -17,6 +17,8 @@ from html import escape
 from pathlib import Path
 from typing import Any
 
+from .publication import copy_source_notices
+
 SOURCES = [
     ("Self-play SWE-RL: task construction and rewards", "https://arxiv.org/html/2512.18552v3"),
     ("CWM: clipped token objective and trajectory masks", "https://arxiv.org/html/2510.02387v1#A3"),
@@ -845,6 +847,8 @@ def generate_report(run_dir: Path, output_dir: Path, site_dir: Path, *, readme_p
     run_dir, output_dir, site_dir = Path(run_dir), Path(output_dir), Path(site_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
     site_dir.mkdir(parents=True, exist_ok=True)
+    for destination in (output_dir, site_dir):
+        copy_source_notices(destination / "licenses")
     manifest = _json(run_dir / "manifest.json")
     run_summary = _json(run_dir / "summary.json")
     failure = _json(run_dir / "failure.json")
@@ -954,7 +958,8 @@ def generate_report(run_dir: Path, output_dir: Path, site_dir: Path, *, readme_p
               "Task-paired intervals condition on one training checkpoint; training-seed uncertainty is unmeasured. "
               "Degenerate bootstrap intervals do not establish equivalence. Missing evaluations and infrastructure "
               "errors are excluded from scored denominators and reported separately. Public-data pretraining "
-              "contamination remains unknown.\n\n## Sources\n\n" +
+              "contamination remains unknown.\n\n## Sources\n\n"
+              "[Upstream source notices and provenance](licenses/README.md) accompany repository excerpts in the saved records.\n\n" +
               "\n".join(f"- [{title}]({url})" for title, url in SOURCES) + "\n")
     (output_dir / "experiment.md").write_text(report, encoding="utf-8")
     (output_dir / "experiments-summary.md").write_text(
