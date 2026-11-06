@@ -494,6 +494,31 @@ def _training_intervention_text(payload: dict[str, Any]) -> str:
             "intervals and preregistered interval rule remain unchanged.")
 
 
+def _training_outcome_text(metrics: list[dict[str, Any]], diagnostics: dict[str, Any]) -> str:
+    """Explain saved update outcomes without attributing unfinished attempts to them."""
+    completed = [row for row in metrics if row.get("event") == "training_group"]
+    if not completed:
+        return ""
+
+    def total(key):
+        return sum(row[key] for row in completed) if all(key in row for row in completed) else "unrecorded"
+
+    text = (f"Completed collection groups: {len(completed)} (with saved training_group outcomes); "
+            f"valid bugs / injector episodes: {total('valid_bugs')} / {total('injector_episodes')}; "
+            f"recorded repair attempts: {total('repair_attempts')}; zero-advantage episodes: {total('zero_advantage_episodes')}; "
+            f"optimizer steps: {total('optimizer_steps')}. ")
+    zero_only = sum(row.get("episodes", 0) > 0 and row.get("zero_advantage_episodes") == row["episodes"]
+                    and row.get("no_action_groups") == 0 and row.get("sampled_tokens", 0) > 0
+                    and row.get("trained_tokens_per_pass") == 0 and row.get("optimizer_steps") == 0
+                    for row in completed)
+    if zero_only:
+        text += (f"Collection groups with sampled actions but only zero advantages: {zero_only}. "
+                 "Subtracting the length-weighted group mean turns equal returns into zero advantages. "
+                 "These groups had no nonzero-advantage action tokens and recorded no learning update. ")
+    return (text + "Saved invalidity reason counts across all logged artifact checks, including incomplete collections: "
+            + json.dumps(diagnostics["invalid_reasons"], ensure_ascii=False, sort_keys=True) + ".")
+
+
 def _effect_text(comparison: dict[str, Any], intervention_disclosure: str = "") -> str:
     """A degenerate bootstrap interval must not be sold as precise equivalence."""
     if not comparison["paired_tasks"]:
@@ -654,6 +679,9 @@ def _paper_sections(payload: dict[str, Any]) -> list[tuple[str, str]]:
     if payload.get("recovery_disclosure"):
         position = next(index for index, (title, _) in enumerate(sections) if title == "Results")
         sections.insert(position, ("Interrupted attempt and recovery amendment", payload["recovery_disclosure"]))
+    if payload.get("training_outcome_disclosure"):
+        position = next(index for index, (title, _) in enumerate(sections) if title == "Observed execution diagnostics")
+        sections.insert(position, ("Recorded training outcome", payload["training_outcome_disclosure"]))
     if payload.get("likelihood_disclosure"):
         position = next(index for index, (title, _) in enumerate(sections) if title == "Observed execution diagnostics")
         sections.insert(position, ("Preflight likelihood diagnostics", payload["likelihood_disclosure"]))
@@ -907,6 +935,7 @@ def generate_report(run_dir: Path, output_dir: Path, site_dir: Path, *, readme_p
     payload["likelihood_disclosure"] = _likelihood_text(payload["likelihood_history"], payload["likelihood"])
     payload["runtime_disclosure"] = _runtime_text(payload["runtime_diagnostics"])
     payload["training_intervention_disclosure"] = _training_intervention_text(payload)
+    payload["training_outcome_disclosure"] = _training_outcome_text(metrics, payload["diagnostics"])
     if (run_dir / "kernel-review.json").exists():
         payload["preparation"]["kernel_review"] = _json(run_dir / "kernel-review.json")
     figures = render_figures(payload, output_dir / "figures")
@@ -929,6 +958,8 @@ def generate_report(run_dir: Path, output_dir: Path, site_dir: Path, *, readme_p
                      if payload["protocol_disclosure"] else "")
     runtime_text = ("## Runtime interface and context diagnostics\n\n" + payload["runtime_disclosure"] +
                     f"\n\nSources: [pinned path guard]({SOURCES[10][1]}) and [pinned prompt]({SOURCES[11][1]}).\n\n")
+    training_text = ("## Recorded training outcome\n\n" + payload["training_outcome_disclosure"] + "\n\n"
+                     if payload["training_outcome_disclosure"] else "")
     details = "\n\n".join(f"### {source.title()} bugs\n\n{_effect_text(comparison)}"
                             for source, comparison in payload["analysis"]["comparisons"].items())
     if payload["training_intervention_disclosure"]:
@@ -938,7 +969,7 @@ def generate_report(run_dir: Path, output_dir: Path, site_dir: Path, *, readme_p
               "All tables and diagnostics are derived from the [machine-readable analysis](summary.json). "
               "The [committed preregistration](preregistration.md) defines the hypotheses and decision rules.\n\n"
               + failure_text + recovery_text + likelihood_text + protocol_text + f"## Evaluation\n\n{table}\n\n{details}\n\n"
-              f"## Deferred controls\n\n{controls}\n\n"
+              + training_text + f"## Deferred controls\n\n{controls}\n\n"
               f"## Execution diagnostics\n\n{diagnostics}\n\n"
               "These are event-level counts, including incomplete collections and unscored protocol diagnostics; memory can include preflight. "
               "Unrecorded planned tasks remain missing coverage.\n\n"
@@ -964,7 +995,7 @@ def generate_report(run_dir: Path, output_dir: Path, site_dir: Path, *, readme_p
     (output_dir / "experiment.md").write_text(report, encoding="utf-8")
     (output_dir / "experiments-summary.md").write_text(
         "# Experiments recorded in this run\n\n" + failure_text + recovery_text + likelihood_text + protocol_text + table + "\n\n" + details +
-        "\n\n## Deferred controls\n\n" + controls + "\n\n## Recorded diagnostics\n\n" + diagnostics +
+        "\n\n" + training_text + "## Deferred controls\n\n" + controls + "\n\n## Recorded diagnostics\n\n" + diagnostics +
         "\n\n" + runtime_text +
         "\n\n## Network and experiment design\n\n"
         "| Condition | Architecture | Training in this experiment | Objective | Data and domain |\n"
@@ -1018,7 +1049,7 @@ def generate_report(run_dir: Path, output_dir: Path, site_dir: Path, *, readme_p
             links = (f"\n\n![Recorded evaluation outcomes]({relative}/figures/scores.png)\n\n"
                      f"[Experiment report]({relative}/experiment.md) · [PDF paper]({relative}/paper.pdf)")
         _update_readme(readme_path, f"Recorded run status: **{status}**.\n\n" + failure_text + recovery_text + protocol_text + table + "\n\n" +
-                       details + "\n\n" + controls + links + "\n\nRegenerate all results with `uv run selfplay report --run <run-directory>`.")
+                       details + "\n\n" + training_text + controls + links + "\n\nRegenerate all results with `uv run selfplay report --run <run-directory>`.")
     (site_dir / ".nojekyll").write_text("", encoding="utf-8")
     return {"summary.json": str(output_dir / "summary.json"), "experiment.md": str(output_dir / "experiment.md"),
             "paper.pdf": str(output_dir / "paper.pdf"), "index.html": str(site_dir / "index.html")}
