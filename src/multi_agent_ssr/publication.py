@@ -3,11 +3,68 @@
 Uploading is a separate explicit CLI operation; this module never reads tokens.
 Hub model-card metadata: https://huggingface.co/docs/hub/model-cards .
 """
+import hashlib
 import json
+import shlex
 import shutil
+import subprocess
 from pathlib import Path
 
 from .io import write_json
+
+_HARNESS = "https://github.com/BurnyCoder/multi-agent-llm-self-play-reinforcement-learning-for-software-engineering"
+# Match the designated reporting inputs and action records, never a run-wide
+# recursive glob. Oracle caches, repository snapshots and host config are absent.
+_RECORD_PATTERNS = (
+    "manifest.json", "budget.json", "summary.json", "latest.json", "failure.json", "baseline.json",
+    "events.jsonl", "model.jsonl", "evaluation.jsonl", "metrics.jsonl", "preflight.json",
+    "preparation.json", "preparation_validation.json", "environment_validation.json", "validation.json",
+    "protocol_diagnostics.json", "kernel-review.json",
+    "preflight/preflight.json", "preflight/likelihood.json", "preflight/likelihood-*.json",
+    "preflight/model.jsonl", "preflight/events.jsonl",
+    "collection_groups/*.json", "episodes/*.json", "artifact_records/*.json",
+    "artifacts/*/bug_inject.diff", "artifacts/*/test_weaken.diff", "artifacts/*/test_files.txt",
+    "artifacts/*/test_script.sh", "artifacts/*/test_parser.py",
+    "human/*/*/episode.json", "human/*/*/prediction.diff",
+    "synthetic/*/*/attempt-*/episode.json", "synthetic/*/*/attempt-*/repair.diff",
+    "synthetic/*/*/attempt-*/test_results.json", "synthetic/*/*/attempt-*/agents/events.jsonl",
+)
+
+
+def _record_paths(run_dir: Path) -> list[Path]:
+    """Keep original bytes and reject links, including linked parent directories."""
+    paths = sorted({path for pattern in _RECORD_PATTERNS for path in run_dir.glob(pattern)})
+    for path in paths:
+        relative = path.relative_to(run_dir)
+        if any(run_dir.joinpath(*relative.parts[:index]).is_symlink()
+               for index in range(1, len(relative.parts) + 1)):
+            raise ValueError(f"Evidence record is a symlink: {relative}")
+    return [path for path in paths if path.is_file()]
+
+
+def _source_commit() -> str:
+    """Identify the reporting/export source separately from the pilot's code."""
+    try:
+        return subprocess.run(["git", "rev-parse", "HEAD"], cwd=Path(__file__).resolve().parents[2],
+                              text=True, capture_output=True, check=True).stdout.strip()
+    except (OSError, subprocess.CalledProcessError):
+        return "unrecorded"
+
+
+def _inventory(destination: Path, files: list[Path], source_commit: str) -> None:
+    """Hash bounded exported files without loading large weights into memory.
+
+    https://docs.python.org/3.12/library/hashlib.html#hashlib.file_digest
+    """
+    entries = []
+    for path in sorted(set(files)):
+        with path.open("rb") as stream:
+            digest = hashlib.file_digest(stream, "sha256").hexdigest()
+        entries.append({"path": path.relative_to(destination).as_posix(),
+                        "bytes": path.stat().st_size, "sha256": digest})
+    write_json(destination / "bundle-inventory.json", {
+        "format_version": 1, "export_source_commit": source_commit, "files": entries,
+        "scope": "Listed exported files; this inventory excludes its own bytes."})
 
 
 def export_checkpoint(run_dir: Path, report_dir: Path, destination: Path) -> Path:
@@ -25,33 +82,80 @@ def export_checkpoint(run_dir: Path, report_dir: Path, destination: Path) -> Pat
     report = json.loads((report_dir / "summary.json").read_text())
     if not (checkpoint / "adapter_model.safetensors").is_file():
         raise ValueError("Selected adapter weights are missing")
+    records = _record_paths(run_dir)
+    source_commit = _source_commit()
+    files = []
     destination.mkdir(parents=True, exist_ok=True)
     # Checkpoints are harness-owned; exclude arbitrary extensions and symlinks.
     allowed = {".json", ".safetensors", ".pt", ".jinja", ".txt"}
     for path in checkpoint.iterdir():
         if path.is_file() and not path.is_symlink() and path.suffix in allowed:
             shutil.copyfile(path, destination / path.name)
+            files.append(destination / path.name)
     write_json(destination / "experiment.json", manifest)
     write_json(destination / "evaluation-summary.json", report["analysis"])
     write_json(destination / "selection.json", latest)
+    write_json(destination / "report-summary.json", report)
+    files.extend(destination / name for name in
+                 ("experiment.json", "evaluation-summary.json", "selection.json", "report-summary.json"))
+    # The original basename preserves reporting's path-derived run_id fallback.
+    records_relative = Path("run-records") / run_dir.name
+    for path in records:
+        target = destination / records_relative / path.relative_to(run_dir)
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(path, target)
+        files.append(target)
     for name in ["experiment.md", "paper.pdf"]:
         if (report_dir / name).exists():
             shutil.copyfile(report_dir / name, destination / name)
+            files.append(destination / name)
     base = record["model_config"]
     updated = record["policy_version"] > 0
     status = ("A locally updated shared LoRA research adapter." if updated else
               "An unchanged research adapter: the pilot completed no optimizer updates. This is not a trained checkpoint.")
+    selection = ("Selection uses the final completed collection group, independently of evaluation score." if updated else
+                 "The selected adapter has no optimizer updates; completed zero-advantage collection groups can leave it unchanged. "
+                 "In the saved analysis, `trained` identifies the final-evaluation condition, not evidence of an optimizer update.")
+    pilot_commit = manifest.get("phase_code_commits", {}).get("pilot", manifest.get("code_commit", "unrecorded"))
+    # License files may already be staged from pinned upstream snapshots; keep
+    # their original names and provenance, and never infer files from log paths.
+    for pattern in ("LICENSE", "license-provenance.json", "docs/sources.md", "licenses/harness/LICENSE",
+                    "licenses/repositories/*/LICENSE", "licenses/repositories/*/LICENCE"):
+        files.extend(path for path in destination.glob(pattern) if path.is_file() and not path.is_symlink())
     card = ("---\nlicense: apache-2.0\nlibrary_name: peft\nbase_model: " + base["model_id"] +
         "\nbase_model_relation: adapter\ntags:\n- reinforcement-learning\n- code\n- lora\n- multi-agent\n---\n\n"
         "# Local multi-agent software self-play pilot\n\n" + status + "\n\n"
         "All primaries and asynchronous subagents use exactly one shared adapter. The frozen base weights, "
         "vision tower, embeddings and output head are not trained.\n\n"
         f"Exact base revision: `{base['revision']}`. Selected policy version: `{record['policy_version']}`. "
-        "Selection uses the final completed collection group, independently of evaluation score.\n\n"
+        f"Adapter fingerprint: `{record['adapter_fingerprint']}`. " + selection + "\n\n"
+        f"Recorded completed collection groups: `{latest.get('completed_groups', 'unrecorded')}`. "
+        f"Saved report status: `{report.get('status', 'unrecorded')}`. "
+        f"Pilot source commit: `{pilot_commit}`. Report/export source commit: `{source_commit}`.\n\n"
         "## Reproduction\n\n"
-        "Use the locked [research harness](https://github.com/BurnyCoder/multi-agent-llm-self-play-reinforcement-learning-for-software-engineering). "
+        f"Use the locked [research harness]({_HARNESS}/tree/{source_commit}) and its documented GPU environment for model loading. "
         "The adapter, processor, checkpoint metadata, optimizer/RNG state and experiment configuration "
-        "are included. Load the exact base revision and this adapter; do not initialize from a preflight checkpoint.\n\n"
+        "are included. The harness loader reads the exact base revision and verifies the adapter fingerprint:\n\n"
+        "```python\nimport json\nfrom pathlib import Path\n"
+        "from multi_agent_ssr.contracts import ModelConfig\nfrom multi_agent_ssr.model import LocalPolicy\n\n"
+        'bundle = Path("/path/to/downloaded-bundle")\n'
+        'record = json.loads((bundle / "checkpoint.json").read_text())\n'
+        'policy = LocalPolicy(ModelConfig(**record["model_config"]),\n'
+        '                     log_path=Path("reload-model.jsonl"), checkpoint=bundle)\n```\n\n'
+        f"The harness's [generation configuration]({_HARNESS}/blob/{source_commit}/src/multi_agent_ssr/model.py) "
+        "unions the base model's EOS IDs with the tokenizer's chat EOS and deduplicates them; prompt encoding disables thinking. "
+        "Reusing only the base generation defaults can continue past "
+        "a chat turn; retain the harness configuration when sampling.\n\n"
+        "The allowlisted raw records retain exact prompt tokens, generated action tokens, behavior log probabilities, "
+        "policy versions and parent identities. Stored paths are unchanged provenance metadata, not instructions "
+        "to fetch excluded files. This bundle excludes repository snapshots, official scorer caches and reference fixes. "
+        "It supports report regeneration and inspection of recorded actions; rerunning sampling is not guaranteed "
+        "to reproduce actions bit for bit. `bundle-inventory.json` contains byte counts and SHA256 hashes.\n\n"
+        "From a checkout at the report/export source commit, regenerate all tables, figures, paper and dashboard "
+        "without a model call (the report command also refreshes that checkout's generated README results block):\n\n"
+        '```bash\nBUNDLE=/path/to/downloaded-bundle\n'
+        f'uv run --no-sync selfplay report --run "$BUNDLE"/{shlex.quote(records_relative.as_posix())} '
+        '--output "$BUNDLE/regenerated-reports" --site "$BUNDLE/regenerated-site"\n```\n\n'
         "## Recorded evaluation\n\n```json\n" + json.dumps(report["analysis"], indent=2) + "\n```\n\n"
         "Human and synthetic bugs are separate evaluations. Null results are unscored, not failures or successes. "
         "The small cohort and single training seed do not establish robustness; pretraining contamination is unknown. "
@@ -60,7 +164,12 @@ def export_checkpoint(run_dir: Path, report_dir: Path, destination: Path) -> Pat
         "This adapts [Self-play SWE-RL](https://arxiv.org/html/2512.18552v3), "
         "[CWM](https://arxiv.org/html/2510.02387v1#A3), and "
         "[OpenCode delegation](https://github.com/anomalyco/opencode/blob/e761e265d2d5e6ff4a1c0756ab8d8eeee0db501e/packages/core/src/tool/plugin/subagent.ts). "
-        "The base is Apache-2.0 licensed. Training repositories retain their MIT/BSD notices; "
-        "the harness is MIT licensed. No held-out reference fix or evaluation test patch enters training.\n")
+        f"The [pinned base license](https://huggingface.co/{base['model_id']}/blob/{base['revision']}/LICENSE) is Apache-2.0. "
+        "Training repositories retain their MIT/BSD notices; "
+        f"the [harness license]({_HARNESS}/blob/{source_commit}/LICENSE) is MIT. "
+        "When present, `license-provenance.json` identifies the exact bundled license/notice files and their source revisions. "
+        "No held-out reference fix or evaluation test patch enters training.\n")
     (destination / "README.md").write_text(card, encoding="utf-8")
+    files.append(destination / "README.md")
+    _inventory(destination, files, source_commit)
     return destination
