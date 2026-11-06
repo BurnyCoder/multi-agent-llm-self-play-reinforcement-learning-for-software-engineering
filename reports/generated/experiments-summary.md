@@ -23,18 +23,24 @@ These are unscored harness diagnostics, excluded from benchmark success and trai
 
 | Bug source | Condition | Planned | Attempted | Resolved / scored | Rate | Unscored recorded | Unrecorded |
 | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| human | base | 32 | 1 | 0 / 1 | 0.0% | 0 | 31 |
-| human | trained | 32 | 0 | Not evaluated | Not evaluated | 0 | 32 |
-| synthetic | base | 16 | 0 | Not evaluated | Not evaluated | 0 | 16 |
+| human | base | 32 | 22 | 0 / 21 | 0.0% | 11 | 0 |
+| human | trained | 32 | 1 | 0 / 1 | 0.0% | 0 | 31 |
+| synthetic | base | 16 | 0 | Not evaluated | Not evaluated | 16 | 0 |
 | synthetic | trained | 16 | 0 | Not evaluated | Not evaluated | 0 | 16 |
+
+The final condition received no recorded optimizer updates. Any observed paired differences concern two evaluations of unchanged weights, not an estimated self-play training effect. The primary hypothesis's learning intervention did not occur. The saved trained condition label, confidence intervals and preregistered interval rule remain unchanged.
 
 ### Human bugs
 
-Not evaluated: no tasks have completed outcomes for both conditions.
+Across 1 paired tasks, the trained-minus-base resolution difference was +0.0 percentage points (95% paired bootstrap interval [+0.0, +0.0]). Improved: 0; regressed: 0; unchanged: 1. Under the preregistered interval rule, this comparison contradicts the predicted improvement. The bootstrap interval is degenerate; it does not establish equivalence or rule out a population effect.
 
 ### Synthetic bugs
 
 Not evaluated: no tasks have completed outcomes for both conditions.
+
+## Recorded training outcome
+
+Completed collection groups: 2 (with saved training_group outcomes); valid bugs / injector episodes: 0 / 4; recorded repair attempts: 0; zero-advantage episodes: 4; optimizer steps: 0. Collection groups with sampled actions but only zero advantages: 2. Subtracting the length-weighted group mean turns equal returns into zero advantages. These groups had no nonzero-advantage action tokens and recorded no learning update. Saved invalidity reason counts across all logged artifact checks, including incomplete collections: {"At least one test target is required": 4}.
 
 ## Deferred controls
 
@@ -50,23 +56,33 @@ Not evaluated: no tasks have completed outcomes for both conditions.
 
 | Recorded diagnostic | Value |
 | --- | ---: |
-| episodes | 2 |
-| child sessions | 0 |
-| episodes with children | 0 |
-| delegation rate | 0 |
-| delegation calls | 0 |
-| generated tokens from research agents (excludes preflight) | 3337 |
-| generation calls by research agents (excludes preflight) | 41 |
-| validated artifacts | 0 |
-| invalid artifacts | 0 |
-| invalid artifact rate | Not measured |
+| episodes | 29 |
+| child sessions | 4 |
+| episodes with children | 4 |
+| delegation rate | 0.137931 |
+| delegation calls | 5 |
+| generated tokens from research agents (excludes preflight) | 35015 |
+| generation calls by research agents (excludes preflight) | 708 |
+| validated artifacts | 4 |
+| invalid artifacts | 4 |
+| invalid artifact rate | 1 |
 | optimizer steps | 0 |
-| recorded training groups | 0 |
+| recorded training groups | 2 |
 | peak allocated bytes | 5136889856 |
-| evaluation seconds | 360.033 |
-| training group seconds | 0 |
-| pass to pass regressions | 0 |
-| regression scored records | 1 |
+| evaluation seconds | 8839.61 |
+| training group seconds | 995.584 |
+| pass to pass regressions | 78 |
+| regression scored records | 22 |
+
+## Runtime interface and context diagnostics
+
+This post-hoc descriptive analysis counts 655 actual tool_finished events across recorded phases, excluding protocol-diagnostic episodes. Of these, 222 have result.error values, including 151 ValueError unsafe-path rejections. Generated text and nonzero command/test exit codes alone are not counted as tool errors. Evaluation agent_error counts are separated by source/condition after the report's task deduplication, excluding protocol diagnostics: human/base: 6 ContextLimitError records among 32 retained rows (6 with completed scoring); human/trained: 0 ContextLimitError records among 1 retained rows (0 with completed scoring); synthetic/base: 0 ContextLimitError records among 16 retained rows (0 with completed scoring). Completed scoring can still be recorded after an agent context error.
+
+Native read/edit path arguments require repository-relative paths [11]. The frozen prompt says Work in /repo without explicitly stating that read/edit path arguments must be relative [12]. This interface limitation and the fixed context capacity are potential confounders when interpreting repair outcomes. These counts do not establish a causal explanation for every unresolved result. Prompts, API semantics, and budgets remain fixed after held-out scoring; this analysis does not adapt them to observed benchmark outcomes.
+
+Sources: [pinned path guard](https://github.com/BurnyCoder/multi-agent-llm-self-play-reinforcement-learning-for-software-engineering/blob/109dfa67740ff9f0260d22be9407d047d90565f7/src/multi_agent_ssr/sandbox.py#L29) and [pinned prompt](https://github.com/BurnyCoder/multi-agent-llm-self-play-reinforcement-learning-for-software-engineering/blob/109dfa67740ff9f0260d22be9407d047d90565f7/src/multi_agent_ssr/agents.py#L146).
+
+
 
 ## Network and experiment design
 
