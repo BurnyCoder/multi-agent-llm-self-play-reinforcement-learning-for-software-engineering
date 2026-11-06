@@ -13,6 +13,7 @@ from pathlib import Path
 from .io import write_json
 
 _HARNESS = "https://github.com/BurnyCoder/multi-agent-llm-self-play-reinforcement-learning-for-software-engineering"
+_NOTICE_DIR = Path(__file__).resolve().parents[2] / "docs" / "licenses"
 # Match the designated reporting inputs and action records, never a run-wide
 # recursive glob. Oracle caches, repository snapshots and host config are absent.
 _RECORD_PATTERNS = (
@@ -29,6 +30,20 @@ _RECORD_PATTERNS = (
     "synthetic/*/*/attempt-*/episode.json", "synthetic/*/*/attempt-*/repair.diff",
     "synthetic/*/*/attempt-*/test_results.json", "synthetic/*/*/attempt-*/agents/events.jsonl",
 )
+
+
+def copy_source_notices(destination: Path) -> list[Path]:
+    """Copy only the canonical, deduplicated notice documents, without rewriting bytes."""
+    files = []
+    for pattern in ("README.md", "provenance.json", "files/*/*"):
+        for source in sorted(_NOTICE_DIR.glob(pattern)):
+            if not source.is_file() or source.is_symlink():
+                continue
+            target = destination / source.relative_to(_NOTICE_DIR)
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(source, target)
+            files.append(target)
+    return files
 
 
 def _record_paths(run_dir: Path) -> list[Path]:
@@ -84,7 +99,7 @@ def export_checkpoint(run_dir: Path, report_dir: Path, destination: Path) -> Pat
         raise ValueError("Selected adapter weights are missing")
     records = _record_paths(run_dir)
     source_commit = _source_commit()
-    files = []
+    files = copy_source_notices(destination / "docs" / "licenses")
     destination.mkdir(parents=True, exist_ok=True)
     # Checkpoints are harness-owned; exclude arbitrary extensions and symlinks.
     allowed = {".json", ".safetensors", ".pt", ".jinja", ".txt"}
@@ -167,6 +182,10 @@ def export_checkpoint(run_dir: Path, report_dir: Path, destination: Path) -> Pat
         f"The [pinned base license](https://huggingface.co/{base['model_id']}/blob/{base['revision']}/LICENSE) is Apache-2.0. "
         "Training repositories retain their MIT/BSD notices; "
         f"the [harness license]({_HARNESS}/blob/{source_commit}/LICENSE) is MIT. "
+        "Benchmark repository source excerpts in raw model/tool records have separate "
+        "[upstream notices and pinned source associations](docs/licenses/README.md). "
+        "These include notices from requests, Flask, pylint and pytest; the cached dataset card's missing "
+        "license declaration is documented in that provenance. "
         "When present, `license-provenance.json` identifies the exact bundled license/notice files and their source revisions. "
         "No held-out reference fix or evaluation test patch enters training.\n")
     (destination / "README.md").write_text(card, encoding="utf-8")

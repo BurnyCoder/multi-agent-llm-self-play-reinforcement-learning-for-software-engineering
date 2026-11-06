@@ -1,3 +1,7 @@
 * text=auto eol=lf
 *.pdf binary
 *.png binary
+# Preserve exact upstream notice bytes and their recorded SHA256 identities.
+docs/licenses/files/** -text
+reports/generated/licenses/files/** -text
+site/dist/licenses/files/** -text
