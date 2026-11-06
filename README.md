@@ -2,6 +2,8 @@
 
 Train one local language model to introduce and repair bugs in real Python repositories. Both teams use the same Qwen3.5-2B weights and one shared LoRA adapter. Primary agents delegate work to subagents, keep working while they run, and receive results asynchronously. Executable tests provide rewards; every primary/child generation in a completed group enters its team's policy-gradient update once per optimization pass (zero-advantage groups make no update).
 
+[Interactive dashboard](https://burnycoder.github.io/multi-agent-llm-self-play-reinforcement-learning-for-software-engineering/) · [Checkpoint and raw records](https://huggingface.co/BurnyCoder/multi-agent-swe-rl-qwen3.5-2b-pilot) · [Research collection](https://huggingface.co/collections/BurnyCoder/local-multi-agent-swe-rl-6ae4480aaae11ec43fdecb36) · [Paper](reports/generated/paper.pdf)
+
 The project adapts [Self-play SWE-RL](https://arxiv.org/html/2512.18552v3), the [CWM training objective](https://arxiv.org/html/2510.02387v1#A3), and [OpenCode's subagent interface](https://github.com/anomalyco/opencode/blob/e761e265d2d5e6ff4a1c0756ab8d8eeee0db501e/packages/core/src/tool/plugin/subagent.ts) to one laptop GPU. It tests whether self-play gains transfer to independently held-out human bugs; [prior work](https://arxiv.org/html/2607.03523v1) shows that synthetic gains alone are insufficient evidence.
 
 **Research status:** the generated results below report the recorded run, checkpoint and evaluation status. A [dated recovery amendment](reports/preregistration.md#recovery-amendment-2026-11-05) preserves the interrupted initial attempt and deducts its compute charge from the recovery allocation. Preflight parameter updates are software checks, not evidence of self-play learning. The first delivery covers one bounded pilot; the larger seed/control study remains deferred.
@@ -111,6 +113,12 @@ The documented restart recovery uses `--config configs/pilot_recovery.toml --run
 
 The report command regenerates Markdown, PDF, tables, plots and dashboard data from result files. Raw prompts, complete model outputs, tool events, exact sampled token IDs, behavior log probabilities, policy versions and session-parent identities are timestamped and preserved. Terminal logging is streamed. Observations may be bounded for the model's small context; the underlying log records are not truncated.
 
+The published bundle contains the selected checkpoint, pinned base revision, optimizer/RNG state, license notices, file hashes and an explicit subset of the raw run records. Its model card distinguishes unchanged weights from a learned checkpoint and identifies the research and export source commits. To regenerate the published pilot's reports from the bundle already stored on D:, without loading a model:
+
+```bash
+uv run --no-sync selfplay report --run /mnt/d/AI/multi-agent-ssr/publication/pilot-recovery/run-records/pilot-recovery
+```
+
 ## Method and constraints
 
 The injector changes source code and weakens existing tests. The harness verifies clean passing tests, induced failures, successful weakening, and the causal contribution of each modified source file. The solver receives a fresh buggy snapshot and reversed test patch, with no clean implementation, injection diff or original history. Scoring restores original tests/configuration in a separate sandbox.
@@ -126,6 +134,6 @@ The primary evaluation is a preregistered subset of SWE-bench Verified using its
 - `tests/`: behavior, math, isolation and pipeline checks.
 - `reports/` and `docs/`: preregistration, generated experiments, methodology and sources.
 - `site/`: static interactive results explorer deployed through GitHub Pages.
-- `runs/` (ignored): exact private traces, temporary workspaces, checkpoints and raw outcomes.
+- `runs/` (ignored): full local traces, temporary workspaces, checkpoints and raw outcomes. Publication exports only the documented subset of records.
 
-See [optional controls and sensitivity runs](docs/controls.md), [sources and licensing](docs/sources.md), and [research instructions](AGENTS.md). Source code is MIT licensed; dependencies, pretrained weights and upstream repositories retain their own licenses.
+See [delivery verification](reports/delivery-verification.json), [optional controls and sensitivity runs](docs/controls.md), [sources and licensing](docs/sources.md), and [research instructions](AGENTS.md). Source code is MIT licensed; dependencies, pretrained weights and upstream repositories retain their own licenses.
