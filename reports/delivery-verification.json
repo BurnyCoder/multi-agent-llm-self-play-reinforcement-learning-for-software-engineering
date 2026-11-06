@@ -1,0 +1,1601 @@
+{
+  "recorded_at": "2026-11-06T05:20:38.204655+00:00",
+  "scope": "Software and artifact delivery verification; distinct from research performance",
+  "software_suite": {
+    "started_at": "2026-11-06T04:50:20.688142+00:00",
+    "commit": "b4a8f05ff643e0c98a4bf82eb707cac2ba16ffed",
+    "worktree_status_start": [],
+    "status": "passed",
+    "commands": [
+      {
+        "name": "pytest",
+        "command": [
+          ".venv/bin/python",
+          "-m",
+          "pytest",
+          "-q",
+          "--junitxml=runs/verification/unit-tests-final.xml"
+        ],
+        "started_at": "2026-11-06T04:50:20.705343+00:00",
+        "log": "runs/verification/pytest-final.log",
+        "returncode": 0,
+        "finished_at": "2026-11-06T04:56:56.846317+00:00",
+        "elapsed_seconds": 378.7667802330034,
+        "junit_counts": {
+          "tests": 204,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "passed": 204
+        },
+        "junit_time_seconds": 366.35,
+        "junit": "runs/verification/unit-tests-final.xml"
+      },
+      {
+        "name": "ruff",
+        "command": [
+          ".venv/bin/python",
+          "-m",
+          "ruff",
+          "check",
+          "src",
+          "tests"
+        ],
+        "started_at": "2026-11-06T04:56:56.870395+00:00",
+        "log": "runs/verification/ruff-final.log",
+        "returncode": 0,
+        "finished_at": "2026-11-06T04:56:57.540299+00:00",
+        "elapsed_seconds": 0.6699411390000023
+      }
+    ],
+    "research_process_exit_check": {
+      "checked_at": "2026-11-06T04:50:20.688179+00:00",
+      "pids": [
+        160498,
+        160536
+      ],
+      "both_absent": true
+    },
+    "execution": "CPU software verification; no research model loaded",
+    "environment_overrides": {
+      "CUDA_VISIBLE_DEVICES": "",
+      "HF_HUB_OFFLINE": "1",
+      "TRANSFORMERS_OFFLINE": "1",
+      "PYTHONUNBUFFERED": "1"
+    },
+    "full_pipeline_fixture": {
+      "name": "test_complete_game_update_evaluation_and_reporting",
+      "classname": "tests.test_pipeline",
+      "elapsed_seconds": 20.96,
+      "status": "passed"
+    },
+    "finished_at": "2026-11-06T04:56:57.552737+00:00",
+    "ending_commit": "b4a8f05ff643e0c98a4bf82eb707cac2ba16ffed",
+    "worktree_status_end": []
+  },
+  "post_pilot_watchdog": {
+    "started_at": "2026-11-06T05:02:10.691829+00:00",
+    "scope": "Post-pilot watchdog correction; no research model executed or restarted",
+    "research_worker_used_this_change": false,
+    "commit": "b4a8f05ff643e0c98a4bf82eb707cac2ba16ffed",
+    "source_diff": "runs/verification/watchdog-source.diff",
+    "source_diff_sha256": "364ef79266a002bae58825ce7f811844e3b0bb9d2d6d83b0f2affacb664b39af",
+    "source_files_sha256": {
+      "src/multi_agent_ssr/supervisor.py": "4ba9fa77688ffdca11099c40df82e45e2e61e09114944c1b6815fc7828e77888",
+      "tests/test_supervisor.py": "7ba1cb3db59f97e6960a02e5a425cd3d8f71f4626daf8e8fceef025f2eb93ca8"
+    },
+    "commands": [
+      {
+        "name": "pytest",
+        "command": [
+          ".venv/bin/python",
+          "-m",
+          "pytest",
+          "tests/test_supervisor.py",
+          "-q",
+          "--junitxml=runs/verification/watchdog-tests.xml"
+        ],
+        "started_at": "2026-11-06T05:02:10.766826+00:00",
+        "log": "runs/verification/watchdog-pytest.log",
+        "returncode": 0,
+        "finished_at": "2026-11-06T05:02:20.117925+00:00",
+        "elapsed_seconds": 9.351109000002907,
+        "junit_counts": {
+          "tests": 5,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "passed": 5
+        },
+        "junit": "runs/verification/watchdog-tests.xml"
+      },
+      {
+        "name": "ruff",
+        "command": [
+          ".venv/bin/python",
+          "-m",
+          "ruff",
+          "check",
+          "src",
+          "tests"
+        ],
+        "started_at": "2026-11-06T05:02:20.123232+00:00",
+        "log": "runs/verification/watchdog-ruff.log",
+        "returncode": 0,
+        "finished_at": "2026-11-06T05:02:20.677597+00:00",
+        "elapsed_seconds": 0.5543720829955419
+      }
+    ],
+    "fail_before": {
+      "status": "observed_failure",
+      "command": [
+        ".venv/bin/python",
+        "-m",
+        "pytest",
+        "tests/test_supervisor.py",
+        "-q"
+      ],
+      "returncode": 1,
+      "timestamp": null,
+      "timestamp_status": "not captured",
+      "evidence": "runs/verification/watchdog-fail-before.txt",
+      "evidence_kind": "transcribed tool-output excerpt, not full stdout",
+      "failed": 3,
+      "passed": 2,
+      "original_supervisor_sha256": "9c7a805be6274d808bf315162c1d2a316b856d83ca9a321caf7bada3a73976d5"
+    },
+    "finished_at": "2026-11-06T05:02:20.862338+00:00",
+    "ending_commit": "b4a8f05ff643e0c98a4bf82eb707cac2ba16ffed",
+    "source_files_unchanged_during_verification": true,
+    "status": "passed"
+  },
+  "publication_regressions": {
+    "name": "pytest",
+    "errors": "0",
+    "failures": "0",
+    "skipped": "0",
+    "tests": "9",
+    "time": "5.651",
+    "timestamp": "2026-11-06T06:10:42.952856+01:00",
+    "hostname": "burny"
+  },
+  "paper": {
+    "verified_at": "2026-11-06T05:08:36.323865+00:00",
+    "path": "reports/generated/paper.pdf",
+    "sha256": "a4937233b6fd16cd26c062e61bf70675443f6c5aef7e782ca055e0ebb9fbdb8e",
+    "bytes": 387543,
+    "pages": 11,
+    "author": "Libor \"Burny\" Burian",
+    "all_pages_visually_inspected": true
+  },
+  "bundle_replay": {
+    "timestamp": "2026-11-06T05:13:44.912181+00:00",
+    "status": "passed",
+    "inventory_files_verified": 180,
+    "inventory_bytes_verified": 202829088,
+    "export_source_commit": "a4a95e81d2d753539786a2a0671db4e99050b532",
+    "source_adapter_sha256": "79a29bf78880fce8ef6ed7924e2b79e7b1f54eabd3556fd7f923acf8cb9899a3",
+    "export_adapter_sha256": "79a29bf78880fce8ef6ed7924e2b79e7b1f54eabd3556fd7f923acf8cb9899a3",
+    "exact_base_revision": "15852e8c16360a2fea060d615a32b45270f8a8fc",
+    "selected_policy_version": 0,
+    "report_payload_equal_except_generation_timestamp": true,
+    "local_markdown_links_verified": [
+      {
+        "document": "README.md",
+        "target": "evaluation-summary.json"
+      },
+      {
+        "document": "README.md",
+        "target": "licenses/README.md"
+      },
+      {
+        "document": "experiment.md",
+        "target": "summary.json"
+      },
+      {
+        "document": "experiment.md",
+        "target": "preregistration.md"
+      },
+      {
+        "document": "experiment.md",
+        "target": "licenses/README.md"
+      },
+      {
+        "document": "licenses/README.md",
+        "target": "provenance.json"
+      }
+    ],
+    "byte_identical_figures": [
+      "figures/architecture.png",
+      "figures/scores.png",
+      "figures/loss.png",
+      "figures/rewards.png",
+      "figures/memory.png",
+      "figures/tokens.png",
+      "figures/validity.png"
+    ],
+    "research_model_execution": false,
+    "downloads": false,
+    "replay_output": "/mnt/d/AI/multi-agent-ssr/publication-verification/pilot-recovery"
+  },
+  "huggingface": {
+    "timestamp": "2026-11-06T05:18:35.094362+00:00",
+    "status": "passed",
+    "repo": "BurnyCoder/multi-agent-swe-rl-qwen3.5-2b-pilot",
+    "revision": "6070c488d368e1032fb763d86bffaf9c0e6f550d",
+    "collection": "BurnyCoder/local-multi-agent-swe-rl-6ae4480aaae11ec43fdecb36",
+    "collection_public": true,
+    "file_checks": [
+      {
+        "path": "LICENSE",
+        "bytes": 11544,
+        "hash_kind": "Git blob SHA1",
+        "digest": "f938136e3adacfd92be087f6e113b5d6d97f678f"
+      },
+      {
+        "path": "README.md",
+        "bytes": 8644,
+        "hash_kind": "Git blob SHA1",
+        "digest": "5e29a435ae4597787b5bfc537c06b1630d7158ca"
+      },
+      {
+        "path": "adapter_config.json",
+        "bytes": 1777,
+        "hash_kind": "Git blob SHA1",
+        "digest": "e9d25e19e2a56b441188b3a3cf9eb9415a2fa507"
+      },
+      {
+        "path": "adapter_model.safetensors",
+        "bytes": 67332688,
+        "hash_kind": "LFS SHA256",
+        "digest": "79a29bf78880fce8ef6ed7924e2b79e7b1f54eabd3556fd7f923acf8cb9899a3"
+      },
+      {
+        "path": "chat_template.jinja",
+        "bytes": 7755,
+        "hash_kind": "Git blob SHA1",
+        "digest": "0ef09f214eaa6d9bca297988afc1454b5827b2c7"
+      },
+      {
+        "path": "checkpoint.json",
+        "bytes": 1005,
+        "hash_kind": "Git blob SHA1",
+        "digest": "0b97005e7fd4186eae7c6cb9daf10c8276de0f4b"
+      },
+      {
+        "path": "docs/sources.md",
+        "bytes": 7463,
+        "hash_kind": "Git blob SHA1",
+        "digest": "ebb9950168d01b829cab398e5f217d742272783c"
+      },
+      {
+        "path": "evaluation-summary.json",
+        "bytes": 392885,
+        "hash_kind": "Git blob SHA1",
+        "digest": "986dc527382761327eacba525c611e0ad4ea5e4a"
+      },
+      {
+        "path": "experiment.json",
+        "bytes": 3330,
+        "hash_kind": "Git blob SHA1",
+        "digest": "90d7e918413c9a9c1d78aef5ce0bbfaf226f868b"
+      },
+      {
+        "path": "experiment.md",
+        "bytes": 113634,
+        "hash_kind": "Git blob SHA1",
+        "digest": "9b7196b64c0d7da1f51c919c874c6438002453d1"
+      },
+      {
+        "path": "export-transformations.json",
+        "bytes": 748,
+        "hash_kind": "Git blob SHA1",
+        "digest": "f15a4417d99731f177cf6a2d2d2341320f587d32"
+      },
+      {
+        "path": "license-provenance.json",
+        "bytes": 3958,
+        "hash_kind": "Git blob SHA1",
+        "digest": "39e9a1c74c5494bb56bcbeaa0dc55a6dc6e70603"
+      },
+      {
+        "path": "licenses/README.md",
+        "bytes": 1623,
+        "hash_kind": "Git blob SHA1",
+        "digest": "dce3ffecba2cb2e506f6fa928af34cde2cba9239"
+      },
+      {
+        "path": "licenses/files/09e8a9bcec8067104652c168685ab0931e7868f9c8284b66f5ae6edae5f1130b/LICENSE",
+        "bytes": 10142,
+        "hash_kind": "Git blob SHA1",
+        "digest": "67db8588217f266eb561f75fae738656325deac9"
+      },
+      {
+        "path": "licenses/files/2e63a3bd3a1f97e2fa9fa33bbf4f61bbb56ee16beb125b5346b0012388dc3b49/LICENSE.rst",
+        "bytes": 780,
+        "hash_kind": "Git blob SHA1",
+        "digest": "99c58a2127c35d774be7d529cd359b02951b97a4"
+      },
+      {
+        "path": "licenses/files/3172d399cbd8f10609e73fec73d0e0b33eecd3c572a68b0722229d8c7059f725/LICENSE",
+        "bytes": 51,
+        "hash_kind": "Git blob SHA1",
+        "digest": "c38aa5c3f55a389eb2c015eb40cd67f2c15d633c"
+      },
+      {
+        "path": "licenses/files/3299f3fac35b42fbd3338044d9519ad8fd51ca72466a928a8732c54f8e2c9fd0/NOTICE",
+        "bytes": 2292,
+        "hash_kind": "Git blob SHA1",
+        "digest": "f583e47ab293de98e4579cab28a42d2423620b89"
+      },
+      {
+        "path": "licenses/files/4158d74a42b099b603e597d24a344f395f47da8e187638f451795900f28d9bc4/NOTICE",
+        "bytes": 4377,
+        "hash_kind": "Git blob SHA1",
+        "digest": "f523feaa13aa5c30f18446e04fe4231a97468eec"
+      },
+      {
+        "path": "licenses/files/45b6addd843b2ed89f9f8f363f61092db2e3c2461e3f178c3c3793648c3c4e07/license.rst",
+        "bytes": 1372,
+        "hash_kind": "Git blob SHA1",
+        "digest": "acbfb8bdb110e96798813a1b96fc4f871d74f826"
+      },
+      {
+        "path": "licenses/files/489a8e1108509ed98a37bb983e11e0f7e1d31f0bd8f99a79c8448e7ff37d07ea/LICENSE.rst",
+        "bytes": 1475,
+        "hash_kind": "Git blob SHA1",
+        "digest": "9d227a0cc43c3268d15722b763bd94ad298645a1"
+      },
+      {
+        "path": "licenses/files/4be38574daf05665b6194e4fd84c5ef6ce7c3a2810308a5222d5cdffc2d04d18/LICENSE",
+        "bytes": 1096,
+        "hash_kind": "Git blob SHA1",
+        "digest": "477af2d2e458f6c91c16ccc330222558d85ff182"
+      },
+      {
+        "path": "licenses/files/548eb62c9f5f5f7a121d15f26bb0d6a5ebb0cf7260584e0529ad65c56b39e83d/NOTICE",
+        "bytes": 2795,
+        "hash_kind": "Git blob SHA1",
+        "digest": "4d69475ca26f6cbc1d7eb3beea085bcd01f92549"
+      },
+      {
+        "path": "licenses/files/6afc9d58f919ab52f4806a895a37aefe4d263f8e52278e6a1e87c5d7ec82299c/LICENSE",
+        "bytes": 1861,
+        "hash_kind": "Git blob SHA1",
+        "digest": "3d1e04a257aa9a7a51fbd87e3dc7cbef01f5b97b"
+      },
+      {
+        "path": "licenses/files/7535eac513edd12fb8e33f203c6a403549629e34b363418cdbd6c6ea5464515d/license.rst",
+        "bytes": 398,
+        "hash_kind": "Git blob SHA1",
+        "digest": "f3f64823b9b55e74d8e42a106d14e1efe87dd8b4"
+      },
+      {
+        "path": "licenses/files/7898b9b164d4f93fd9a562fd0f592935518b48c4745303964110eb7f7fe64faf/LICENSE",
+        "bytes": 1096,
+        "hash_kind": "Git blob SHA1",
+        "digest": "d14fb7ff4b34be8cfb361a3ce90a0e881475a97a"
+      },
+      {
+        "path": "licenses/files/89478f1915fbb6b6585a685d071bf006ba5649d2615fab787f66e9693c622ae4/LICENSE",
+        "bytes": 581,
+        "hash_kind": "Git blob SHA1",
+        "digest": "8c5e758401020484b74d00c0aa75debfc7b65155"
+      },
+      {
+        "path": "licenses/files/923e6b481ff75c709737251e602bdc311a9be49235b5c20107366747f5640fe4/README.md",
+        "bytes": 3485,
+        "hash_kind": "Git blob SHA1",
+        "digest": "daf334bb09b79f4d41a853a228c6c451fb6a8bdd"
+      },
+      {
+        "path": "licenses/files/9c1e620a5cf8e74fe81c1fd4c55e9cc0b189fc04e677cfc7ef915de746c3f59e/LICENSE",
+        "bytes": 1789,
+        "hash_kind": "Git blob SHA1",
+        "digest": "8daab7ee6efe3b6f3c2a2594b711e7a9026eb5e2"
+      },
+      {
+        "path": "licenses/files/b081522b6b841e6a5348025fa8897f8ec2b8b7fd2e8da0240a219d78ce955d72/license.rst",
+        "bytes": 1379,
+        "hash_kind": "Git blob SHA1",
+        "digest": "5ee55cf96f83c12db90240d69e7547dc114536c4"
+      },
+      {
+        "path": "licenses/files/c031540c6951209351ce0b9bcf1cdf689abb277bcb07780d74f448f882a4a869/LICENSE",
+        "bytes": 581,
+        "hash_kind": "Git blob SHA1",
+        "digest": "a103fc915e990579af74f603923df168fb8400ef"
+      },
+      {
+        "path": "licenses/files/c11460418c5164a489643eae3da311d0fb1d61931c71c64ff83090c1cad1184b/LICENSE",
+        "bytes": 581,
+        "hash_kind": "Git blob SHA1",
+        "digest": "ca97ae0ead74791eed720be61d19497580cb4ad5"
+      },
+      {
+        "path": "licenses/files/c5a19279faa765293604633bae8b70a06582416c93cdac20b1b81af77a51d957/NOTICE",
+        "bytes": 4377,
+        "hash_kind": "Git blob SHA1",
+        "digest": "b9a1de116ab81a19bf7592187b35d6bc33652c7e"
+      },
+      {
+        "path": "licenses/files/ca836a5f9ecca3b2f350230faa20a48fb8b145653b5568d784862df864706b9b/LICENSE",
+        "bytes": 1091,
+        "hash_kind": "Git blob SHA1",
+        "digest": "c3f1657fce94589bd1ec7cead810639047f3d359"
+      },
+      {
+        "path": "licenses/files/d1a0ff0c217e8885134a5759953e971addadafee9cd7f428901d0c22af10a741/license.rst",
+        "bytes": 1379,
+        "hash_kind": "Git blob SHA1",
+        "digest": "c6c10bbf358c4b1b16241b113c67a6dbff0e18f3"
+      },
+      {
+        "path": "licenses/files/f5110972dedad2b4e9d314518daf3b7d72d6e02e499acd802181de6f74571dcc/NOTICE",
+        "bytes": 38,
+        "hash_kind": "Git blob SHA1",
+        "digest": "1ff62db688277b77c83c1766dac7f165364d3528"
+      },
+      {
+        "path": "licenses/files/f5984f7fb86791cd3de98fe74008db28c6bf4139323b8912ab5441af5ddc79fe/license.rst",
+        "bytes": 1379,
+        "hash_kind": "Git blob SHA1",
+        "digest": "d94b34a990873c20e01fff34ac2b6a25af1dfbc8"
+      },
+      {
+        "path": "licenses/files/f97b14080de8b8490d60eb3d620ebc419943e0779466d1dd0d5d6f68fe195dcd/LICENSE",
+        "bytes": 17984,
+        "hash_kind": "Git blob SHA1",
+        "digest": "8c4c849e2321672c89cc1a58df54da6043021ca9"
+      },
+      {
+        "path": "licenses/harness/LICENSE",
+        "bytes": 1069,
+        "hash_kind": "Git blob SHA1",
+        "digest": "d9b2671a0c60f0c30293108013a3ca1dd34d227f"
+      },
+      {
+        "path": "licenses/provenance.json",
+        "bytes": 56680,
+        "hash_kind": "Git blob SHA1",
+        "digest": "0628d02ba23c0641555a7ad6933f6e901f8fddb4"
+      },
+      {
+        "path": "licenses/repositories/boltons/LICENSE",
+        "bytes": 1497,
+        "hash_kind": "Git blob SHA1",
+        "digest": "6a4c9d2496f53c61c99ae7c113e6ed94b15b038c"
+      },
+      {
+        "path": "licenses/repositories/cachetools/LICENSE",
+        "bytes": 1085,
+        "hash_kind": "Git blob SHA1",
+        "digest": "f980a19c78c25959f922b8cc93854d91a89e686f"
+      },
+      {
+        "path": "licenses/repositories/humanize/LICENCE",
+        "bytes": 1078,
+        "hash_kind": "Git blob SHA1",
+        "digest": "e0687959f9e19e8bee8783424885bca65477fa28"
+      },
+      {
+        "path": "licenses/repositories/more-itertools/LICENSE",
+        "bytes": 1053,
+        "hash_kind": "Git blob SHA1",
+        "digest": "0a523bece3e50519653c4d7a38399baa487fefa1"
+      },
+      {
+        "path": "paper.pdf",
+        "bytes": 387543,
+        "hash_kind": "LFS SHA256",
+        "digest": "a4937233b6fd16cd26c062e61bf70675443f6c5aef7e782ca055e0ebb9fbdb8e"
+      },
+      {
+        "path": "preregistration.md",
+        "bytes": 17316,
+        "hash_kind": "Git blob SHA1",
+        "digest": "73d60033b3c7f014cb9d6ddf70d5aa7bfcf57c67"
+      },
+      {
+        "path": "processor_config.json",
+        "bytes": 1220,
+        "hash_kind": "Git blob SHA1",
+        "digest": "43c4343ec493f200e452f87a7c6649ecdfcce1ac"
+      },
+      {
+        "path": "run-records/pilot-recovery/baseline.json",
+        "bytes": 57,
+        "hash_kind": "Git blob SHA1",
+        "digest": "536ae7ede7e11cd4e46fd8e2fb08eb94c71fa238"
+      },
+      {
+        "path": "run-records/pilot-recovery/budget.json",
+        "bytes": 159,
+        "hash_kind": "Git blob SHA1",
+        "digest": "e0cd1b216f2aa72acd05a2e2c692f3c32d7b243d"
+      },
+      {
+        "path": "run-records/pilot-recovery/collection_groups/group-00001.json",
+        "bytes": 896,
+        "hash_kind": "Git blob SHA1",
+        "digest": "a448781d5a070b1507b7a7831a8e401771d50ea0"
+      },
+      {
+        "path": "run-records/pilot-recovery/collection_groups/group-00002.json",
+        "bytes": 896,
+        "hash_kind": "Git blob SHA1",
+        "digest": "f1e985478641d8ae5524c5297ff06d1efb50dc35"
+      },
+      {
+        "path": "run-records/pilot-recovery/environment_validation.json",
+        "bytes": 38054,
+        "hash_kind": "Git blob SHA1",
+        "digest": "c9c6e7af1e092e80eb3af3ee828643728c3e9f33"
+      },
+      {
+        "path": "run-records/pilot-recovery/episodes/25e9cd61c88e41eeb483a763e38877f6.json",
+        "bytes": 878510,
+        "hash_kind": "Git blob SHA1",
+        "digest": "5960ee921ec38191afd393075bd368db993999c4"
+      },
+      {
+        "path": "run-records/pilot-recovery/episodes/4272f80b042f4dd395264fc9e5596367.json",
+        "bytes": 908326,
+        "hash_kind": "Git blob SHA1",
+        "digest": "9a6ceb87b92f8695d54bccce809b66c19bf2cfa5"
+      },
+      {
+        "path": "run-records/pilot-recovery/episodes/a0b39cff6cba46dd8e84255130963b6c.json",
+        "bytes": 888852,
+        "hash_kind": "Git blob SHA1",
+        "digest": "d2696b1952d710db27a2c760a5a75fdff1fd8267"
+      },
+      {
+        "path": "run-records/pilot-recovery/episodes/c153472e907e4fb58a3504ff69021989.json",
+        "bytes": 868253,
+        "hash_kind": "Git blob SHA1",
+        "digest": "39a53c17ce6d3f804a28310cc7d77c0b7d2a6832"
+      },
+      {
+        "path": "run-records/pilot-recovery/evaluation.jsonl",
+        "bytes": 319850,
+        "hash_kind": "Git blob SHA1",
+        "digest": "a119a57b0dc00a5caee46ffc940b970eb5681842"
+      },
+      {
+        "path": "run-records/pilot-recovery/events.jsonl",
+        "bytes": 16425111,
+        "hash_kind": "LFS SHA256",
+        "digest": "e6833ed470484c1778729f90295676ab85651d7d989a5b24c85c83fa89077f84"
+      },
+      {
+        "path": "run-records/pilot-recovery/failure.json",
+        "bytes": 853,
+        "hash_kind": "Git blob SHA1",
+        "digest": "7dad8f2fc8ce5203f397b99c6e5dbee6d8371682"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/base/psf__requests-1142/episode.json",
+        "bytes": 997965,
+        "hash_kind": "Git blob SHA1",
+        "digest": "0c42270e18309b996918dec1e620f3a9179cd5d8"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/base/psf__requests-1142/prediction.diff",
+        "bytes": 0,
+        "hash_kind": "Git blob SHA1",
+        "digest": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/base/psf__requests-1766/episode.json",
+        "bytes": 867149,
+        "hash_kind": "Git blob SHA1",
+        "digest": "ae20cc7b5cba087ea704d0008fd780096c78276f"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/base/psf__requests-1766/prediction.diff",
+        "bytes": 0,
+        "hash_kind": "Git blob SHA1",
+        "digest": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/base/psf__requests-1921/episode.json",
+        "bytes": 881909,
+        "hash_kind": "Git blob SHA1",
+        "digest": "7b42cfab67f3634e4ff2cf6854310ad17d5b326d"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/base/psf__requests-1921/prediction.diff",
+        "bytes": 0,
+        "hash_kind": "Git blob SHA1",
+        "digest": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/base/psf__requests-2931/episode.json",
+        "bytes": 1017711,
+        "hash_kind": "Git blob SHA1",
+        "digest": "78c0221b86f3d6041a8133669e7066c368f5500e"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/base/psf__requests-2931/prediction.diff",
+        "bytes": 0,
+        "hash_kind": "Git blob SHA1",
+        "digest": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/base/psf__requests-5414/episode.json",
+        "bytes": 987292,
+        "hash_kind": "Git blob SHA1",
+        "digest": "94bd7fb7b18dc89fa005f3712c300d4e770d3b2f"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/base/psf__requests-5414/prediction.diff",
+        "bytes": 0,
+        "hash_kind": "Git blob SHA1",
+        "digest": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/base/pylint-dev__pylint-4551/episode.json",
+        "bytes": 863860,
+        "hash_kind": "Git blob SHA1",
+        "digest": "1abdda50944ef22d96fc8a877367707e9b4457fe"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/base/pylint-dev__pylint-4551/prediction.diff",
+        "bytes": 0,
+        "hash_kind": "Git blob SHA1",
+        "digest": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/base/pylint-dev__pylint-4661/episode.json",
+        "bytes": 876450,
+        "hash_kind": "Git blob SHA1",
+        "digest": "090affe36af4c0f992f7f112980b6ce5d05ad1d2"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/base/pylint-dev__pylint-4661/prediction.diff",
+        "bytes": 0,
+        "hash_kind": "Git blob SHA1",
+        "digest": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/base/pylint-dev__pylint-4970/episode.json",
+        "bytes": 740731,
+        "hash_kind": "Git blob SHA1",
+        "digest": "9db74188b55fe6dc820f226841ecade662f6b101"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/base/pylint-dev__pylint-4970/prediction.diff",
+        "bytes": 0,
+        "hash_kind": "Git blob SHA1",
+        "digest": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/base/pylint-dev__pylint-6386/episode.json",
+        "bytes": 1015890,
+        "hash_kind": "Git blob SHA1",
+        "digest": "5859320fe0c047f7a8a01a42a80dce5724efb8d2"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/base/pylint-dev__pylint-6386/prediction.diff",
+        "bytes": 0,
+        "hash_kind": "Git blob SHA1",
+        "digest": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/base/pylint-dev__pylint-6528/episode.json",
+        "bytes": 665832,
+        "hash_kind": "Git blob SHA1",
+        "digest": "7daa2134b47c9f07431bd34eff31171cf8726905"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/base/pylint-dev__pylint-6528/prediction.diff",
+        "bytes": 0,
+        "hash_kind": "Git blob SHA1",
+        "digest": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/base/pylint-dev__pylint-6903/episode.json",
+        "bytes": 463,
+        "hash_kind": "Git blob SHA1",
+        "digest": "70c0da1aeff0205a48bf08d577ebab9e23f7f0b2"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/base/pylint-dev__pylint-6903/prediction.diff",
+        "bytes": 0,
+        "hash_kind": "Git blob SHA1",
+        "digest": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/base/pylint-dev__pylint-7080/episode.json",
+        "bytes": 463,
+        "hash_kind": "Git blob SHA1",
+        "digest": "179955330535d749fec28782d9652da2c0acccf7"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/base/pylint-dev__pylint-7080/prediction.diff",
+        "bytes": 0,
+        "hash_kind": "Git blob SHA1",
+        "digest": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/base/pytest-dev__pytest-10051/episode.json",
+        "bytes": 886019,
+        "hash_kind": "Git blob SHA1",
+        "digest": "a9f6cd22e9ad90fd439f0b4bf57ccdea296e463b"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/base/pytest-dev__pytest-10051/prediction.diff",
+        "bytes": 0,
+        "hash_kind": "Git blob SHA1",
+        "digest": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/base/pytest-dev__pytest-10356/episode.json",
+        "bytes": 465,
+        "hash_kind": "Git blob SHA1",
+        "digest": "259008c2a65c26be5e08e432bcc4203037f58316"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/base/pytest-dev__pytest-10356/prediction.diff",
+        "bytes": 0,
+        "hash_kind": "Git blob SHA1",
+        "digest": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/base/pytest-dev__pytest-5262/episode.json",
+        "bytes": 463,
+        "hash_kind": "Git blob SHA1",
+        "digest": "295551a73994185873ee06b8c43f41968cb349c6"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/base/pytest-dev__pytest-5262/prediction.diff",
+        "bytes": 0,
+        "hash_kind": "Git blob SHA1",
+        "digest": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/base/pytest-dev__pytest-5631/episode.json",
+        "bytes": 928013,
+        "hash_kind": "Git blob SHA1",
+        "digest": "5789533d2afee76d51dc2e30d5ed3db831b4d809"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/base/pytest-dev__pytest-5631/prediction.diff",
+        "bytes": 0,
+        "hash_kind": "Git blob SHA1",
+        "digest": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/base/pytest-dev__pytest-5809/episode.json",
+        "bytes": 873234,
+        "hash_kind": "Git blob SHA1",
+        "digest": "f582dea81ea89646750110b5ad456604a488492b"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/base/pytest-dev__pytest-5809/prediction.diff",
+        "bytes": 0,
+        "hash_kind": "Git blob SHA1",
+        "digest": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/base/pytest-dev__pytest-6202/episode.json",
+        "bytes": 963401,
+        "hash_kind": "Git blob SHA1",
+        "digest": "120df41a6488f3d16582cdc7c13f82c68cd0e3cc"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/base/pytest-dev__pytest-6202/prediction.diff",
+        "bytes": 0,
+        "hash_kind": "Git blob SHA1",
+        "digest": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/base/pytest-dev__pytest-7205/episode.json",
+        "bytes": 464,
+        "hash_kind": "Git blob SHA1",
+        "digest": "ce1d135cde8adc711d549733ae1c9ac1886b0e4b"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/base/pytest-dev__pytest-7205/prediction.diff",
+        "bytes": 0,
+        "hash_kind": "Git blob SHA1",
+        "digest": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/base/pytest-dev__pytest-7432/episode.json",
+        "bytes": 888620,
+        "hash_kind": "Git blob SHA1",
+        "digest": "10a9b23b86f013660264f1787c21c2faedfc1bb2"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/base/pytest-dev__pytest-7432/prediction.diff",
+        "bytes": 0,
+        "hash_kind": "Git blob SHA1",
+        "digest": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/base/pytest-dev__pytest-7521/episode.json",
+        "bytes": 464,
+        "hash_kind": "Git blob SHA1",
+        "digest": "243671a350cff3eddb867d38dafa0501c1994975"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/base/pytest-dev__pytest-7521/prediction.diff",
+        "bytes": 0,
+        "hash_kind": "Git blob SHA1",
+        "digest": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/base/pytest-dev__pytest-7982/episode.json",
+        "bytes": 782081,
+        "hash_kind": "Git blob SHA1",
+        "digest": "d951b7233a26c63b6637b93b69e5c213b29ada10"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/base/pytest-dev__pytest-7982/prediction.diff",
+        "bytes": 0,
+        "hash_kind": "Git blob SHA1",
+        "digest": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/trained/pallets__flask-5014/episode.json",
+        "bytes": 853884,
+        "hash_kind": "Git blob SHA1",
+        "digest": "913ee7ce3a8b5fa57aac6639600f040cfa18fc5c"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/trained/pallets__flask-5014/prediction.diff",
+        "bytes": 0,
+        "hash_kind": "Git blob SHA1",
+        "digest": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/trained/psf__requests-1142/episode.json",
+        "bytes": 826610,
+        "hash_kind": "Git blob SHA1",
+        "digest": "a1adf10ba40d3fbd6dc2872f807ecddf82bc5625"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/trained/psf__requests-1142/prediction.diff",
+        "bytes": 0,
+        "hash_kind": "Git blob SHA1",
+        "digest": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/trained/psf__requests-1766/episode.json",
+        "bytes": 250398,
+        "hash_kind": "Git blob SHA1",
+        "digest": "848f3a49cdf97f9dfaa84772a66d4093cad77cda"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/trained/psf__requests-1766/prediction.diff",
+        "bytes": 0,
+        "hash_kind": "Git blob SHA1",
+        "digest": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/trained/psf__requests-1921/episode.json",
+        "bytes": 920654,
+        "hash_kind": "Git blob SHA1",
+        "digest": "d6ba44eea2d0fd69f91a4d0ff10a49a027c9d093"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/trained/psf__requests-1921/prediction.diff",
+        "bytes": 0,
+        "hash_kind": "Git blob SHA1",
+        "digest": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/trained/psf__requests-2317/episode.json",
+        "bytes": 839956,
+        "hash_kind": "Git blob SHA1",
+        "digest": "83d731bbab12ecac81cb954280f96e8c94e36ab9"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/trained/psf__requests-2317/prediction.diff",
+        "bytes": 0,
+        "hash_kind": "Git blob SHA1",
+        "digest": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/trained/psf__requests-2931/episode.json",
+        "bytes": 954189,
+        "hash_kind": "Git blob SHA1",
+        "digest": "2ec62f65972497dbef9be4e80d684de0a95b9012"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/trained/psf__requests-2931/prediction.diff",
+        "bytes": 0,
+        "hash_kind": "Git blob SHA1",
+        "digest": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/trained/psf__requests-5414/episode.json",
+        "bytes": 938416,
+        "hash_kind": "Git blob SHA1",
+        "digest": "14d19bc9d9912fc1dd9593789f1ec4c501a0a75e"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/trained/psf__requests-5414/prediction.diff",
+        "bytes": 0,
+        "hash_kind": "Git blob SHA1",
+        "digest": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/trained/psf__requests-6028/episode.json",
+        "bytes": 925905,
+        "hash_kind": "Git blob SHA1",
+        "digest": "bd595891a8105901648678ecb224fa1a0d0adec0"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/trained/psf__requests-6028/prediction.diff",
+        "bytes": 0,
+        "hash_kind": "Git blob SHA1",
+        "digest": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/trained/pylint-dev__pylint-4551/episode.json",
+        "bytes": 937584,
+        "hash_kind": "Git blob SHA1",
+        "digest": "33d84b50db2c0a1b03bfaac3791792dd5d25aec3"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/trained/pylint-dev__pylint-4551/prediction.diff",
+        "bytes": 0,
+        "hash_kind": "Git blob SHA1",
+        "digest": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/trained/pylint-dev__pylint-4661/episode.json",
+        "bytes": 838370,
+        "hash_kind": "Git blob SHA1",
+        "digest": "03e55899895cfab8f9170ec8ac359d96ca60bd15"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/trained/pylint-dev__pylint-4661/prediction.diff",
+        "bytes": 0,
+        "hash_kind": "Git blob SHA1",
+        "digest": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/trained/pylint-dev__pylint-4970/episode.json",
+        "bytes": 933076,
+        "hash_kind": "Git blob SHA1",
+        "digest": "d584f14ebb783090fa2296b6931db409b6e9ef5a"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/trained/pylint-dev__pylint-4970/prediction.diff",
+        "bytes": 0,
+        "hash_kind": "Git blob SHA1",
+        "digest": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/trained/pylint-dev__pylint-6386/episode.json",
+        "bytes": 877182,
+        "hash_kind": "Git blob SHA1",
+        "digest": "27bcd319224f7f4265e551b142348245043317ef"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/trained/pylint-dev__pylint-6386/prediction.diff",
+        "bytes": 0,
+        "hash_kind": "Git blob SHA1",
+        "digest": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/trained/pylint-dev__pylint-6528/episode.json",
+        "bytes": 949416,
+        "hash_kind": "Git blob SHA1",
+        "digest": "02b5b09efa5b565778c237f2dbee9e401e7e71fc"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/trained/pylint-dev__pylint-6528/prediction.diff",
+        "bytes": 0,
+        "hash_kind": "Git blob SHA1",
+        "digest": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/trained/pylint-dev__pylint-6903/episode.json",
+        "bytes": 464,
+        "hash_kind": "Git blob SHA1",
+        "digest": "d1f1ae812ac5fe49d738da84d2c8c66e6e77aa5a"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/trained/pylint-dev__pylint-6903/prediction.diff",
+        "bytes": 0,
+        "hash_kind": "Git blob SHA1",
+        "digest": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/trained/pylint-dev__pylint-7080/episode.json",
+        "bytes": 463,
+        "hash_kind": "Git blob SHA1",
+        "digest": "e96fd32e755a8823e655ce5279bce17ecdf3a06b"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/trained/pylint-dev__pylint-7080/prediction.diff",
+        "bytes": 0,
+        "hash_kind": "Git blob SHA1",
+        "digest": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/trained/pylint-dev__pylint-8898/episode.json",
+        "bytes": 463,
+        "hash_kind": "Git blob SHA1",
+        "digest": "8f0eb6fd3c9484b2b9145f3e95b68af0b765da98"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/trained/pytest-dev__pytest-10051/episode.json",
+        "bytes": 882846,
+        "hash_kind": "Git blob SHA1",
+        "digest": "88a05b0379e444ac77b8b3604aa572f088c7a949"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/trained/pytest-dev__pytest-10051/prediction.diff",
+        "bytes": 0,
+        "hash_kind": "Git blob SHA1",
+        "digest": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/trained/pytest-dev__pytest-10356/episode.json",
+        "bytes": 464,
+        "hash_kind": "Git blob SHA1",
+        "digest": "3c7c626f1518962b131dca45dcd2a054622e8a0e"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/trained/pytest-dev__pytest-10356/prediction.diff",
+        "bytes": 0,
+        "hash_kind": "Git blob SHA1",
+        "digest": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/trained/pytest-dev__pytest-5262/episode.json",
+        "bytes": 464,
+        "hash_kind": "Git blob SHA1",
+        "digest": "6b43959632463e3668573b1da22b2faf2b120beb"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/trained/pytest-dev__pytest-5262/prediction.diff",
+        "bytes": 0,
+        "hash_kind": "Git blob SHA1",
+        "digest": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/trained/pytest-dev__pytest-5631/episode.json",
+        "bytes": 908507,
+        "hash_kind": "Git blob SHA1",
+        "digest": "c345b3a1f163cb8f066dc4a274e18e0b5c29b13e"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/trained/pytest-dev__pytest-5631/prediction.diff",
+        "bytes": 0,
+        "hash_kind": "Git blob SHA1",
+        "digest": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/trained/pytest-dev__pytest-5787/episode.json",
+        "bytes": 36514,
+        "hash_kind": "Git blob SHA1",
+        "digest": "4c2caa6b4c825b3f04a275c17b90c3b55049e607"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/trained/pytest-dev__pytest-5787/prediction.diff",
+        "bytes": 0,
+        "hash_kind": "Git blob SHA1",
+        "digest": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/trained/pytest-dev__pytest-5809/episode.json",
+        "bytes": 929392,
+        "hash_kind": "Git blob SHA1",
+        "digest": "257ec1ff0736754e455584ddd6d3e2310864725b"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/trained/pytest-dev__pytest-5809/prediction.diff",
+        "bytes": 0,
+        "hash_kind": "Git blob SHA1",
+        "digest": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/trained/pytest-dev__pytest-6197/episode.json",
+        "bytes": 464,
+        "hash_kind": "Git blob SHA1",
+        "digest": "e74990ae641986c5c64717170abc8a5282f8157b"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/trained/pytest-dev__pytest-6197/prediction.diff",
+        "bytes": 0,
+        "hash_kind": "Git blob SHA1",
+        "digest": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/trained/pytest-dev__pytest-6202/episode.json",
+        "bytes": 1008519,
+        "hash_kind": "Git blob SHA1",
+        "digest": "3a6ff00dd03d265de4574c730d64a3b6359a9d6c"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/trained/pytest-dev__pytest-6202/prediction.diff",
+        "bytes": 0,
+        "hash_kind": "Git blob SHA1",
+        "digest": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/trained/pytest-dev__pytest-7205/episode.json",
+        "bytes": 463,
+        "hash_kind": "Git blob SHA1",
+        "digest": "bece764e72c258ef87081baf471de857821a42b8"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/trained/pytest-dev__pytest-7205/prediction.diff",
+        "bytes": 0,
+        "hash_kind": "Git blob SHA1",
+        "digest": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/trained/pytest-dev__pytest-7432/episode.json",
+        "bytes": 922837,
+        "hash_kind": "Git blob SHA1",
+        "digest": "d9797c069b9c6848b6434ad505fd8c7b76e5040c"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/trained/pytest-dev__pytest-7432/prediction.diff",
+        "bytes": 0,
+        "hash_kind": "Git blob SHA1",
+        "digest": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/trained/pytest-dev__pytest-7490/episode.json",
+        "bytes": 464,
+        "hash_kind": "Git blob SHA1",
+        "digest": "d9394108bcf42a5e2102c661bc9e27e712f9d8b6"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/trained/pytest-dev__pytest-7490/prediction.diff",
+        "bytes": 0,
+        "hash_kind": "Git blob SHA1",
+        "digest": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/trained/pytest-dev__pytest-7521/episode.json",
+        "bytes": 463,
+        "hash_kind": "Git blob SHA1",
+        "digest": "88ed745ab59dea53815483eff2f9a22b4c24ede3"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/trained/pytest-dev__pytest-7521/prediction.diff",
+        "bytes": 0,
+        "hash_kind": "Git blob SHA1",
+        "digest": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/trained/pytest-dev__pytest-7571/episode.json",
+        "bytes": 876556,
+        "hash_kind": "Git blob SHA1",
+        "digest": "c33019c3cf20089a8d265543b398cd3caab6d96a"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/trained/pytest-dev__pytest-7571/prediction.diff",
+        "bytes": 0,
+        "hash_kind": "Git blob SHA1",
+        "digest": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/trained/pytest-dev__pytest-7982/episode.json",
+        "bytes": 788441,
+        "hash_kind": "Git blob SHA1",
+        "digest": "c1f8b8c3d32ee9b89e845890ad11f70fbebcb3cd"
+      },
+      {
+        "path": "run-records/pilot-recovery/human/trained/pytest-dev__pytest-7982/prediction.diff",
+        "bytes": 0,
+        "hash_kind": "Git blob SHA1",
+        "digest": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "run-records/pilot-recovery/kernel-review.json",
+        "bytes": 4894,
+        "hash_kind": "Git blob SHA1",
+        "digest": "292a176ef30d21a814948657cf75f6e84ab08cda"
+      },
+      {
+        "path": "run-records/pilot-recovery/latest.json",
+        "bytes": 88,
+        "hash_kind": "Git blob SHA1",
+        "digest": "fa6efb342f487a532bb10d455adfba98fcc284ac"
+      },
+      {
+        "path": "run-records/pilot-recovery/manifest.json",
+        "bytes": 3330,
+        "hash_kind": "Git blob SHA1",
+        "digest": "90d7e918413c9a9c1d78aef5ce0bbfaf226f868b"
+      },
+      {
+        "path": "run-records/pilot-recovery/metrics.jsonl",
+        "bytes": 1431,
+        "hash_kind": "Git blob SHA1",
+        "digest": "4ce5442e81ee6766ae6346842975bfcb0edee507"
+      },
+      {
+        "path": "run-records/pilot-recovery/model.jsonl",
+        "bytes": 58006115,
+        "hash_kind": "LFS SHA256",
+        "digest": "f01be3613b470ddccdb946237af5bfb974fee74eb16b9e3ae0aa9c475dc97f70"
+      },
+      {
+        "path": "run-records/pilot-recovery/preflight/likelihood-20261105T215800.json",
+        "bytes": 8276,
+        "hash_kind": "Git blob SHA1",
+        "digest": "40d8efe7fbcf3485a5aac798f184438584fa4009"
+      },
+      {
+        "path": "run-records/pilot-recovery/preflight/likelihood.json",
+        "bytes": 8822,
+        "hash_kind": "Git blob SHA1",
+        "digest": "cbff8b5dc3b560042e5af2000bc807916303b7a3"
+      },
+      {
+        "path": "run-records/pilot-recovery/preflight/model.jsonl",
+        "bytes": 65365,
+        "hash_kind": "Git blob SHA1",
+        "digest": "70ed320756b945a3ddfc92f360ebaeeefb5d910b"
+      },
+      {
+        "path": "run-records/pilot-recovery/preflight/preflight.json",
+        "bytes": 1776,
+        "hash_kind": "Git blob SHA1",
+        "digest": "1bdd1c3fcac7b9e9c24136d6181742daebb93115"
+      },
+      {
+        "path": "run-records/pilot-recovery/preflight.json",
+        "bytes": 1776,
+        "hash_kind": "Git blob SHA1",
+        "digest": "1bdd1c3fcac7b9e9c24136d6181742daebb93115"
+      },
+      {
+        "path": "run-records/pilot-recovery/preparation.json",
+        "bytes": 12702,
+        "hash_kind": "Git blob SHA1",
+        "digest": "5d9aa8d93210396f163e5472e3a46b5a12dd7c76"
+      },
+      {
+        "path": "run-records/pilot-recovery/protocol_diagnostics.json",
+        "bytes": 2941,
+        "hash_kind": "Git blob SHA1",
+        "digest": "7903b03b5196f377cc3a6cd26f9bd58f90f46fa2"
+      },
+      {
+        "path": "run-records/pilot-recovery/summary.json",
+        "bytes": 953,
+        "hash_kind": "Git blob SHA1",
+        "digest": "17b83532173f776cde4e74b2d5837eb91d299cde"
+      },
+      {
+        "path": "selection.json",
+        "bytes": 88,
+        "hash_kind": "Git blob SHA1",
+        "digest": "fa6efb342f487a532bb10d455adfba98fcc284ac"
+      },
+      {
+        "path": "source-metadata/adapter_config.json",
+        "bytes": 1738,
+        "hash_kind": "Git blob SHA1",
+        "digest": "f895a714753ce69ba702c8d2092733326dcc1d79"
+      },
+      {
+        "path": "summary.json",
+        "bytes": 4306483,
+        "hash_kind": "Git blob SHA1",
+        "digest": "fee88d8f4b3c7255af89eac0e9e99d2d6c831562"
+      },
+      {
+        "path": "tokenizer.json",
+        "bytes": 19989325,
+        "hash_kind": "LFS SHA256",
+        "digest": "06b9509352d2af50381ab2247e083b80d32d5c0aba91c272ca9ff729b6a0e523"
+      },
+      {
+        "path": "tokenizer_config.json",
+        "bytes": 7186,
+        "hash_kind": "Git blob SHA1",
+        "digest": "21e89e2e9f57f0edefba4c223dffd90fd8691bd9"
+      },
+      {
+        "path": "training_state.pt",
+        "bytes": 15645,
+        "hash_kind": "LFS SHA256",
+        "digest": "fbd32d521034e237cd6b219afe1896268d31db68122e5d92032580840bdde70d"
+      },
+      {
+        "path": "bundle-inventory.json",
+        "bytes": 36223,
+        "hash_kind": "Git blob SHA1",
+        "digest": "3a9b71e1f57dfac99fb6ba2144fe54a61fdab8ba"
+      }
+    ],
+    "files_verified": 181,
+    "method": "Compared local bytes against Hub Git/LFS metadata; no model or artifact download",
+    "upload_transport": "HTTP/LFS fallback after Xet upload returned an I/O error before any commit",
+    "upload_transport_reference": "https://github.com/huggingface/huggingface_hub/issues/4507",
+    "research_model_execution": false
+  },
+  "pages": {
+    "timestamp": "2026-11-06T05:14:02.345689+00:00",
+    "status": "passed",
+    "site_url": "https://burnycoder.github.io/multi-agent-llm-self-play-reinforcement-learning-for-software-engineering/",
+    "deployment_commit": "a4a95e81d2d753539786a2a0671db4e99050b532",
+    "workflow_run_id": 42167031344,
+    "files": [
+      {
+        "path": "app.js",
+        "http_status": 200,
+        "bytes": 10522,
+        "sha256": "5b1e0800e3ec9b041e1f9459f06f5b2b52d9d79c6feb9f65e0f0e9f364451951"
+      },
+      {
+        "path": "data.json",
+        "http_status": 200,
+        "bytes": 4306483,
+        "sha256": "4670547c49af96bb9da396117e85a980143e3812aee1e7961c6c7fc318324f0e"
+      },
+      {
+        "path": "experiment.md",
+        "http_status": 200,
+        "bytes": 113634,
+        "sha256": "4b7d116992f3348695a3bc462142668f8038ab400910fcb61b90ef11669d29b9"
+      },
+      {
+        "path": "experiments-summary.md",
+        "http_status": 200,
+        "bytes": 10564,
+        "sha256": "13f9f06bd8a908a9cadc06b4436ce1224c8af55ed3513819a98b6007f070d15a"
+      },
+      {
+        "path": "figures/architecture.png",
+        "http_status": 200,
+        "bytes": 78781,
+        "sha256": "97ee31be876af14f90c522914960c8aefe1d2c19e40e7e7cebc2c2936cc4398e"
+      },
+      {
+        "path": "figures/loss.png",
+        "http_status": 200,
+        "bytes": 45600,
+        "sha256": "a5a0f041a344938c150becd6852fdb7976b339d7a8313bf1b1d16b0086e5d52b"
+      },
+      {
+        "path": "figures/memory.png",
+        "http_status": 200,
+        "bytes": 40089,
+        "sha256": "4172eb65132bbb1df56ae073526335cbd77d3ce9d2b312ab3a10977bebd18e95"
+      },
+      {
+        "path": "figures/rewards.png",
+        "http_status": 200,
+        "bytes": 45962,
+        "sha256": "a0896d80eacb4c26a2766afecda53cf75617e465d656527ae83ae52a3d7a2b2f"
+      },
+      {
+        "path": "figures/scores.png",
+        "http_status": 200,
+        "bytes": 48295,
+        "sha256": "64814b59e0802210501a15241d878a88af2b732b007601cd675e6d8cde252eba"
+      },
+      {
+        "path": "figures/tokens.png",
+        "http_status": 200,
+        "bytes": 50349,
+        "sha256": "82de7a56d21f3919a0aab2bc6df5f935b43235fceac0a0280ef2cd8e06d6723a"
+      },
+      {
+        "path": "figures/validity.png",
+        "http_status": 200,
+        "bytes": 42635,
+        "sha256": "a04738d150d0208498f696622b4aa65e6d0fc6393b35a42891b73ce1bb5e7492"
+      },
+      {
+        "path": "index.html",
+        "http_status": 200,
+        "bytes": 9685,
+        "sha256": "8d6ab43c1fc66935666e3525788c84c84b33cfafcbfe850554fa5bc8d19eb4cc"
+      },
+      {
+        "path": "licenses/README.md",
+        "http_status": 200,
+        "bytes": 1623,
+        "sha256": "e44d63a9bda4b6228c4ecd1221bab30f2a79e18be49c078ec5a74ec7c916b2d7"
+      },
+      {
+        "path": "licenses/files/09e8a9bcec8067104652c168685ab0931e7868f9c8284b66f5ae6edae5f1130b/LICENSE",
+        "http_status": 200,
+        "bytes": 10142,
+        "sha256": "09e8a9bcec8067104652c168685ab0931e7868f9c8284b66f5ae6edae5f1130b"
+      },
+      {
+        "path": "licenses/files/2e63a3bd3a1f97e2fa9fa33bbf4f61bbb56ee16beb125b5346b0012388dc3b49/LICENSE.rst",
+        "http_status": 200,
+        "bytes": 780,
+        "sha256": "2e63a3bd3a1f97e2fa9fa33bbf4f61bbb56ee16beb125b5346b0012388dc3b49"
+      },
+      {
+        "path": "licenses/files/3172d399cbd8f10609e73fec73d0e0b33eecd3c572a68b0722229d8c7059f725/LICENSE",
+        "http_status": 200,
+        "bytes": 51,
+        "sha256": "3172d399cbd8f10609e73fec73d0e0b33eecd3c572a68b0722229d8c7059f725"
+      },
+      {
+        "path": "licenses/files/3299f3fac35b42fbd3338044d9519ad8fd51ca72466a928a8732c54f8e2c9fd0/NOTICE",
+        "http_status": 200,
+        "bytes": 2292,
+        "sha256": "3299f3fac35b42fbd3338044d9519ad8fd51ca72466a928a8732c54f8e2c9fd0"
+      },
+      {
+        "path": "licenses/files/4158d74a42b099b603e597d24a344f395f47da8e187638f451795900f28d9bc4/NOTICE",
+        "http_status": 200,
+        "bytes": 4377,
+        "sha256": "4158d74a42b099b603e597d24a344f395f47da8e187638f451795900f28d9bc4"
+      },
+      {
+        "path": "licenses/files/45b6addd843b2ed89f9f8f363f61092db2e3c2461e3f178c3c3793648c3c4e07/license.rst",
+        "http_status": 200,
+        "bytes": 1372,
+        "sha256": "45b6addd843b2ed89f9f8f363f61092db2e3c2461e3f178c3c3793648c3c4e07"
+      },
+      {
+        "path": "licenses/files/489a8e1108509ed98a37bb983e11e0f7e1d31f0bd8f99a79c8448e7ff37d07ea/LICENSE.rst",
+        "http_status": 200,
+        "bytes": 1475,
+        "sha256": "489a8e1108509ed98a37bb983e11e0f7e1d31f0bd8f99a79c8448e7ff37d07ea"
+      },
+      {
+        "path": "licenses/files/4be38574daf05665b6194e4fd84c5ef6ce7c3a2810308a5222d5cdffc2d04d18/LICENSE",
+        "http_status": 200,
+        "bytes": 1096,
+        "sha256": "4be38574daf05665b6194e4fd84c5ef6ce7c3a2810308a5222d5cdffc2d04d18"
+      },
+      {
+        "path": "licenses/files/548eb62c9f5f5f7a121d15f26bb0d6a5ebb0cf7260584e0529ad65c56b39e83d/NOTICE",
+        "http_status": 200,
+        "bytes": 2795,
+        "sha256": "548eb62c9f5f5f7a121d15f26bb0d6a5ebb0cf7260584e0529ad65c56b39e83d"
+      },
+      {
+        "path": "licenses/files/6afc9d58f919ab52f4806a895a37aefe4d263f8e52278e6a1e87c5d7ec82299c/LICENSE",
+        "http_status": 200,
+        "bytes": 1861,
+        "sha256": "6afc9d58f919ab52f4806a895a37aefe4d263f8e52278e6a1e87c5d7ec82299c"
+      },
+      {
+        "path": "licenses/files/7535eac513edd12fb8e33f203c6a403549629e34b363418cdbd6c6ea5464515d/license.rst",
+        "http_status": 200,
+        "bytes": 398,
+        "sha256": "7535eac513edd12fb8e33f203c6a403549629e34b363418cdbd6c6ea5464515d"
+      },
+      {
+        "path": "licenses/files/7898b9b164d4f93fd9a562fd0f592935518b48c4745303964110eb7f7fe64faf/LICENSE",
+        "http_status": 200,
+        "bytes": 1096,
+        "sha256": "7898b9b164d4f93fd9a562fd0f592935518b48c4745303964110eb7f7fe64faf"
+      },
+      {
+        "path": "licenses/files/89478f1915fbb6b6585a685d071bf006ba5649d2615fab787f66e9693c622ae4/LICENSE",
+        "http_status": 200,
+        "bytes": 581,
+        "sha256": "89478f1915fbb6b6585a685d071bf006ba5649d2615fab787f66e9693c622ae4"
+      },
+      {
+        "path": "licenses/files/923e6b481ff75c709737251e602bdc311a9be49235b5c20107366747f5640fe4/README.md",
+        "http_status": 200,
+        "bytes": 3485,
+        "sha256": "923e6b481ff75c709737251e602bdc311a9be49235b5c20107366747f5640fe4"
+      },
+      {
+        "path": "licenses/files/9c1e620a5cf8e74fe81c1fd4c55e9cc0b189fc04e677cfc7ef915de746c3f59e/LICENSE",
+        "http_status": 200,
+        "bytes": 1789,
+        "sha256": "9c1e620a5cf8e74fe81c1fd4c55e9cc0b189fc04e677cfc7ef915de746c3f59e"
+      },
+      {
+        "path": "licenses/files/b081522b6b841e6a5348025fa8897f8ec2b8b7fd2e8da0240a219d78ce955d72/license.rst",
+        "http_status": 200,
+        "bytes": 1379,
+        "sha256": "b081522b6b841e6a5348025fa8897f8ec2b8b7fd2e8da0240a219d78ce955d72"
+      },
+      {
+        "path": "licenses/files/c031540c6951209351ce0b9bcf1cdf689abb277bcb07780d74f448f882a4a869/LICENSE",
+        "http_status": 200,
+        "bytes": 581,
+        "sha256": "c031540c6951209351ce0b9bcf1cdf689abb277bcb07780d74f448f882a4a869"
+      },
+      {
+        "path": "licenses/files/c11460418c5164a489643eae3da311d0fb1d61931c71c64ff83090c1cad1184b/LICENSE",
+        "http_status": 200,
+        "bytes": 581,
+        "sha256": "c11460418c5164a489643eae3da311d0fb1d61931c71c64ff83090c1cad1184b"
+      },
+      {
+        "path": "licenses/files/c5a19279faa765293604633bae8b70a06582416c93cdac20b1b81af77a51d957/NOTICE",
+        "http_status": 200,
+        "bytes": 4377,
+        "sha256": "c5a19279faa765293604633bae8b70a06582416c93cdac20b1b81af77a51d957"
+      },
+      {
+        "path": "licenses/files/ca836a5f9ecca3b2f350230faa20a48fb8b145653b5568d784862df864706b9b/LICENSE",
+        "http_status": 200,
+        "bytes": 1091,
+        "sha256": "ca836a5f9ecca3b2f350230faa20a48fb8b145653b5568d784862df864706b9b"
+      },
+      {
+        "path": "licenses/files/d1a0ff0c217e8885134a5759953e971addadafee9cd7f428901d0c22af10a741/license.rst",
+        "http_status": 200,
+        "bytes": 1379,
+        "sha256": "d1a0ff0c217e8885134a5759953e971addadafee9cd7f428901d0c22af10a741"
+      },
+      {
+        "path": "licenses/files/f5110972dedad2b4e9d314518daf3b7d72d6e02e499acd802181de6f74571dcc/NOTICE",
+        "http_status": 200,
+        "bytes": 38,
+        "sha256": "f5110972dedad2b4e9d314518daf3b7d72d6e02e499acd802181de6f74571dcc"
+      },
+      {
+        "path": "licenses/files/f5984f7fb86791cd3de98fe74008db28c6bf4139323b8912ab5441af5ddc79fe/license.rst",
+        "http_status": 200,
+        "bytes": 1379,
+        "sha256": "f5984f7fb86791cd3de98fe74008db28c6bf4139323b8912ab5441af5ddc79fe"
+      },
+      {
+        "path": "licenses/files/f97b14080de8b8490d60eb3d620ebc419943e0779466d1dd0d5d6f68fe195dcd/LICENSE",
+        "http_status": 200,
+        "bytes": 17984,
+        "sha256": "f97b14080de8b8490d60eb3d620ebc419943e0779466d1dd0d5d6f68fe195dcd"
+      },
+      {
+        "path": "licenses/provenance.json",
+        "http_status": 200,
+        "bytes": 56680,
+        "sha256": "e32122824f855aa5636fbca225174d3454dc4917a8ada1eea1852338e3903bda"
+      },
+      {
+        "path": "paper.md",
+        "http_status": 200,
+        "bytes": 26156,
+        "sha256": "2fea94350e1b1bf3e9c8360177d68cada133c07a9234c193ce8eec9941abe905"
+      },
+      {
+        "path": "paper.pdf",
+        "http_status": 200,
+        "bytes": 387543,
+        "sha256": "a4937233b6fd16cd26c062e61bf70675443f6c5aef7e782ca055e0ebb9fbdb8e"
+      },
+      {
+        "path": "preregistration.md",
+        "http_status": 200,
+        "bytes": 17316,
+        "sha256": "92918ffc3c40d0e50188df83dd5129c7991323b5d3c9739ec85d020d9d93029f"
+      },
+      {
+        "path": "style.css",
+        "http_status": 200,
+        "bytes": 10491,
+        "sha256": "23859d81fb8789dac9e528c4849139b5fd6a76c8452180ea9d8ad26d8338868d"
+      },
+      {
+        "path": "summary.json",
+        "http_status": 200,
+        "bytes": 4306483,
+        "sha256": "4670547c49af96bb9da396117e85a980143e3812aee1e7961c6c7fc318324f0e"
+      }
+    ],
+    "interactive_browser_verified": false,
+    "limitation": "In-app browser backend unavailable; these are HTTP/content-hash checks."
+  },
+  "browser_limitation": {
+    "timestamp": "2026-11-06T00:17:44.458520+00:00",
+    "scope": "Local dashboard interactive visual verification",
+    "backend": "Codex in-app browser",
+    "status": "unavailable",
+    "observed_error": "Failed to connect to browser-use backend iab. No Codex IAB backends were discovered.",
+    "navigation_performed": false,
+    "interactive_controls_verified": false,
+    "other_evidence": "Published-file HTTP/hash checks and PDF visual review are separate evidence, not a browser interaction check."
+  }
+}
