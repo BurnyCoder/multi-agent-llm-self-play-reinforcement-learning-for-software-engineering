@@ -729,7 +729,8 @@ def render_figures(payload: dict[str, Any], destination: Path) -> dict[str, str]
         for condition, color in (("base", "#b8996b"), ("trained", "#177b67")):
             result = payload["analysis"]["conditions"][source][condition]
             if result["rate"] is not None:
-                points.append((f"{source}\n{condition}", 100 * result["rate"], color, result))
+                display_condition = "final" if condition == "trained" else "frozen"
+                points.append((f"{source}\n{display_condition}", 100 * result["rate"], color, result))
     if points:
         for index, (label, rate, color, result) in enumerate(points):
             ax.bar(index, rate, color=color, width=.6)
@@ -738,7 +739,10 @@ def render_figures(payload: dict[str, Any], destination: Path) -> dict[str, str]
     else:
         ax.text(.5, .5, "No completed evaluations", transform=ax.transAxes, ha="center", va="center")
         ax.set_xticks([])
-    ax.set(ylim=(0, 105), ylabel="Resolved tasks (%)", title="Observed resolution; counts show evaluated coverage")
+    title = "Observed resolution; counts show evaluated coverage"
+    if payload.get("training_intervention_disclosure"):
+        title += "\nFinal condition used unchanged weights; no optimizer updates"
+    ax.set(ylim=(0, 105), ylabel="Resolved tasks (%)", title=title)
     ax.set_yticks([0, 25, 50, 75, 100])
     ax.grid(axis="y", alpha=.18)
     fig.tight_layout()
