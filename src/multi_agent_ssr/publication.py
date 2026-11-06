@@ -14,6 +14,7 @@ from .io import write_json
 
 _HARNESS = "https://github.com/BurnyCoder/multi-agent-llm-self-play-reinforcement-learning-for-software-engineering"
 _NOTICE_DIR = Path(__file__).resolve().parents[2] / "docs" / "licenses"
+_PEFT_REVISION_SOURCE = "https://github.com/huggingface/peft/blob/v0.21.2/src/peft/auto.py#L104"
 # Match the designated reporting inputs and action records, never a run-wide
 # recursive glob. Oracle caches, repository snapshots and host config are absent.
 _RECORD_PATTERNS = (
@@ -82,6 +83,34 @@ def _inventory(destination: Path, files: list[Path], source_commit: str) -> None
         "scope": "Listed exported files; this inventory excludes its own bytes."})
 
 
+def _pin_exported_adapter_revision(checkpoint: Path, destination: Path, revision: str) -> list[Path]:
+    """PEFT's Auto loader forwards the adapter config revision to the base model.
+
+    The official lookup is cited in _PEFT_REVISION_SOURCE; do not change the
+    saved research checkpoint to repair publication metadata.
+    """
+    original = (checkpoint / "adapter_config.json").read_bytes()
+    config = json.loads(original)
+    previous = config.get("revision")
+    original_copy = destination / "source-metadata" / "adapter_config.json"
+    original_copy.parent.mkdir(parents=True, exist_ok=True)
+    original_copy.write_bytes(original)
+    config["revision"] = revision
+    exported = destination / "adapter_config.json"
+    write_json(exported, config)
+    provenance = destination / "export-transformations.json"
+    write_json(provenance, {"format_version": 1, "transformations": [{
+        "path": "adapter_config.json", "original_copy": "source-metadata/adapter_config.json",
+        "field": "revision", "previous_value": previous, "exported_value": revision,
+        "source_sha256": hashlib.sha256(original).hexdigest(),
+        "exported_sha256": hashlib.sha256(exported.read_bytes()).hexdigest(),
+        "reason": "Pin standalone PEFT base loading to checkpoint.model_config.revision.",
+        "serialization": "Harness JSON writer; all other configuration values are preserved.",
+        "reference": _PEFT_REVISION_SOURCE,
+    }]})
+    return [original_copy, provenance]
+
+
 def export_checkpoint(run_dir: Path, report_dir: Path, destination: Path) -> Path:
     """Export recorded results faithfully, refusing any preflight-only adapter."""
     latest = json.loads((run_dir / "latest.json").read_text())
@@ -107,6 +136,7 @@ def export_checkpoint(run_dir: Path, report_dir: Path, destination: Path) -> Pat
         if path.is_file() and not path.is_symlink() and path.suffix in allowed:
             shutil.copyfile(path, destination / path.name)
             files.append(destination / path.name)
+    files.extend(_pin_exported_adapter_revision(checkpoint, destination, record["model_config"]["revision"]))
     write_json(destination / "experiment.json", manifest)
     write_json(destination / "evaluation-summary.json", report["analysis"])
     write_json(destination / "selection.json", latest)
@@ -157,6 +187,9 @@ def export_checkpoint(run_dir: Path, report_dir: Path, destination: Path) -> Pat
         'record = json.loads((bundle / "checkpoint.json").read_text())\n'
         'policy = LocalPolicy(ModelConfig(**record["model_config"]),\n'
         '                     log_path=Path("reload-model.jsonl"), checkpoint=bundle)\n```\n\n'
+        f"The export pins `adapter_config.json`'s `revision` for [PEFT's base-model lookup]({_PEFT_REVISION_SOURCE}). "
+        "`source-metadata/adapter_config.json` preserves the original saved bytes, and `export-transformations.json` "
+        "records the metadata change and before/after hashes. The source checkpoint and adapter weights are unchanged.\n\n"
         f"The harness's [generation configuration]({_HARNESS}/blob/{source_commit}/src/multi_agent_ssr/model.py) "
         "unions the base model's EOS IDs with the tokenizer's chat EOS and deduplicates them; prompt encoding disables thinking. "
         "Reusing only the base generation defaults can continue past "

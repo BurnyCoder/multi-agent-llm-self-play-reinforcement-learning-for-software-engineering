@@ -23,6 +23,8 @@ def _fixture(tmp_path, version=0):
         "format_version": 1, "model_config": asdict(ModelConfig(revision="fixture-base-revision")),
         "policy_version": version, "adapter_fingerprint": "fixture-fingerprint",
         "metadata": {"completed_groups": int(version > 0)}})
+    write_json(checkpoint / "adapter_config.json", {"base_model_name_or_path": "Qwen/Qwen3.5-2B",
+        "revision": None, "peft_type": "LORA", "r": 16, "lora_alpha": 16})
     (checkpoint / "adapter_model.safetensors").write_bytes(b"fixture adapter, not model weights")
     write_json(run / "manifest.json", {"code_commit": "fixture-original",
         "phase_code_commits": {"pilot": "fixture-pilot"}, "expected_human_tasks": 1,
@@ -80,6 +82,28 @@ def test_unchanged_adapter_can_be_selected_after_completed_zero_advantage_groups
     assert "Recorded completed collection groups: `3`" in card
     assert "No completed training group was selected" not in card
     assert "`trained` identifies the final-evaluation condition" in card
+
+
+def test_export_pins_peft_base_revision_without_modifying_saved_checkpoint(tmp_path):
+    run, report = _fixture(tmp_path)
+    checkpoint = run / "checkpoints" / "selected"
+    original = {path.name: path.read_bytes() for path in checkpoint.iterdir()}
+    bundle = export_checkpoint(run, report, tmp_path / "export")
+    config = json.loads((bundle / "adapter_config.json").read_text())
+    expected = {**json.loads(original["adapter_config.json"]), "revision": "fixture-base-revision"}
+    assert config == expected
+    assert {path.name: path.read_bytes() for path in checkpoint.iterdir()} == original
+    assert (bundle / "source-metadata" / "adapter_config.json").read_bytes() == original["adapter_config.json"]
+    provenance = json.loads((bundle / "export-transformations.json").read_text())
+    change = provenance["transformations"][0]
+    assert change["field"] == "revision" and change["previous_value"] is None
+    assert change["exported_value"] == "fixture-base-revision"
+    assert change["source_sha256"] == sha256(original["adapter_config.json"]).hexdigest()
+    digest = sha256((bundle / "adapter_config.json").read_bytes()).hexdigest()
+    assert change["exported_sha256"] == digest
+    inventory = json.loads((bundle / "bundle-inventory.json").read_text())
+    assert next(row["sha256"] for row in inventory["files"] if row["path"] == "adapter_config.json") == digest
+    assert "export-transformations.json" in {row["path"] for row in inventory["files"]}
 
 
 def test_exported_records_regenerate_report_and_retain_exact_action_tokens(tmp_path, monkeypatch):
