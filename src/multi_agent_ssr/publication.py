@@ -155,6 +155,7 @@ def export_checkpoint(run_dir: Path, report_dir: Path, destination: Path) -> Pat
             shutil.copyfile(report_dir / name, destination / name)
             files.append(destination / name)
     base = record["model_config"]
+    aggregate_analysis = {key: value for key, value in report["analysis"].items() if key != "records"}
     updated = record["policy_version"] > 0
     status = ("A locally updated shared LoRA research adapter." if updated else
               "An unchanged research adapter: the pilot completed no optimizer updates. This is not a trained checkpoint.")
@@ -204,7 +205,10 @@ def export_checkpoint(run_dir: Path, report_dir: Path, destination: Path) -> Pat
         '```bash\nBUNDLE=/path/to/downloaded-bundle\n'
         f'uv run --no-sync selfplay report --run "$BUNDLE"/{shlex.quote(records_relative.as_posix())} '
         '--output "$BUNDLE/regenerated-reports" --site "$BUNDLE/regenerated-site"\n```\n\n'
-        "## Recorded evaluation\n\n```json\n" + json.dumps(report["analysis"], indent=2) + "\n```\n\n"
+        "## Recorded evaluation\n\n"
+        "Aggregate results are shown below. [Complete evaluation records](evaluation-summary.json) "
+        "contain the full saved analysis, including task-level outcomes and official reports.\n\n```json\n"
+        + json.dumps(aggregate_analysis, indent=2) + "\n```\n\n"
         "Human and synthetic bugs are separate evaluations. Null results are unscored, not failures or successes. "
         "The small cohort and single training seed do not establish robustness; pretraining contamination is unknown. "
         "See experiment.md and paper.pdf for coverage, paired uncertainty, limitations and negative results.\n\n"
