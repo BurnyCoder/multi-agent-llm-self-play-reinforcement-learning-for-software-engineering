@@ -4,7 +4,7 @@ Train one local language model to introduce and repair bugs in real Python repos
 
 The project adapts [Self-play SWE-RL](https://arxiv.org/html/2512.18552v3), the [CWM training objective](https://arxiv.org/html/2510.02387v1#A3), and [OpenCode's subagent interface](https://github.com/anomalyco/opencode/blob/e761e265d2d5e6ff4a1c0756ab8d8eeee0db501e/packages/core/src/tool/plugin/subagent.ts) to one laptop GPU. It tests whether self-play gains transfer to independently held-out human bugs; [prior work](https://arxiv.org/html/2607.03523v1) shows that synthetic gains alone are insufficient evidence.
 
-**Research status:** the harness, frozen cohorts and CPU validation are implemented. The initial GPU preflight was interrupted before any saved model generation or checkpoint. A [dated recovery amendment](reports/preregistration.md#recovery-amendment-2026-11-05) preserves that attempt and deducts its compute charge from the recovery allocation. No improvement or trained-model result is claimed. The first delivery executes one pilot, not the larger seed/control study.
+**Research status:** the generated results below report the recorded run, checkpoint and evaluation status. A [dated recovery amendment](reports/preregistration.md#recovery-amendment-2026-11-05) preserves the interrupted initial attempt and deducts its compute charge from the recovery allocation. Preflight parameter updates are software checks, not evidence of self-play learning. The first delivery covers one bounded pilot; the larger seed/control study remains deferred.
 
 <!-- SSR_RESULTS:START -->
 
