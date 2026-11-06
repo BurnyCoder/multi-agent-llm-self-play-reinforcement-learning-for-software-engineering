@@ -4,7 +4,7 @@ Libor "Burny" Burian
 
 ## Abstract
 
-We implement a local shared-policy extension of Self-play SWE-RL in which bug-injection and repair teams can delegate to asynchronous subagents. All roles use one Qwen3.5-2B policy with a shared trainable LoRA adapter. This report is generated from the saved run records. Recorded run status: pilot_running. Recorded failure at 2026-11-05T21:30:15.600645+00:00 in preflight: RuntimeError: Generation/scoring log probabilities disagree: 0.152308. Recorded failure at 2026-11-05T21:58:00.073528+00:00 in preflight: RuntimeError: Generation/scoring log probabilities disagree: 0.152151. No completed policy optimizer steps are recorded; this record does not establish a learned checkpoint. The final condition received no recorded optimizer updates. Any observed paired differences concern two evaluations of unchanged weights, not an estimated self-play training effect. The primary hypothesis's learning intervention did not occur. The saved trained condition label, confidence intervals and preregistered interval rule remain unchanged. Across 1 paired tasks, the trained-minus-base resolution difference was +0.0 percentage points (95% paired bootstrap interval [+0.0, +0.0]). Improved: 0; regressed: 0; unchanged: 1. Under the preregistered interval rule, this comparison contradicts the predicted improvement. The bootstrap interval is degenerate; it does not establish equivalence or rule out a population effect.
+We implement a local shared-policy extension of Self-play SWE-RL in which bug-injection and repair teams can delegate to asynchronous subagents. All roles use one Qwen3.5-2B policy with a shared trainable LoRA adapter. This report is generated from the saved run records. Recorded run status: pilot_failed. Recorded failure at 2026-11-05T21:30:15.600645+00:00 in preflight: RuntimeError: Generation/scoring log probabilities disagree: 0.152308. Recorded failure at 2026-11-05T21:58:00.073528+00:00 in preflight: RuntimeError: Generation/scoring log probabilities disagree: 0.152151. Recorded failure at 2026-11-06T04:49:29.416350+00:00 in pilot: Worker and supervisor remained alive 45.619 seconds past the persisted wall-clock deadline; the worker process group was externally terminated. The interrupted task has no admitted score. The overrun's cause is not established.. No completed policy optimizer steps are recorded; this record does not establish a learned checkpoint. The final condition received no recorded optimizer updates. Any observed paired differences concern two evaluations of unchanged weights, not an estimated self-play training effect. The primary hypothesis's learning intervention did not occur. The saved trained condition label, confidence intervals and preregistered interval rule remain unchanged. Across 21 paired tasks, the trained-minus-base resolution difference was +0.0 percentage points (95% paired bootstrap interval [+0.0, +0.0]). Improved: 0; regressed: 0; unchanged: 21. Under the preregistered interval rule, this comparison contradicts the predicted improvement. The bootstrap interval is degenerate; it does not establish equivalence or rule out a population effect.
 
 ## Context and motivation
 
@@ -68,18 +68,18 @@ These are unscored harness diagnostics, excluded from benchmark success and trai
 
 ## Results
 
-Recorded run status: pilot_running. Recorded failure at 2026-11-05T21:30:15.600645+00:00 in preflight: RuntimeError: Generation/scoring log probabilities disagree: 0.152308. Recorded failure at 2026-11-05T21:58:00.073528+00:00 in preflight: RuntimeError: Generation/scoring log probabilities disagree: 0.152151. No completed policy optimizer steps are recorded; this record does not establish a learned checkpoint.
+Recorded run status: pilot_failed. Recorded failure at 2026-11-05T21:30:15.600645+00:00 in preflight: RuntimeError: Generation/scoring log probabilities disagree: 0.152308. Recorded failure at 2026-11-05T21:58:00.073528+00:00 in preflight: RuntimeError: Generation/scoring log probabilities disagree: 0.152151. Recorded failure at 2026-11-06T04:49:29.416350+00:00 in pilot: Worker and supervisor remained alive 45.619 seconds past the persisted wall-clock deadline; the worker process group was externally terminated. The interrupted task has no admitted score. The overrun's cause is not established.. No completed policy optimizer steps are recorded; this record does not establish a learned checkpoint.
 
-The final condition received no recorded optimizer updates. Any observed paired differences concern two evaluations of unchanged weights, not an estimated self-play training effect. The primary hypothesis's learning intervention did not occur. The saved trained condition label, confidence intervals and preregistered interval rule remain unchanged. Across 1 paired tasks, the trained-minus-base resolution difference was +0.0 percentage points (95% paired bootstrap interval [+0.0, +0.0]). Improved: 0; regressed: 0; unchanged: 1. Under the preregistered interval rule, this comparison contradicts the predicted improvement. The bootstrap interval is degenerate; it does not establish equivalence or rule out a population effect.
+The final condition received no recorded optimizer updates. Any observed paired differences concern two evaluations of unchanged weights, not an estimated self-play training effect. The primary hypothesis's learning intervention did not occur. The saved trained condition label, confidence intervals and preregistered interval rule remain unchanged. Across 21 paired tasks, the trained-minus-base resolution difference was +0.0 percentage points (95% paired bootstrap interval [+0.0, +0.0]). Improved: 0; regressed: 0; unchanged: 21. Under the preregistered interval rule, this comparison contradicts the predicted improvement. The bootstrap interval is degenerate; it does not establish equivalence or rule out a population effect.
 
 Synthetic diagnostic set: Not evaluated: no tasks have completed outcomes for both conditions.
 
 | Bug source | Condition | Planned | Attempted | Resolved / scored | Rate | Unscored recorded | Unrecorded |
 | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
 | human | base | 32 | 22 | 0 / 21 | 0.0% | 11 | 0 |
-| human | trained | 32 | 1 | 0 / 1 | 0.0% | 0 | 31 |
+| human | trained | 32 | 30 | 0 / 29 | 0.0% | 3 | 0 |
 | synthetic | base | 16 | 0 | Not evaluated | Not evaluated | 16 | 0 |
-| synthetic | trained | 16 | 0 | Not evaluated | Not evaluated | 0 | 16 |
+| synthetic | trained | 16 | 0 | Not evaluated | Not evaluated | 16 | 0 |
 
 | Deferred condition | Purpose | Result |
 | --- | --- | --- |
@@ -99,31 +99,31 @@ Check at 2026-11-05T21:58:00.067+00:00: 101 sampled action tokens; maximum cache
 
 ## Observed execution diagnostics
 
-The following diagnostics are derived from saved event, evaluation, and optimizer streams, including incomplete collections and unscored protocol diagnostics. Counts describe recorded activity, not generalization. Preflight memory belongs to a software check, not a trained-model evaluation. Recorded action tokens from research agents (excluding preflight): 35015; actual subagent tool calls: 5; child sessions: 4; optimizer steps: 0. Full invalidity reasons, exclusions, failure metadata, and per-task outcomes accompany the generated report.
+The following diagnostics are derived from saved event, evaluation, and optimizer streams, including incomplete collections and unscored protocol diagnostics. Counts describe recorded activity, not generalization. Preflight memory belongs to a software check, not a trained-model evaluation. Recorded action tokens from research agents (excluding preflight): 64920; actual subagent tool calls: 8; child sessions: 7; optimizer steps: 0. Full invalidity reasons, exclusions, failure metadata, and per-task outcomes accompany the generated report.
 
 | Recorded diagnostic | Value |
 | --- | ---: |
-| episodes | 29 |
-| child sessions | 4 |
-| episodes with children | 4 |
-| delegation rate | 0.137931 |
-| delegation calls | 5 |
-| generated tokens from research agents (excludes preflight) | 35015 |
-| generation calls by research agents (excludes preflight) | 708 |
+| episodes | 57 |
+| child sessions | 7 |
+| episodes with children | 7 |
+| delegation rate | 0.122807 |
+| delegation calls | 8 |
+| generated tokens from research agents (excludes preflight) | 64920 |
+| generation calls by research agents (excludes preflight) | 1322 |
 | validated artifacts | 4 |
 | invalid artifacts | 4 |
 | invalid artifact rate | 1 |
 | optimizer steps | 0 |
 | recorded training groups | 2 |
 | peak allocated bytes | 5136889856 |
-| evaluation seconds | 8839.61 |
+| evaluation seconds | 18533.5 |
 | training group seconds | 995.584 |
-| pass to pass regressions | 78 |
-| regression scored records | 22 |
+| pass to pass regressions | 208 |
+| regression scored records | 50 |
 
 ## Runtime interface and context diagnostics
 
-This post-hoc descriptive analysis counts 655 actual tool_finished events across recorded phases, excluding protocol-diagnostic episodes. Of these, 222 have result.error values, including 151 ValueError unsafe-path rejections. Generated text and nonzero command/test exit codes alone are not counted as tool errors. Evaluation agent_error counts are separated by source/condition after the report's task deduplication, excluding protocol diagnostics: human/base: 6 ContextLimitError records among 32 retained rows (6 with completed scoring); human/trained: 0 ContextLimitError records among 1 retained rows (0 with completed scoring); synthetic/base: 0 ContextLimitError records among 16 retained rows (0 with completed scoring). Completed scoring can still be recorded after an agent context error.
+This post-hoc descriptive analysis counts 1242 actual tool_finished events across recorded phases, excluding protocol-diagnostic episodes. Of these, 426 have result.error values, including 316 ValueError unsafe-path rejections. Generated text and nonzero command/test exit codes alone are not counted as tool errors. Evaluation agent_error counts are separated by source/condition after the report's task deduplication, excluding protocol diagnostics: human/base: 6 ContextLimitError records among 32 retained rows (6 with completed scoring); human/trained: 10 ContextLimitError records among 32 retained rows (9 with completed scoring); synthetic/base: 0 ContextLimitError records among 16 retained rows (0 with completed scoring); synthetic/trained: 0 ContextLimitError records among 16 retained rows (0 with completed scoring). Completed scoring can still be recorded after an agent context error.
 
 Native read/edit path arguments require repository-relative paths [11]. The frozen prompt says Work in /repo without explicitly stating that read/edit path arguments must be relative [12]. This interface limitation and the fixed context capacity are potential confounders when interpreting repair outcomes. These counts do not establish a causal explanation for every unresolved result. Prompts, API semantics, and budgets remain fixed after held-out scoring; this analysis does not adapt them to observed benchmark outcomes.
 
@@ -141,7 +141,7 @@ The pilot uses one training seed, a small task sample, a short context window, a
 
 ## Conclusion
 
-The saved artifacts establish what ran and what was measured. The final condition received no recorded optimizer updates. Any observed paired differences concern two evaluations of unchanged weights, not an estimated self-play training effect. The primary hypothesis's learning intervention did not occur. The saved trained condition label, confidence intervals and preregistered interval rule remain unchanged. Across 1 paired tasks, the trained-minus-base resolution difference was +0.0 percentage points (95% paired bootstrap interval [+0.0, +0.0]). Improved: 0; regressed: 0; unchanged: 1. Under the preregistered interval rule, this comparison contradicts the predicted improvement. The bootstrap interval is degenerate; it does not establish equivalence or rule out a population effect.
+The saved artifacts establish what ran and what was measured. The final condition received no recorded optimizer updates. Any observed paired differences concern two evaluations of unchanged weights, not an estimated self-play training effect. The primary hypothesis's learning intervention did not occur. The saved trained condition label, confidence intervals and preregistered interval rule remain unchanged. Across 21 paired tasks, the trained-minus-base resolution difference was +0.0 percentage points (95% paired bootstrap interval [+0.0, +0.0]). Improved: 0; regressed: 0; unchanged: 21. Under the preregistered interval rule, this comparison contradicts the predicted improvement. The bootstrap interval is degenerate; it does not establish equivalence or rule out a population effect.
 
 ## Appendix: configuration
 

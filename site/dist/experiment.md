@@ -1,11 +1,12 @@
 # Experiment: pilot-recovery
 
-Status: **pilot_running**. This report is generated from saved records; absent measurements remain unknown. All tables and diagnostics are derived from the [machine-readable analysis](summary.json). The [committed preregistration](preregistration.md) defines the hypotheses and decision rules.
+Status: **pilot_failed**. This report is generated from saved records; absent measurements remain unknown. All tables and diagnostics are derived from the [machine-readable analysis](summary.json). The [committed preregistration](preregistration.md) defines the hypotheses and decision rules.
 
 Recorded failure history (retained after later successful phases):
 
 - 2026-11-05T21:30:15.600645+00:00, **preflight**: RuntimeError: Generation/scoring log probabilities disagree: 0.152308.
 - 2026-11-05T21:58:00.073528+00:00, **preflight**: RuntimeError: Generation/scoring log probabilities disagree: 0.152151.
+- 2026-11-06T04:49:29.416350+00:00, **pilot**: Worker and supervisor remained alive 45.619 seconds past the persisted wall-clock deadline; the worker process group was externally terminated. The interrupted task has no admitted score. The overrun's cause is not established..
 
 ## Interrupted attempt and recovery amendment
 
@@ -28,15 +29,15 @@ These are unscored harness diagnostics, excluded from benchmark success and trai
 | Bug source | Condition | Planned | Attempted | Resolved / scored | Rate | Unscored recorded | Unrecorded |
 | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
 | human | base | 32 | 22 | 0 / 21 | 0.0% | 11 | 0 |
-| human | trained | 32 | 1 | 0 / 1 | 0.0% | 0 | 31 |
+| human | trained | 32 | 30 | 0 / 29 | 0.0% | 3 | 0 |
 | synthetic | base | 16 | 0 | Not evaluated | Not evaluated | 16 | 0 |
-| synthetic | trained | 16 | 0 | Not evaluated | Not evaluated | 0 | 16 |
+| synthetic | trained | 16 | 0 | Not evaluated | Not evaluated | 16 | 0 |
 
 The final condition received no recorded optimizer updates. Any observed paired differences concern two evaluations of unchanged weights, not an estimated self-play training effect. The primary hypothesis's learning intervention did not occur. The saved trained condition label, confidence intervals and preregistered interval rule remain unchanged.
 
 ### Human bugs
 
-Across 1 paired tasks, the trained-minus-base resolution difference was +0.0 percentage points (95% paired bootstrap interval [+0.0, +0.0]). Improved: 0; regressed: 0; unchanged: 1. Under the preregistered interval rule, this comparison contradicts the predicted improvement. The bootstrap interval is degenerate; it does not establish equivalence or rule out a population effect.
+Across 21 paired tasks, the trained-minus-base resolution difference was +0.0 percentage points (95% paired bootstrap interval [+0.0, +0.0]). Improved: 0; regressed: 0; unchanged: 21. Under the preregistered interval rule, this comparison contradicts the predicted improvement. The bootstrap interval is degenerate; it does not establish equivalence or rule out a population effect.
 
 ### Synthetic bugs
 
@@ -60,23 +61,23 @@ Completed collection groups: 2 (with saved training_group outcomes); valid bugs 
 
 | Recorded diagnostic | Value |
 | --- | ---: |
-| episodes | 29 |
-| child sessions | 4 |
-| episodes with children | 4 |
-| delegation rate | 0.137931 |
-| delegation calls | 5 |
-| generated tokens from research agents (excludes preflight) | 35015 |
-| generation calls by research agents (excludes preflight) | 708 |
+| episodes | 57 |
+| child sessions | 7 |
+| episodes with children | 7 |
+| delegation rate | 0.122807 |
+| delegation calls | 8 |
+| generated tokens from research agents (excludes preflight) | 64920 |
+| generation calls by research agents (excludes preflight) | 1322 |
 | validated artifacts | 4 |
 | invalid artifacts | 4 |
 | invalid artifact rate | 1 |
 | optimizer steps | 0 |
 | recorded training groups | 2 |
 | peak allocated bytes | 5136889856 |
-| evaluation seconds | 8839.61 |
+| evaluation seconds | 18533.5 |
 | training group seconds | 995.584 |
-| pass to pass regressions | 78 |
-| regression scored records | 22 |
+| pass to pass regressions | 208 |
+| regression scored records | 50 |
 
 These are event-level counts, including incomplete collections and unscored protocol diagnostics; memory can include preflight. Unrecorded planned tasks remain missing coverage.
 
@@ -84,7 +85,7 @@ Invalidity reasons: `{"At least one test target is required": 4}`. Untrained-gro
 
 ## Runtime interface and context diagnostics
 
-This post-hoc descriptive analysis counts 655 actual tool_finished events across recorded phases, excluding protocol-diagnostic episodes. Of these, 222 have result.error values, including 151 ValueError unsafe-path rejections. Generated text and nonzero command/test exit codes alone are not counted as tool errors. Evaluation agent_error counts are separated by source/condition after the report's task deduplication, excluding protocol diagnostics: human/base: 6 ContextLimitError records among 32 retained rows (6 with completed scoring); human/trained: 0 ContextLimitError records among 1 retained rows (0 with completed scoring); synthetic/base: 0 ContextLimitError records among 16 retained rows (0 with completed scoring). Completed scoring can still be recorded after an agent context error.
+This post-hoc descriptive analysis counts 1242 actual tool_finished events across recorded phases, excluding protocol-diagnostic episodes. Of these, 426 have result.error values, including 316 ValueError unsafe-path rejections. Generated text and nonzero command/test exit codes alone are not counted as tool errors. Evaluation agent_error counts are separated by source/condition after the report's task deduplication, excluding protocol diagnostics: human/base: 6 ContextLimitError records among 32 retained rows (6 with completed scoring); human/trained: 10 ContextLimitError records among 32 retained rows (9 with completed scoring); synthetic/base: 0 ContextLimitError records among 16 retained rows (0 with completed scoring); synthetic/trained: 0 ContextLimitError records among 16 retained rows (0 with completed scoring). Completed scoring can still be recorded after an agent context error.
 
 Native read/edit path arguments require repository-relative paths [11]. The frozen prompt says Work in /repo without explicitly stating that read/edit path arguments must be relative [12]. This interface limitation and the fixed context capacity are potential confounders when interpreting repair outcomes. These counts do not establish a causal explanation for every unresolved result. Prompts, API semantics, and budgets remain fixed after held-out scoring; this analysis does not adapt them to observed benchmark outcomes.
 
@@ -95,7 +96,30 @@ Sources: [pinned path guard](https://github.com/BurnyCoder/multi-agent-llm-self-
 One shared model serves the primary agents and asynchronous children. The pilot tests the combined system; it does not identify the causal contribution of delegation. Inspect the saved run summary below for observed failures, decisions, and completed work. No unrun control has a reported score.
 
 ```json
-{}
+{
+  "status": "interrupted_after_deadline",
+  "reconciled_at": "2026-11-06T04:51:21.279476+00:00",
+  "provenance": "Derived from saved records after external termination; not a worker completion record",
+  "selected_checkpoint": {
+    "path": "checkpoints/group-00002",
+    "completed_groups": 2,
+    "policy_version": 0
+  },
+  "deadline_enforcement": {
+    "timestamp": "2026-11-06T04:49:29.416350+00:00",
+    "event": "external_deadline_enforcement",
+    "phase": "pilot",
+    "worker_pid": 160536,
+    "supervisor_pid": 160498,
+    "deadline_epoch": 1793940523.797529,
+    "observed_epoch": 1793940569.4163318,
+    "overrun_seconds": 45.61880278587341,
+    "reason": "Worker and supervisor observed alive past the persisted wall-clock deadline; terminate worker process group and exclude incomplete task. Cause not established."
+  },
+  "coverage_rows_appended": 19,
+  "all_admitted_scores_before_deadline": true,
+  "expanded_study_executed": false
+}
 ```
 
 ## Failure, preflight, and preparation records
@@ -103,10 +127,21 @@ One shared model serves the primary agents and asynchronous children. The pilot 
 ```json
 {
   "failure": {
-    "phase": "preflight",
-    "error": "RuntimeError: Generation/scoring log probabilities disagree: 0.152151",
-    "timestamp": "2026-11-05T21:58:00.078630+00:00",
-    "remaining_seconds": 24643.71878528595
+    "phase": "pilot",
+    "error": "Worker and supervisor remained alive 45.619 seconds past the persisted wall-clock deadline; the worker process group was externally terminated. The interrupted task has no admitted score. The overrun's cause is not established.",
+    "timestamp": "2026-11-06T04:49:29.416350+00:00",
+    "remaining_seconds": 0,
+    "deadline_enforcement": {
+      "timestamp": "2026-11-06T04:49:29.416350+00:00",
+      "event": "external_deadline_enforcement",
+      "phase": "pilot",
+      "worker_pid": 160536,
+      "supervisor_pid": 160498,
+      "deadline_epoch": 1793940523.797529,
+      "observed_epoch": 1793940569.4163318,
+      "overrun_seconds": 45.61880278587341,
+      "reason": "Worker and supervisor observed alive past the persisted wall-clock deadline; terminate worker process group and exclude incomplete task. Cause not established."
+    }
   },
   "failure_history": [
     {
@@ -120,6 +155,23 @@ One shared model serves the primary agents and asynchronous children. The pilot 
       "event": "phase_failed",
       "phase": "preflight",
       "error": "RuntimeError: Generation/scoring log probabilities disagree: 0.152151"
+    },
+    {
+      "phase": "pilot",
+      "error": "Worker and supervisor remained alive 45.619 seconds past the persisted wall-clock deadline; the worker process group was externally terminated. The interrupted task has no admitted score. The overrun's cause is not established.",
+      "timestamp": "2026-11-06T04:49:29.416350+00:00",
+      "remaining_seconds": 0,
+      "deadline_enforcement": {
+        "timestamp": "2026-11-06T04:49:29.416350+00:00",
+        "event": "external_deadline_enforcement",
+        "phase": "pilot",
+        "worker_pid": 160536,
+        "supervisor_pid": 160498,
+        "deadline_epoch": 1793940523.797529,
+        "observed_epoch": 1793940569.4163318,
+        "overrun_seconds": 45.61880278587341,
+        "reason": "Worker and supervisor observed alive past the persisted wall-clock deadline; terminate worker process group and exclude incomplete task. Cause not established."
+      }
     }
   ],
   "preflight": {
@@ -2157,6 +2209,159 @@ One shared model serves the primary agents and asynchronous children. The pilot 
         "derived_final_reserve_seconds": 10672.414246182498,
         "derived_training_deadline_utc": "2026-11-06T01:50:51.383283+00:00",
         "pilot_deadline_utc": "2026-11-06T04:48:43.797529+00:00"
+      },
+      "final_software_verification": {
+        "record": "runs/verification/software-verification-final.json",
+        "started_at": "2026-11-06T04:50:20.688142+00:00",
+        "commit": "b4a8f05ff643e0c98a4bf82eb707cac2ba16ffed",
+        "worktree_status_start": [],
+        "status": "passed",
+        "commands": [
+          {
+            "name": "pytest",
+            "command": [
+              ".venv/bin/python",
+              "-m",
+              "pytest",
+              "-q",
+              "--junitxml=runs/verification/unit-tests-final.xml"
+            ],
+            "started_at": "2026-11-06T04:50:20.705343+00:00",
+            "log": "runs/verification/pytest-final.log",
+            "returncode": 0,
+            "finished_at": "2026-11-06T04:56:56.846317+00:00",
+            "elapsed_seconds": 378.7667802330034,
+            "junit_counts": {
+              "tests": 204,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0,
+              "passed": 204
+            },
+            "junit_time_seconds": 366.35,
+            "junit": "runs/verification/unit-tests-final.xml"
+          },
+          {
+            "name": "ruff",
+            "command": [
+              ".venv/bin/python",
+              "-m",
+              "ruff",
+              "check",
+              "src",
+              "tests"
+            ],
+            "started_at": "2026-11-06T04:56:56.870395+00:00",
+            "log": "runs/verification/ruff-final.log",
+            "returncode": 0,
+            "finished_at": "2026-11-06T04:56:57.540299+00:00",
+            "elapsed_seconds": 0.6699411390000023
+          }
+        ],
+        "research_process_exit_check": {
+          "checked_at": "2026-11-06T04:50:20.688179+00:00",
+          "pids": [
+            160498,
+            160536
+          ],
+          "both_absent": true
+        },
+        "execution": "CPU software verification; no research model loaded",
+        "environment_overrides": {
+          "CUDA_VISIBLE_DEVICES": "",
+          "HF_HUB_OFFLINE": "1",
+          "TRANSFORMERS_OFFLINE": "1",
+          "PYTHONUNBUFFERED": "1"
+        },
+        "full_pipeline_fixture": {
+          "name": "test_complete_game_update_evaluation_and_reporting",
+          "classname": "tests.test_pipeline",
+          "elapsed_seconds": 20.96,
+          "status": "passed"
+        },
+        "finished_at": "2026-11-06T04:56:57.552737+00:00",
+        "ending_commit": "b4a8f05ff643e0c98a4bf82eb707cac2ba16ffed",
+        "worktree_status_end": []
+      },
+      "post_pilot_watchdog_verification": {
+        "correction_used_by_research_worker": false,
+        "merged_commit": "590e045f193c2087cd3ed931cbe8098c1503006a",
+        "verification": {
+          "started_at": "2026-11-06T05:02:10.691829+00:00",
+          "scope": "Post-pilot watchdog correction; no research model executed or restarted",
+          "research_worker_used_this_change": false,
+          "commit": "b4a8f05ff643e0c98a4bf82eb707cac2ba16ffed",
+          "source_diff": "runs/verification/watchdog-source.diff",
+          "source_diff_sha256": "364ef79266a002bae58825ce7f811844e3b0bb9d2d6d83b0f2affacb664b39af",
+          "source_files_sha256": {
+            "src/multi_agent_ssr/supervisor.py": "4ba9fa77688ffdca11099c40df82e45e2e61e09114944c1b6815fc7828e77888",
+            "tests/test_supervisor.py": "7ba1cb3db59f97e6960a02e5a425cd3d8f71f4626daf8e8fceef025f2eb93ca8"
+          },
+          "commands": [
+            {
+              "name": "pytest",
+              "command": [
+                ".venv/bin/python",
+                "-m",
+                "pytest",
+                "tests/test_supervisor.py",
+                "-q",
+                "--junitxml=runs/verification/watchdog-tests.xml"
+              ],
+              "started_at": "2026-11-06T05:02:10.766826+00:00",
+              "log": "runs/verification/watchdog-pytest.log",
+              "returncode": 0,
+              "finished_at": "2026-11-06T05:02:20.117925+00:00",
+              "elapsed_seconds": 9.351109000002907,
+              "junit_counts": {
+                "tests": 5,
+                "failures": 0,
+                "errors": 0,
+                "skipped": 0,
+                "passed": 5
+              },
+              "junit": "runs/verification/watchdog-tests.xml"
+            },
+            {
+              "name": "ruff",
+              "command": [
+                ".venv/bin/python",
+                "-m",
+                "ruff",
+                "check",
+                "src",
+                "tests"
+              ],
+              "started_at": "2026-11-06T05:02:20.123232+00:00",
+              "log": "runs/verification/watchdog-ruff.log",
+              "returncode": 0,
+              "finished_at": "2026-11-06T05:02:20.677597+00:00",
+              "elapsed_seconds": 0.5543720829955419
+            }
+          ],
+          "fail_before": {
+            "status": "observed_failure",
+            "command": [
+              ".venv/bin/python",
+              "-m",
+              "pytest",
+              "tests/test_supervisor.py",
+              "-q"
+            ],
+            "returncode": 1,
+            "timestamp": null,
+            "timestamp_status": "not captured",
+            "evidence": "runs/verification/watchdog-fail-before.txt",
+            "evidence_kind": "transcribed tool-output excerpt, not full stdout",
+            "failed": 3,
+            "passed": 2,
+            "original_supervisor_sha256": "9c7a805be6274d808bf315162c1d2a316b856d83ca9a321caf7bada3a73976d5"
+          },
+          "finished_at": "2026-11-06T05:02:20.862338+00:00",
+          "ending_commit": "b4a8f05ff643e0c98a4bf82eb707cac2ba16ffed",
+          "source_files_unchanged_during_verification": true,
+          "status": "passed"
+        }
       }
     },
     "kernel_review": {
