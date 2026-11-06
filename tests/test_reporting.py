@@ -67,6 +67,46 @@ def test_zero_update_final_condition_is_not_presented_as_a_training_effect(tmp_p
         assert disclosure == ""
 
 
+@pytest.mark.parametrize("case", ["equal", "varied", "mixed"])
+def test_training_outcome_explains_zero_advantages_without_projecting_future_groups(tmp_path, monkeypatch, case):
+    """Completed zero-signal groups remain distinct from later effective updates."""
+    run = tmp_path / "run"
+    run.mkdir()
+    equal = {"event": "training_group", "step": 1, "valid_bugs": 0, "injector_episodes": 2,
+             "repair_attempts": 0, "episodes": 2, "zero_advantage_episodes": 2, "optimizer_steps": 0,
+             "no_action_groups": 0, "sampled_tokens": 8, "trained_tokens_per_pass": 0}
+    varied = {**equal, "step": 2, "valid_bugs": 1, "repair_attempts": 4, "episodes": 6,
+              "zero_advantage_episodes": 0, "optimizer_steps": 2, "trained_tokens_per_pass": 8}
+    metrics = [equal] if case == "equal" else [varied] if case == "varied" else [equal, varied]
+    (run / "metrics.jsonl").write_text("".join(json.dumps(row) + "\n" for row in metrics))
+    event = {"event": "artifact_validated", "valid": False, "reason": "fixture: no test targets"}
+    (run / "events.jsonl").write_text((json.dumps(event) + "\n") * 3)
+    monkeypatch.setattr("multi_agent_ssr.reporting.render_figures", lambda *args: {})
+    monkeypatch.setattr("multi_agent_ssr.reporting.render_paper", lambda *args: None)
+    monkeypatch.setattr("multi_agent_ssr.reporting.copy_source_notices", lambda *args: [])
+    readme = tmp_path / "README.md"
+    readme.write_text("Fixture README\n<!-- SSR_RESULTS:START -->\n<!-- SSR_RESULTS:END -->\n")
+    generate_report(run, tmp_path / "report", tmp_path / "site", readme_path=readme)
+    payload = json.loads((tmp_path / "site" / "data.json").read_text())
+    text = payload["training_outcome_disclosure"]
+    assert f"Completed collection groups: {len(metrics)}" in text
+    assert '"fixture: no test targets": 3' in text
+    assert "including incomplete collections" in text
+    if case == "equal":
+        assert "valid bugs / injector episodes: 0 / 2" in text
+        assert "repair attempts: 0" in text and "optimizer steps: 0" in text
+    else:
+        assert "optimizer steps: 2" in text and "repair attempts: 4" in text
+    if case != "varied":
+        assert "Collection groups with sampled actions but only zero advantages: 1" in text
+        assert "equal returns into zero advantages" in text
+    else:
+        assert "only zero advantages" not in text
+    for name in ("experiment.md", "experiments-summary.md", "paper.md"):
+        assert text in (tmp_path / "report" / name).read_text()
+    assert text in readme.read_text()
+
+
 def test_bootstrap_reproducible_and_all_ties_not_proof_of_no_effect():
     rows = [record(str(i), c, False) for i in range(4) for c in ("base", "trained")]
     first = analyze_evaluations(rows, bootstrap_samples=200)
