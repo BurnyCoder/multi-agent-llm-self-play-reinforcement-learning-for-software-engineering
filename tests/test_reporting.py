@@ -36,6 +36,37 @@ def test_pairing_is_by_task_and_separates_bug_sources():
     assert result["comparisons"]["synthetic"]["paired_tasks"] == 1
 
 
+@pytest.mark.parametrize("optimizer_steps, final_scored", [(0, True), (2, True), (0, False)])
+def test_zero_update_final_condition_is_not_presented_as_a_training_effect(tmp_path, monkeypatch,
+                                                                          optimizer_steps, final_scored):
+    """The interval rule is unchanged even when the learning intervention is absent."""
+    run = tmp_path / "run"
+    run.mkdir()
+    (run / "manifest.json").write_text(json.dumps({"config": {"experiment": {"bootstrap_samples": 20}}}))
+    (run / "metrics.jsonl").write_text(json.dumps({"optimizer_steps": optimizer_steps}) + "\n")
+    rows = [record("fixture", "base", False)]
+    if final_scored:
+        rows.append(record("fixture", "trained", True))
+    (run / "evaluation.jsonl").write_text("".join(json.dumps(row) + "\n" for row in rows))
+    readme = tmp_path / "README.md"
+    readme.write_text("Fixture README\n<!-- SSR_RESULTS:START -->\n<!-- SSR_RESULTS:END -->\n")
+    monkeypatch.setattr("multi_agent_ssr.reporting.render_figures", lambda *args: {})
+    monkeypatch.setattr("multi_agent_ssr.reporting.render_paper", lambda *args: None)
+    generate_report(run, tmp_path / "report", tmp_path / "site", readme_path=readme)
+    payload = json.loads((tmp_path / "site" / "data.json").read_text())
+    assert payload["analysis"]["comparisons"] == analyze_evaluations(rows, bootstrap_samples=20)["comparisons"]
+    disclosure = payload["training_intervention_disclosure"]
+    if optimizer_steps == 0 and final_scored:
+        assert "two evaluations of unchanged weights" in disclosure
+        assert "not an estimated self-play training effect" in disclosure
+        assert payload["analysis"]["comparisons"]["human"]["preregistered_decision"] == "supports_predicted_improvement"
+        for path in [readme, *(tmp_path / "report" / name for name in
+                              ("experiment.md", "experiments-summary.md", "paper.md"))]:
+            assert disclosure in path.read_text()
+    else:
+        assert disclosure == ""
+
+
 def test_bootstrap_reproducible_and_all_ties_not_proof_of_no_effect():
     rows = [record(str(i), c, False) for i in range(4) for c in ("base", "trained")]
     first = analyze_evaluations(rows, bootstrap_samples=200)

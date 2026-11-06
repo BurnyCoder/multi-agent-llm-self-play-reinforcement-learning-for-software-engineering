@@ -480,10 +480,22 @@ def _table(analysis: dict[str, Any]) -> str:
     return "\n".join(lines)
 
 
-def _effect_text(comparison: dict[str, Any]) -> str:
+def _training_intervention_text(payload: dict[str, Any]) -> str:
+    """A final condition label alone cannot establish that learning occurred."""
+    if payload["diagnostics"]["optimizer_steps"] or payload["run_summary"].get("optimizer_steps"):
+        return ""
+    if not any(row.get("condition") == "trained" and _scored(row) for row in payload["analysis"]["records"]):
+        return ""
+    return ("The final condition received no recorded optimizer updates. Any observed paired differences concern "
+            "two evaluations of unchanged weights, not an estimated self-play training effect. The primary "
+            "hypothesis's learning intervention did not occur. The saved trained condition label, confidence "
+            "intervals and preregistered interval rule remain unchanged.")
+
+
+def _effect_text(comparison: dict[str, Any], intervention_disclosure: str = "") -> str:
     """A degenerate bootstrap interval must not be sold as precise equivalence."""
     if not comparison["paired_tasks"]:
-        return "Not evaluated: no tasks have completed outcomes for both conditions."
+        return (intervention_disclosure + " Not evaluated: no tasks have completed outcomes for both conditions.").strip()
     lower, upper = comparison["ci95"]
     text = (f"Across {comparison['paired_tasks']} paired tasks, the trained-minus-base resolution difference "
             f"was {100 * comparison['difference']:+.1f} percentage points "
@@ -495,12 +507,12 @@ def _effect_text(comparison: dict[str, Any]) -> str:
     text += f" Under the preregistered interval rule, this comparison {decisions[comparison['preregistered_decision']]}."
     if comparison["interval_degenerate"]:
         text += " The bootstrap interval is degenerate; it does not establish equivalence or rule out a population effect."
-    return text
+    return (intervention_disclosure + " " + text).strip()
 
 
 def _paper_sections(payload: dict[str, Any]) -> list[tuple[str, str]]:
     """Narrative claims are bounded by the observed record coverage and design."""
-    primary = _effect_text(payload["analysis"]["comparisons"]["human"])
+    primary = _effect_text(payload["analysis"]["comparisons"]["human"], payload.get("training_intervention_disclosure", ""))
     secondary = _effect_text(payload["analysis"]["comparisons"]["synthetic"])
     config = payload["manifest"].get("config", {})
     model = payload["manifest"].get("model", config.get("model", {}))
@@ -890,6 +902,7 @@ def generate_report(run_dir: Path, output_dir: Path, site_dir: Path, *, readme_p
     }
     payload["likelihood_disclosure"] = _likelihood_text(payload["likelihood_history"], payload["likelihood"])
     payload["runtime_disclosure"] = _runtime_text(payload["runtime_diagnostics"])
+    payload["training_intervention_disclosure"] = _training_intervention_text(payload)
     if (run_dir / "kernel-review.json").exists():
         payload["preparation"]["kernel_review"] = _json(run_dir / "kernel-review.json")
     figures = render_figures(payload, output_dir / "figures")
@@ -914,6 +927,8 @@ def generate_report(run_dir: Path, output_dir: Path, site_dir: Path, *, readme_p
                     f"\n\nSources: [pinned path guard]({SOURCES[10][1]}) and [pinned prompt]({SOURCES[11][1]}).\n\n")
     details = "\n\n".join(f"### {source.title()} bugs\n\n{_effect_text(comparison)}"
                             for source, comparison in payload["analysis"]["comparisons"].items())
+    if payload["training_intervention_disclosure"]:
+        details = payload["training_intervention_disclosure"] + "\n\n" + details
     report = (f"# Experiment: {payload['run_id']}\n\nStatus: **{payload['status']}**. "
               "This report is generated from saved records; absent measurements remain unknown. "
               "All tables and diagnostics are derived from the [machine-readable analysis](summary.json). "
