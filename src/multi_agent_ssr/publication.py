@@ -128,7 +128,7 @@ def export_checkpoint(run_dir: Path, report_dir: Path, destination: Path) -> Pat
         raise ValueError("Selected adapter weights are missing")
     records = _record_paths(run_dir)
     source_commit = _source_commit()
-    files = copy_source_notices(destination / "docs" / "licenses")
+    files = copy_source_notices(destination / "licenses")
     destination.mkdir(parents=True, exist_ok=True)
     # Checkpoints are harness-owned; exclude arbitrary extensions and symlinks.
     allowed = {".json", ".safetensors", ".pt", ".jinja", ".txt"}
@@ -221,7 +221,7 @@ def export_checkpoint(run_dir: Path, report_dir: Path, destination: Path) -> Pat
         "Training repositories retain their MIT/BSD notices; "
         f"the [harness license]({_HARNESS}/blob/{source_commit}/LICENSE) is MIT. "
         "Benchmark repository source excerpts in raw model/tool records have separate "
-        "[upstream notices and pinned source associations](docs/licenses/README.md). "
+        "[upstream notices and pinned source associations](licenses/README.md). "
         "These include notices from requests, Flask, pylint and pytest; the cached dataset card's missing "
         "license declaration is documented in that provenance. "
         "When present, `license-provenance.json` identifies the exact bundled license/notice files and their source revisions. "
