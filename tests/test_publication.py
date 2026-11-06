@@ -45,7 +45,8 @@ def test_export_refuses_preflight_adapter(tmp_path):
 
 def test_export_preserves_report_local_links_and_preregistration(tmp_path):
     run, report = _fixture(tmp_path)
-    text = "[Saved analysis](summary.json) and [Preregistration](preregistration.md)\n"
+    text = ("[Saved analysis](summary.json) and [Preregistration](preregistration.md)\n"
+            "[Upstream notices](licenses/README.md)\n")
     (report / "experiment.md").write_text(text)
     (report / "preregistration.md").write_text("Fixture preregistration\n")
     bundle = export_checkpoint(run, report, tmp_path / "export")
@@ -197,11 +198,11 @@ def test_exported_records_regenerate_report_and_retain_exact_action_tokens(tmp_p
         assert sha256(path.read_bytes()).hexdigest() == entry["sha256"]
         assert path.stat().st_size == entry["bytes"]
     assert f"run-records/{run.name}/events.jsonl" in {entry["path"] for entry in inventory["files"]}
-    for destination in (report / "licenses", tmp_path / "site" / "licenses", bundle / "docs" / "licenses"):
+    for destination in (report / "licenses", tmp_path / "site" / "licenses", bundle / "licenses"):
         assert (destination / "files" / "fixture-hash" / "NOTICE").read_bytes() == notice.read_bytes()
         assert (destination / "provenance.json").read_bytes() == (notices / "provenance.json").read_bytes()
         assert not (destination / "unrelated.json").exists()
-    assert "docs/licenses/files/fixture-hash/NOTICE" in {entry["path"] for entry in inventory["files"]}
+    assert "licenses/files/fixture-hash/NOTICE" in {entry["path"] for entry in inventory["files"]}
     assert "selfplay report --run" in (bundle / "README.md").read_text()
 
 
