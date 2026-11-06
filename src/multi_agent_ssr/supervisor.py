@@ -46,7 +46,16 @@ def bounded_phase(phase: str, config_path: Path, run_dir: Path) -> int:
             "--config", str(config_path), "--run", str(run_dir), "--worker"],
             env=environment, start_new_session=True)
         try:
-            return worker.wait(timeout=budget.remaining())
+            # Popen.wait uses monotonic time, while Budget stores a wall-clock
+            # deadline. Short waits allow wall-clock adjustments to be noticed.
+            # https://docs.python.org/3.12/library/time.html#time.monotonic
+            # https://github.com/python/cpython/blob/v3.12.3/Lib/subprocess.py#L1850
+            while (remaining := budget.remaining()) > 0:
+                try:
+                    return worker.wait(timeout=min(1.0, remaining))
+                except subprocess.TimeoutExpired:
+                    continue
+            raise subprocess.TimeoutExpired("persisted budget deadline", 0)
         except subprocess.TimeoutExpired:
             # SIGKILL ends the CUDA worker even when Python cannot handle signals.
             os.killpg(worker.pid, signal.SIGKILL)
