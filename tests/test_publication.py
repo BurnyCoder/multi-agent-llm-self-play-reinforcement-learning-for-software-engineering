@@ -84,6 +84,14 @@ def test_unchanged_adapter_can_be_selected_after_completed_zero_advantage_groups
 
 def test_exported_records_regenerate_report_and_retain_exact_action_tokens(tmp_path, monkeypatch):
     run, report = _fixture(tmp_path)
+    notices = tmp_path / "notices"
+    notice = notices / "files" / "fixture-hash" / "NOTICE"
+    notice.parent.mkdir(parents=True)
+    notice.write_bytes(b"Exact upstream notice\r\n")
+    (notices / "README.md").write_text("Fixture notice guide")
+    write_json(notices / "provenance.json", {"files": [{"path": "files/fixture-hash/NOTICE"}]})
+    (notices / "unrelated.json").write_text("PRIVATE_FIXTURE_MUST_NOT_EXPORT")
+    monkeypatch.setattr("multi_agent_ssr.publication._NOTICE_DIR", notices, raising=False)
     generation = {"prompt_ids": [101, 102], "completion_ids": [7, 8], "old_logprobs": [-0.125, -1.5],
                   "text": "fixture action", "policy_version": 0}
     events = [{"event": "phase_started", "phase": "pilot", "timestamp": "2020-01-01"},
@@ -134,6 +142,11 @@ def test_exported_records_regenerate_report_and_retain_exact_action_tokens(tmp_p
         assert sha256(path.read_bytes()).hexdigest() == entry["sha256"]
         assert path.stat().st_size == entry["bytes"]
     assert f"run-records/{run.name}/events.jsonl" in {entry["path"] for entry in inventory["files"]}
+    for destination in (report / "licenses", tmp_path / "site" / "licenses", bundle / "docs" / "licenses"):
+        assert (destination / "files" / "fixture-hash" / "NOTICE").read_bytes() == notice.read_bytes()
+        assert (destination / "provenance.json").read_bytes() == (notices / "provenance.json").read_bytes()
+        assert not (destination / "unrelated.json").exists()
+    assert "docs/licenses/files/fixture-hash/NOTICE" in {entry["path"] for entry in inventory["files"]}
     assert "selfplay report --run" in (bundle / "README.md").read_text()
 
 
