@@ -17,13 +17,15 @@ from html import escape
 from pathlib import Path
 from typing import Any
 
+from .audit import recompute
+from .evidence import checkpoint_evidence, intervention_text, optimizer_steps
 from .publication import copy_source_notices
 
 SOURCES = [
     ("Self-play SWE-RL: task construction and rewards", "https://arxiv.org/html/2512.18552v3"),
     ("CWM: clipped token objective and trajectory masks", "https://arxiv.org/html/2510.02387v1#A3"),
     ("OpenCode: asynchronous child sessions", "https://github.com/anomalyco/opencode/blob/e761e265d2d5e6ff4a1c0756ab8d8eeee0db501e/packages/core/src/tool/plugin/subagent.ts"),
-    ("Qwen3.5-2B model card", "https://huggingface.co/Qwen/Qwen3.5-2B"),
+    ("Qwen3.5-2B pinned model card", "https://huggingface.co/Qwen/Qwen3.5-2B/blob/15852e8c16360a2fea060d615a32b45270f8a8fc/README.md"),
     ("Unsloth Qwen3.5 fine-tuning", "https://unsloth.ai/docs/models/qwen3.5/fine-tune.md"),
     ("SWE-bench evaluation harness", "https://www.swebench.com/SWE-bench/guides/evaluation/"),
     ("Anchored Self-Play: synthetic-to-human bug distribution shift", "https://arxiv.org/html/2607.03523v1"),
@@ -32,6 +34,9 @@ SOURCES = [
     ("Qwen3.5 cached/full-forward BF16 numerical analysis", "https://github.com/huggingface/transformers/issues/46190"),
     ("Frozen repository-relative path guard", "https://github.com/BurnyCoder/multi-agent-llm-self-play-reinforcement-learning-for-software-engineering/blob/109dfa67740ff9f0260d22be9407d047d90565f7/src/multi_agent_ssr/sandbox.py#L29"),
     ("Frozen agent prompt and native tool descriptions", "https://github.com/BurnyCoder/multi-agent-llm-self-play-reinforcement-learning-for-software-engineering/blob/109dfa67740ff9f0260d22be9407d047d90565f7/src/multi_agent_ssr/agents.py#L146"),
+    ("CWM clipping thresholds and normalization choices", "https://arxiv.org/html/2510.02387v1#S5.SS2"),
+    ("Frozen local reward and optimizer implementation", "https://github.com/BurnyCoder/multi-agent-llm-self-play-reinforcement-learning-for-software-engineering/blob/109dfa67740ff9f0260d22be9407d047d90565f7/src/multi_agent_ssr/learning.py"),
+    ("Independent correction ledger (retrospective)", "https://github.com/BurnyCoder/multi-agent-llm-self-play-reinforcement-learning-for-software-engineering/blob/main/reports/independent-audit-2026-11-12.md"),
 ]
 
 AI_STATEMENT = (
@@ -265,7 +270,7 @@ def analyze_evaluations(rows: list[dict[str, Any]], *, bootstrap_samples: int = 
                         seed: int = 0) -> dict[str, Any]:
     """Pair by source/task, permitting infra retries but refusing outcome selection.
 
-Intervals describe task resampling conditional on this one trained checkpoint;
+Intervals describe task resampling conditional on the recorded checkpoints;
 they do not quantify variation across training seeds or arbitrary repositories.
 """
     if bootstrap_samples < 1:
@@ -277,7 +282,7 @@ they do not quantify variation across training seeds or arbitrary repositories.
         if not key[2]:
             raise ValueError("Evaluation record has no task_id")
         previous = indexed.get(key)
-        if previous and _scored(previous) and _scored(row) and previous["success"] != row["success"]:
+        if previous and _scored(previous) and _scored(row) and previous != row:
             raise ValueError(f"Conflicting completed outcomes for {key}; refusing to select an outcome")
         if previous is None or not _scored(previous):
             indexed[key] = row
@@ -352,6 +357,8 @@ def _diagnostics(events: list[dict[str, Any]], metrics: list[dict[str, Any]], pr
         memory.append(preflight["peak_allocated_bytes"])
     regressions = []
     for row in evaluations:
+        if not _scored(row):
+            continue
         statuses = row.get("official_report", {}).get("tests_status", {})
         if "PASS_TO_PASS" in statuses:
             regressions.append(len(statuses["PASS_TO_PASS"].get("failure", [])))
@@ -363,17 +370,60 @@ def _diagnostics(events: list[dict[str, Any]], metrics: list[dict[str, Any]], pr
         "delegation_calls": sum(event.get("event") == "tool_started" and event.get("name") == "subagent" for event in events),
         "generated_action_tokens": sum(len(g["completion_ids"]) if isinstance(g.get("completion_ids"), list)
                                        else g.get("completion_ids_count", 0) for g in generations.values()),
-        "generation_calls": len(generations), "validated_artifacts": len(validations), "invalid_artifacts": len(invalid),
+        "generation_calls": len(generations), "artifact_validation_checks": len(validations),
+        "valid_artifacts": len(validations) - len(invalid),
+        # Compatibility alias: historically this counted checks, not valid bugs.
+        "validated_artifacts": len(validations), "invalid_artifacts": len(invalid),
         "invalid_artifact_rate": len(invalid) / len(validations) if validations else None,
         "invalid_reasons": dict(Counter(str(event.get("reason", "Unspecified")) for event in invalid)),
         "untrained_group_reasons": dict(Counter(str(event.get("reason", "Unspecified")) for event in events if event.get("event") == "group_not_trained")),
-        "optimizer_steps": sum(row.get("optimizer_steps", 0) for row in metrics),
+        "optimizer_steps": optimizer_steps(metrics),
         "recorded_training_groups": len(metrics), "peak_allocated_bytes": max(memory) if memory else None,
         "evaluation_seconds": sum(row.get("elapsed_seconds", 0) or 0 for row in evaluations),
         "training_group_seconds": sum(row.get("group_seconds", 0) or 0 for row in metrics),
+        "pass_to_pass_test_failures": sum(regressions) if regressions else None,
         "pass_to_pass_regressions": sum(regressions) if regressions else None,
         "regression_scored_records": len(regressions),
     }
+
+
+def _oracle_diagnostics(rows: list[dict[str, Any]], patches: list[dict[str, Any]]) -> dict[str, Any]:
+    """Expected-pass test failures alone cannot establish agent-caused regressions.
+
+    SWE-bench defines PASS_TO_PASS using benchmark metadata. The official reports
+    and submitted patch, not generated commentary, are the evidence here.
+    https://github.com/SWE-bench/SWE-bench/blob/ca6e4e0d252f32f8762625b73575d5dee49d0a5a/swebench/harness/grading.py
+    """
+    saved = {row["path"]: row.get("text") for row in patches}
+    scored = [row for row in rows if row.get("source") == "human" and _scored(row)]
+    result = {"analysis_type": "post_hoc_descriptive", "scored_rows": len(scored),
+              "saved_empty_patches": 0, "pass_to_pass_test_failures": 0,
+              "rows_with_failures": 0, "empty_patch_rows_with_failures": 0}
+    for row in scored:
+        key = f"human/{row['condition']}/{row['task_id']}/prediction.diff"
+        patch = saved.get(key)
+        empty = isinstance(patch, str) and not patch.strip()
+        failures = row.get("official_report", {}).get("tests_status", {}).get("PASS_TO_PASS", {}).get("failure", [])
+        result["saved_empty_patches"] += int(empty)
+        result["pass_to_pass_test_failures"] += len(failures)
+        result["rows_with_failures"] += bool(failures)
+        result["empty_patch_rows_with_failures"] += bool(failures) and empty
+    return result
+
+
+def _oracle_text(diagnostics: dict[str, Any]) -> str:
+    """Keep admitted official scores while disclosing unresolved oracle limitations."""
+    if not diagnostics["rows_with_failures"]:
+        return ""
+    return (f"The saved official reports contain {diagnostics['pass_to_pass_test_failures']} PASS_TO_PASS failure entries "
+            f"across {diagnostics['rows_with_failures']} scored rows. "
+            f"Of those rows, {diagnostics['empty_patch_rows_with_failures']} submitted an empty patch. "
+            f"Across all {diagnostics['scored_rows']} scored human rows, {diagnostics['saved_empty_patches']} saved patches are empty. "
+            "These are failures of tests designated as passing in benchmark metadata, not established regressions caused by agent edits. "
+            "The grader's failure category can also include tests missing from parsed output. "
+            "The cause of the failures is unverified; no clean-environment re-evaluation was performed in this audit. "
+            "The official scores remain unchanged, with this limitation on their interpretation. "
+            "This is a post-hoc descriptive check of saved reports and submitted patches.")
 
 
 def _controls() -> list[dict[str, str]]:
@@ -441,12 +491,20 @@ def _diagnostic_label(key: str) -> str:
     return {
         "generated_action_tokens": "generated tokens from research agents (excludes preflight)",
         "generation_calls": "generation calls by research agents (excludes preflight)",
+        "artifact_validation_checks": "artifact validation checks (accepted and rejected)",
+        "valid_artifacts": "accepted valid artifacts",
+        "validated_artifacts": "legacy alias for artifact validation checks",
+        "pass_to_pass_test_failures": "PASS_TO_PASS failure entries (causal attribution unverified)",
+        "pass_to_pass_regressions": "legacy alias for PASS_TO_PASS test failures",
+        "regression_scored_records": "scored rows with PASS_TO_PASS reports",
     }.get(key, key.replace("_", " "))
 
 
 def _diagnostic_table(diagnostics: dict[str, Any]) -> str:
     lines = ["| Recorded diagnostic | Value |", "| --- | ---: |"]
     for key, value in diagnostics.items():
+        if key in {"validated_artifacts", "pass_to_pass_regressions"}:
+            continue
         if not isinstance(value, dict):
             shown = "Not measured" if value is None else f"{value:.6g}" if isinstance(value, float) else str(value)
             lines.append(f"| {_diagnostic_label(key)} | {shown} |")
@@ -478,20 +536,16 @@ def _table(analysis: dict[str, Any]) -> str:
             count = f"{result['successes']} / {result['completed']}" if result["completed"] else "Not evaluated"
             planned = result.get("planned") if result.get("planned") is not None else "Unknown"
             unrecorded = result.get("unrecorded") if result.get("unrecorded") is not None else "Unknown"
-            lines.append(f"| {source} | {condition} | {planned} | {result['attempted']} | {count} | {_pct(result['rate'])} | {result['unscored']} | {unrecorded} |")
+            label = "final condition" if condition == "trained" else condition
+            lines.append(f"| {source} | {label} | {planned} | {result['attempted']} | {count} | {_pct(result['rate'])} | {result['unscored']} | {unrecorded} |")
     return "\n".join(lines)
 
 
 def _training_intervention_text(payload: dict[str, Any]) -> str:
     """A final condition label alone cannot establish that learning occurred."""
-    if payload["diagnostics"]["optimizer_steps"] or payload["run_summary"].get("optimizer_steps"):
-        return ""
     if not any(row.get("condition") == "trained" and _scored(row) for row in payload["analysis"]["records"]):
         return ""
-    return ("The final condition received no recorded optimizer updates. Any observed paired differences concern "
-            "two evaluations of unchanged weights, not an estimated self-play training effect. The primary "
-            "hypothesis's learning intervention did not occur. The saved trained condition label, confidence "
-            "intervals and preregistered interval rule remain unchanged.")
+    return intervention_text(payload["checkpoint_evidence"], payload["diagnostics"]["optimizer_steps"])
 
 
 def _training_outcome_text(metrics: list[dict[str, Any]], diagnostics: dict[str, Any]) -> str:
@@ -524,14 +578,15 @@ def _effect_text(comparison: dict[str, Any], intervention_disclosure: str = "") 
     if not comparison["paired_tasks"]:
         return (intervention_disclosure + " Not evaluated: no tasks have completed outcomes for both conditions.").strip()
     lower, upper = comparison["ci95"]
-    text = (f"Across {comparison['paired_tasks']} paired tasks, the trained-minus-base resolution difference "
+    text = (f"Across {comparison['paired_tasks']} paired tasks, the final-minus-base resolution difference "
             f"was {100 * comparison['difference']:+.1f} percentage points "
             f"(95% paired bootstrap interval [{100 * lower:+.1f}, {100 * upper:+.1f}]). "
             f"Improved: {comparison['improved']}; regressed: {comparison['regressed']}; "
             f"unchanged: {comparison['unchanged']}.")
     decisions = {"supports_predicted_improvement": "supports the predicted improvement",
                  "contradicts_predicted_improvement": "contradicts the predicted improvement", "inconclusive": "is inconclusive"}
-    text += f" Under the preregistered interval rule, this comparison {decisions[comparison['preregistered_decision']]}."
+    text += (f" The mechanical preregistered interval rule {decisions[comparison['preregistered_decision']]}. "
+             "This rule alone does not establish that the planned learning intervention occurred.")
     if comparison["interval_degenerate"]:
         text += " The bootstrap interval is degenerate; it does not establish equivalence or rule out a population effect."
     return (intervention_disclosure + " " + text).strip()
@@ -555,7 +610,9 @@ def _paper_sections(payload: dict[str, Any]) -> list[tuple[str, str]]:
     for failure in payload["failure_history"]:
         state += (f" Recorded failure at {failure.get('timestamp', 'unrecorded time')} "
                   f"in {failure.get('phase', 'run')}: {failure.get('error', 'unspecified')}.")
-    if not payload["diagnostics"]["optimizer_steps"]:
+    if payload["diagnostics"]["optimizer_steps"] is None:
+        state += " Research optimizer-step evidence is missing or incomplete."
+    elif payload["diagnostics"]["optimizer_steps"] == 0:
         state += " No completed policy optimizer steps are recorded; this record does not establish a learned checkpoint."
     sections = [
         ("Abstract", "We implement a local shared-policy extension of Self-play SWE-RL in which bug-injection "
@@ -563,8 +620,8 @@ def _paper_sections(payload: dict[str, Any]) -> list[tuple[str, str]]:
          "shared trainable LoRA adapter. This report is generated from the saved run records. " + state + " " + primary),
         ("Context and motivation", ("The experiment asks whether reinforcement learning from executable "
          "repository feedback improves held-out human-bug repair. Prior SSR work motivates repository-grounded "
-         "bug injection and repair [1]. Anchored Self-Play demonstrates that gains on synthetic bugs need not "
-         "transfer to human bugs [7], so the two evaluation sources remain separate.")),
+         "bug injection and repair [1]. Anchored Self-Play reports distribution drift in function-level "
+         "BugSourceBench repair [7]. That motivates separate evaluation here but does not validate this repository-level adaptation.")),
         ("Method", ("The injector edits source and weakens existing tests. A trusted Python runner validates "
          "the artifact, including restoration checks and inverse mutations. The repair team sees the weakened "
          "buggy state and the inverse weakening patch, but not clean reference code or the injection patch. "
@@ -582,7 +639,7 @@ def _paper_sections(payload: dict[str, Any]) -> list[tuple[str, str]]:
         ("Agents and optimization", ("Primary agents delegate through a tool patterned after OpenCode [3]. "
          "Child sessions have independent contexts and can work while the primary agent continues. GPU generation "
          "requests are serialized through the shared policy. One team execution includes all descendant actions. "
-         "Each actual generated token contributes once; a child's text repeated in its parent's context is an "
+         "Each actual generated token belongs to one action record; nonzero-advantage actions contribute once per optimization pass. A child's text repeated in its parent's context is an "
          "observation. The update extends CWM's length-weighted centered returns, clipped token likelihood ratios, "
          "and action masks [2]. The precise run configuration is included in the appendix.")),
         ("Exact objective and team credit", ("For a group G of episodes with the same task and team role, let "
@@ -595,8 +652,9 @@ def _paper_sections(payload: dict[str, Any]) -> list[tuple[str, str]]:
          "clip(r_et, 0.8, 1.25) A_e). C is the maximum planned collection token capacity, not the observed "
          "trajectory length. In primary self-play, C = injector_samples * (1 + repair_samples * max_bug_order) "
          "* team_generated_token_budget. There is no reward-standard-deviation normalization or KL term. "
-         "Each generated call appears once in the collection and once per optimization pass. The original "
-         "behavior log probabilities remain fixed across both passes [2].\n\n"
+         "Each eligible nonzero-advantage generated call contributes once per optimization pass. The original "
+         "behavior log probabilities remain fixed across passes. Clipping and normalization follow CWM Section 5.2 [13]; "
+         "team-level grouping and capacity are local adaptations [14].\n\n"
          "Injector returns follow SSR: -1 for an invalid artifact; -0.8 for a valid bug with empirical repair "
          "success rate s equal to zero or one; otherwise 1 - 1.8s. A repair receives +1 only when the restored "
          "oracle passes completely, and -1 otherwise [1]. Zero-advantage groups are recorded without an update. "
@@ -614,9 +672,10 @@ def _paper_sections(payload: dict[str, Any]) -> list[tuple[str, str]]:
          f"{value(limits, 'child_sessions')} child sessions at depth {value(limits, 'child_depth')}. "
          "Sampling temperature is one; thinking is disabled. Root and child threads progress concurrently, "
          "but calls acquire one shared GPU policy lock. All workers finish before an update.\n\n"
-         f"The recorded collection uses {value(settings, 'injector_samples')} independent injectors per clean "
-         f"starting state and {value(settings, 'repair_samples')} repairs per valid bug, followed by "
-         f"{value(settings, 'optimization_passes')} optimization passes. AdamW uses betas (0.9, 0.99), "
+         f"The configuration requests {value(settings, 'injector_samples')} injector episodes per clean "
+         f"starting state and {value(settings, 'repair_samples')} repairs per valid bug, with "
+         f"{value(settings, 'optimization_passes')} optimization passes for nonzero-advantage groups. "
+         "These are design settings, not counts of executed repairs or updates. AdamW uses betas (0.9, 0.99), "
          "weight decay zero, gradient clipping at norm 1.0, gradient checkpointing, and one call per microbatch. "
          "Likelihood computation retains only action-position logits and accumulates gradients sequentially.")),
         ("Evaluation and analysis", ("Frozen and final policies are compared on matched tasks and inference "
@@ -635,13 +694,15 @@ def _paper_sections(payload: dict[str, Any]) -> list[tuple[str, str]]:
          f"Each source is analyzed separately with {payload['analysis']['bootstrap']['samples']} task resamples, "
          f"bootstrap seed {payload['analysis']['bootstrap']['seed']}, and percentile endpoints at 2.5% and 97.5%. "
          "The paired difference is mean(trained_success - base_success) over completed pairs. A positive lower "
-         "bound supports the prediction; an upper bound at or below zero contradicts it; an interval spanning "
-         "zero is inconclusive. Degenerate intervals are explicitly qualified [8].\n\n"
+         "bound returns the preregistered support decision; an upper bound at or below zero returns its contradiction "
+         "decision; otherwise the rule is inconclusive. These are mechanical decisions and require an actual learning "
+         "intervention to test the learning hypothesis. Degenerate intervals are explicitly qualified [8, 9].\n\n"
          f"This run's recorded single-GPU wall-clock cap is {value(settings, 'budget_seconds')} seconds. It "
          "includes model loading, compilation, preflight, baseline, training, and final evaluation, using a "
          "persisted deadline that restarts cannot reset. Baseline allocation is capped at (remaining - 1800) / "
          "2.25 seconds. Training reserves the greater of the configured minimum final-evaluation reserve and "
-         "1.25 times measured baseline runtime. A new collection must fit its measured duration with margin. "
+         "1.25 times measured baseline runtime. A new collection starts only when the remaining allocation "
+         "exceeds an estimate based on previous group durations, with a margin; this does not guarantee timely completion. "
          "If an optimizer pass crosses the reserve boundary, restore the last complete checkpoint. Nonfinite "
          "gradients, memory failure, likelihood incompatibility, or corrupt state stop training without a silent "
          "model/precision substitution. Preregistration and any amendments remain authoritative [9].")),
@@ -691,6 +752,9 @@ def _paper_sections(payload: dict[str, Any]) -> list[tuple[str, str]]:
     if payload.get("runtime_disclosure"):
         position = next(index for index, (title, _) in enumerate(sections) if title == "Claims and implications")
         sections.insert(position, ("Runtime interface and context diagnostics", payload["runtime_disclosure"]))
+    if payload.get("oracle_disclosure"):
+        position = next(index for index, (title, _) in enumerate(sections) if title == "Claims and implications")
+        sections.insert(position, ("Official test failures and empty patches", payload["oracle_disclosure"] + " Grading semantics: [6]."))
     return sections
 
 
@@ -709,6 +773,8 @@ def render_figures(payload: dict[str, Any], destination: Path) -> dict[str, str]
     fig, ax = plt.subplots(figsize=(9, 4.8))
     ax.set(xlim=(0, 10), ylim=(0, 5))
     ax.axis("off")
+    ax.text(5, 4.85, "Implemented design; not evidence of completed repairs or updates",
+            ha="center", fontsize=11)
     boxes = [(0.2, 2.8, "Injector team\nPrimary + asynchronous children", "#e9d9c0"),
              (6.0, 2.8, "Repair team\nPrimary + asynchronous children", "#cfe2db"),
              (3.1, 0.4, "Shared Qwen3.5-2B + LoRA\nOne policy, separate contexts", "#e0e2ed")]
@@ -740,8 +806,8 @@ def render_figures(payload: dict[str, Any], destination: Path) -> dict[str, str]
         ax.text(.5, .5, "No completed evaluations", transform=ax.transAxes, ha="center", va="center")
         ax.set_xticks([])
     title = "Observed resolution; counts show evaluated coverage"
-    if payload.get("training_intervention_disclosure"):
-        title += "\nFinal condition used unchanged weights; no optimizer updates"
+    if payload.get("checkpoint_evidence", {}).get("status") == "unchanged":
+        title += "\nFinal condition has unchanged saved adapter bytes"
     ax.set(ylim=(0, 105), ylabel="Resolved tasks (%)", title=title)
     ax.set_yticks([0, 25, 50, 75, 100])
     ax.grid(axis="y", alpha=.18)
@@ -813,6 +879,7 @@ def render_paper(payload: dict[str, Any], sections: list[tuple[str, str]], desti
     styles["Heading2"].keepWithNext = True
     story = [Paragraph("Local multi-agent self-play RL<br/>for software engineering", styles["PaperTitle"]),
              Paragraph("Libor &quot;Burny&quot; Burian", styles["Meta"]),
+             Paragraph(escape("Report generated: " + payload["generated_at"][:10]), styles["Meta"]),
              Paragraph(escape(f"Run: {payload['run_id']} | Status: {payload['status']}"), styles["Meta"])]
     for title, body in sections:
         story.append(Paragraph(escape(title), styles["Heading2"]))
@@ -824,7 +891,8 @@ def render_paper(payload: dict[str, Any], sections: list[tuple[str, str]], desti
             data = [["Source", "Policy", "Planned", "Attempted", "Resolved / scored", "Rate", "Unscored recorded", "Unrecorded"]]
             for source, conditions in payload["analysis"]["conditions"].items():
                 for condition, row in conditions.items():
-                    data.append([source, condition, str(row.get("planned") if row.get("planned") is not None else "Unknown"),
+                    label = "final condition" if condition == "trained" else condition
+                    data.append([source, label, str(row.get("planned") if row.get("planned") is not None else "Unknown"),
                                  str(row["attempted"]), f"{row['successes']} / {row['completed']}" if row["completed"] else "Not evaluated",
                                  _pct(row["rate"]), str(row["unscored"]),
                                  str(row.get("unrecorded") if row.get("unrecorded") is not None else "Unknown")])
@@ -843,8 +911,11 @@ def render_paper(payload: dict[str, Any], sections: list[tuple[str, str]], desti
                     story.append(Image(str(figure_dir / figures[key]), width=16 * cm, height=(9 if key == "scores" else 8) * cm))
         if title == "Observed execution diagnostics":
             for key, value in payload["diagnostics"].items():
+                if key in {"validated_artifacts", "pass_to_pass_regressions"}:
+                    continue
                 shown = json.dumps(value, ensure_ascii=False) if isinstance(value, dict) else "Not measured" if value is None else str(value)
                 story.append(Paragraph(f"<b>{escape(_diagnostic_label(key))}</b>: {escape(shown)}", styles["BodyText"]))
+                story.append(Spacer(1, 2))
             for key in ("memory", "tokens", "validity"):
                 if figures.get(key):
                     story.append(Image(str(figure_dir / figures[key]), width=16 * cm, height=8 * cm))
@@ -906,6 +977,12 @@ def generate_report(run_dir: Path, output_dir: Path, site_dir: Path, *, readme_p
     evaluations = load_jsonl(run_dir / "evaluation.jsonl")
     settings = manifest.get("config", {}).get("experiment", {})
     analysis = analyze_evaluations(evaluations, bootstrap_samples=settings.get("bootstrap_samples", 10000))
+    independent = recompute(run_dir, samples=settings.get("bootstrap_samples", 10000))
+    for source, comparison in analysis["comparisons"].items():
+        if any(independent["paired"][source][key] != comparison[key] for key in ("task_ids", "difference", "ci95")):
+            raise ValueError("Independent paired analysis differs from report")
+    for destination in (output_dir, site_dir):
+        _write_json(destination / "evidence-audit.json", independent)
     for source, conditions in analysis["conditions"].items():
         planned = manifest.get(f"expected_{source}_tasks", settings.get(f"{source}_tasks"))
         for result in conditions.values():
@@ -922,6 +999,7 @@ def generate_report(run_dir: Path, output_dir: Path, site_dir: Path, *, readme_p
                         ("preparation", "preparation_validation", "environment_validation", "validation")
                         if (run_dir / f"{name}.json").exists()},
         "manifest": manifest, "run_summary": run_summary, "preflight": preflight,
+        "checkpoint_evidence": checkpoint_evidence(run_dir),
         "parameter_dtype_counts": latest_model_load.get("parameter_dtype_counts", {}),
         "likelihood": _json(run_dir / "preflight" / "likelihood.json"),
         "likelihood_history": [event for event in preflight_model_events
@@ -940,8 +1018,11 @@ def generate_report(run_dir: Path, output_dir: Path, site_dir: Path, *, readme_p
     payload["runtime_disclosure"] = _runtime_text(payload["runtime_diagnostics"])
     payload["training_intervention_disclosure"] = _training_intervention_text(payload)
     payload["training_outcome_disclosure"] = _training_outcome_text(metrics, payload["diagnostics"])
+    payload["oracle_diagnostics"] = _oracle_diagnostics(analysis["records"], payload["patches"])
+    payload["oracle_disclosure"] = _oracle_text(payload["oracle_diagnostics"])
     if (run_dir / "kernel-review.json").exists():
         payload["preparation"]["kernel_review"] = _json(run_dir / "kernel-review.json")
+        payload["preparation"]["kernel_review_evidence_status"] = "Historical diagnostic commentary retained for provenance; not independent evidence for this audit."
     figures = render_figures(payload, output_dir / "figures")
     payload["figures"] = {key: f"figures/{value}" for key, value in figures.items()}
     _write_json(output_dir / "summary.json", payload)
@@ -962,6 +1043,9 @@ def generate_report(run_dir: Path, output_dir: Path, site_dir: Path, *, readme_p
                      if payload["protocol_disclosure"] else "")
     runtime_text = ("## Runtime interface and context diagnostics\n\n" + payload["runtime_disclosure"] +
                     f"\n\nSources: [pinned path guard]({SOURCES[10][1]}) and [pinned prompt]({SOURCES[11][1]}).\n\n")
+    if payload["oracle_disclosure"]:
+        runtime_text += ("## Official test failures and empty patches\n\n" + payload["oracle_disclosure"]
+                         + f"\n\nSource: [SWE-bench scoring]({SOURCES[5][1]}) and the saved per-task reports in [summary.json](summary.json).\n\n")
     training_text = ("## Recorded training outcome\n\n" + payload["training_outcome_disclosure"] + "\n\n"
                      if payload["training_outcome_disclosure"] else "")
     details = "\n\n".join(f"### {source.title()} bugs\n\n{_effect_text(comparison)}"
@@ -989,8 +1073,11 @@ def generate_report(run_dir: Path, output_dir: Path, site_dir: Path, *, readme_p
               "## Recorded configuration\n\n"
               f"```json\n{json.dumps(manifest, ensure_ascii=False, indent=2)}\n```\n\n"
               "## Reproduction and limitations\n\n"
+              "[Independent raw-record cross-check](evidence-audit.json) recomputes scores, paired intervals, "
+              "action accounting, and saved official-report agreement without using the reporting analysis. "
+              "[Retrospective claim ledger](independent-audit-2026-11-12.md) records corrections and uncertainties.\n\n"
               "Regenerate this report with `uv run selfplay report --run <run-directory>`. "
-              "Task-paired intervals condition on one training checkpoint; training-seed uncertainty is unmeasured. "
+              "Task-paired intervals condition on the recorded checkpoints; training-seed uncertainty is unmeasured. "
               "Degenerate bootstrap intervals do not establish equivalence. Missing evaluations and infrastructure "
               "errors are excluded from scored denominators and reported separately. Public-data pretraining "
               "contamination remains unknown.\n\n## Sources\n\n"
@@ -1004,21 +1091,24 @@ def generate_report(run_dir: Path, output_dir: Path, site_dir: Path, *, readme_p
         "\n\n## Network and experiment design\n\n"
         "| Condition | Architecture | Training in this experiment | Objective | Data and domain |\n"
         "| --- | --- | --- | --- | --- |\n"
-        "| base | Qwen3.5-2B; one shared policy for all roles | None | Frozen comparison | Held-out repository repair |\n"
-        "| trained | Same base plus one shared language-model LoRA adapter | Recorded local RL updates | CWM-style clipped token objective with SSR team returns | Self-play on training repositories; held-out repository repair |\n"
+        "| base | Pinned base plus the initial shared language-model LoRA adapter | Frozen initialization | Frozen comparison | Held-out repository repair |\n"
+        f"| final condition (raw: trained) | Same adapter architecture; identity: {payload['checkpoint_evidence']['status']} | "
+        f"{payload['diagnostics']['optimizer_steps'] if payload['diagnostics']['optimizer_steps'] is not None else 'Unknown'} recorded optimizer steps | "
+        "Configured CWM-style objective with SSR team returns | Configured self-play on training repositories; held-out repository repair |\n"
         "\n## Terms in plain language\n\n"
-        "- **Self-play:** the model generates challenges and learns from attempts to solve them.\n"
+        "- **Self-play:** a training design in which a model generates challenges and can learn from attempts to solve them; a particular run may produce no learning update.\n"
         "- **Shared policy:** every primary agent and subagent uses the same model parameters.\n"
         "- **LoRA:** small trainable adapter matrices modify a frozen base model.\n"
         "- **Oracle:** executable tests that determine whether the required behavior is satisfied.\n"
         "- **Paired comparison:** compare the two policies on the same task before averaging differences.\n"
         "- **Bootstrap interval:** uncertainty estimated by repeatedly resampling the observed tasks.\n"
-        "\n\nThe base condition is the unchanged model; trained is the final completed checkpoint. "
+        "\n\nThe base condition uses the initial adapter; the raw trained label denotes the final selected condition. "
         "Human bugs come from benchmark issues; synthetic bugs are independently generated diagnostic mutations. "
         "Resolution requires passing the executable oracle. An unscored task has no valid completed outcome. "
         "The larger controlled study and seed sensitivity remain unexecuted.\n", encoding="utf-8")
     sections = _paper_sections(payload)
-    paper_md = '# Local multi-agent self-play RL for software engineering\n\nLibor "Burny" Burian\n\n'
+    paper_md = ('# Local multi-agent self-play RL for software engineering\n\nLibor "Burny" Burian\n\n'
+                + f"Report generated: {payload['generated_at'][:10]}. Original run dates are retained below.\n\n")
     for title, body in sections:
         paper_md += f"## {title}\n\n{body}\n\n"
         if title == "Results":
@@ -1045,6 +1135,10 @@ def generate_report(run_dir: Path, output_dir: Path, site_dir: Path, *, readme_p
         for destination in (output_dir / "preregistration.md", site_dir / "preregistration.md"):
             if destination.resolve() != preregistration.resolve():
                 shutil.copyfile(preregistration, destination)
+    ledger = preregistration.parent / "independent-audit-2026-11-12.md"
+    if ledger.exists():
+        for destination in (output_dir / ledger.name, site_dir / ledger.name):
+            shutil.copyfile(ledger, destination)
     if readme_path is not None:
         readme_path = Path(readme_path)
         links = ""
@@ -1053,7 +1147,10 @@ def generate_report(run_dir: Path, output_dir: Path, site_dir: Path, *, readme_p
             links = (f"\n\n![Recorded evaluation outcomes]({relative}/figures/scores.png)\n\n"
                      f"[Experiment report]({relative}/experiment.md) · [PDF paper]({relative}/paper.pdf)")
         _update_readme(readme_path, f"Recorded run status: **{status}**.\n\n" + failure_text + recovery_text + protocol_text + table + "\n\n" +
-                       details + "\n\n" + training_text + controls + links + "\n\nRegenerate all results with `uv run selfplay report --run <run-directory>`.")
+                       details + "\n\n" + training_text + controls + "\n\n" + payload["oracle_disclosure"] +
+                       "\n\nSource: saved evaluation records and patches in the [experiment report](reports/generated/experiment.md); "
+                       f"[official grader field semantics]({SOURCES[5][1]})." + links +
+                       "\n\nRegenerate all results with `uv run selfplay report --run <run-directory>`.")
     (site_dir / ".nojekyll").write_text("", encoding="utf-8")
     return {"summary.json": str(output_dir / "summary.json"), "experiment.md": str(output_dir / "experiment.md"),
             "paper.pdf": str(output_dir / "paper.pdf"), "index.html": str(site_dir / "index.html")}

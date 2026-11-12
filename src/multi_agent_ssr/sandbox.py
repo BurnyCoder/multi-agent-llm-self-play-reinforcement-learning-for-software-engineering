@@ -37,7 +37,7 @@ def _relative_path(path: str) -> str:
 
 
 def _source_archive(source: Path) -> bytes:
-    """Copy ordinary repository files without following links or copying secrets."""
+    """Copy ordinary files, reject links, and omit the explicitly excluded paths."""
     source = Path(source).resolve(strict=True)
     stream = io.BytesIO()
     total = 0

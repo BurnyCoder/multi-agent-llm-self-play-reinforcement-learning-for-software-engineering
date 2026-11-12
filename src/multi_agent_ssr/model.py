@@ -470,7 +470,7 @@ class LocalPolicy:
         The extra preceding position predicts the first completion token; the
         final next-token logit is discarded. The 32-token chunks avoid a second
         full float32 vocabulary allocation. The model API is documented in:
-        https://github.com/huggingface/transformers/blob/main/src/transformers/models/qwen3_5/modeling_qwen3_5.py
+        https://github.com/huggingface/transformers/blob/v5.17.0/src/transformers/models/qwen3_5/modeling_qwen3_5.py
         """
         torch = self.torch
         if not generation.prompt_ids or not generation.completion_ids:

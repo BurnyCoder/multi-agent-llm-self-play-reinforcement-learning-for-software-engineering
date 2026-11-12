@@ -44,6 +44,11 @@ def test_zero_update_final_condition_is_not_presented_as_a_training_effect(tmp_p
     run.mkdir()
     (run / "manifest.json").write_text(json.dumps({"config": {"experiment": {"bootstrap_samples": 20}}}))
     (run / "metrics.jsonl").write_text(json.dumps({"optimizer_steps": optimizer_steps}) + "\n")
+    if optimizer_steps == 0:
+        observation = {"sha256": "a" * 64, "adapter_config_sha256": "b" * 64,
+                       "base_model": "fixture", "base_revision": "pinned"}
+        (run / "checkpoint-evidence.json").write_text(json.dumps({
+            "initial": observation, "selected": observation, "status": "unchanged"}))
     rows = [record("fixture", "base", False)]
     if final_scored:
         rows.append(record("fixture", "trained", True))
@@ -63,8 +68,10 @@ def test_zero_update_final_condition_is_not_presented_as_a_training_effect(tmp_p
         for path in [readme, *(tmp_path / "report" / name for name in
                               ("experiment.md", "experiments-summary.md", "paper.md"))]:
             assert disclosure in path.read_text()
-    else:
+    elif not final_scored:
         assert disclosure == ""
+    else:
+        assert "identity is unverified" in disclosure
 
 
 @pytest.mark.parametrize("case", ["equal", "varied", "mixed"])
@@ -303,7 +310,8 @@ def test_protocol_diagnostics_preserve_usage_and_mark_unscored_traces(tmp_path, 
     assert data["protocol_diagnostics"] == records
     assert data["diagnostics"]["generation_calls"] == 4
     assert data["diagnostics"]["generated_action_tokens"] == 10
-    assert data["diagnostics"]["delegation_calls"] == data["diagnostics"]["optimizer_steps"] == 0
+    assert data["diagnostics"]["delegation_calls"] == 0
+    assert data["diagnostics"]["optimizer_steps"] is None
     assert data["analysis"]["conditions"]["human"]["base"]["completed"] == 0
     assert data["events"][3]["protocol_diagnostic"]["status"] == "interrupted_unscored"
     assert "protocol_diagnostic" not in data["events"][-1]

@@ -27,10 +27,19 @@ def _fixture(tmp_path, version=0):
     write_json(checkpoint / "adapter_config.json", {"base_model_name_or_path": "Qwen/Qwen3.5-2B",
         "revision": None, "peft_type": "LORA", "r": 16, "lora_alpha": 16})
     (checkpoint / "adapter_model.safetensors").write_bytes(b"fixture adapter, not model weights")
+    initial = run / "checkpoints/initial"
+    initial.mkdir()
+    write_json(initial / "checkpoint.json", {
+        "model_config": asdict(ModelConfig(revision="fixture-base-revision")),
+        "policy_version": 0, "metadata": {"purpose": "frozen_base"}})
+    (initial / "adapter_model.safetensors").write_bytes(
+        b"different initial fixture" if version else (checkpoint / "adapter_model.safetensors").read_bytes())
+    (initial / "adapter_config.json").write_bytes((checkpoint / "adapter_config.json").read_bytes())
     write_json(run / "manifest.json", {"code_commit": "fixture-original",
         "phase_code_commits": {"pilot": "fixture-pilot"}, "expected_human_tasks": 1,
         "config": {"experiment": {"bootstrap_samples": 20}}})
-    write_json(report / "summary.json", {"status": "completed", "analysis": {"fixture": True}})
+    write_json(report / "summary.json", {"status": "completed", "analysis": {"fixture": True},
+                                         "diagnostics": {"optimizer_steps": version}})
     return run, report
 
 
@@ -70,7 +79,7 @@ def test_card_distinguishes_unchanged_selection_and_reloads_exact_checkpoint(tmp
         assert "not a trained checkpoint" not in card
     else:
         assert "not a trained checkpoint" in card
-        assert "The selected adapter has no optimizer updates" in card
+        assert "Recorded research optimizer steps: 0" in card
         assert "`trained` identifies the final-evaluation condition" in card
 
     loaded = []
@@ -93,7 +102,7 @@ def test_unchanged_adapter_can_be_selected_after_completed_zero_advantage_groups
     record["metadata"]["completed_groups"] = 3
     write_json(checkpoint, record)
     card = (export_checkpoint(run, report, tmp_path / "export") / "README.md").read_text()
-    assert "The selected adapter has no optimizer updates" in card
+    assert "Recorded research optimizer steps: 0" in card
     assert "Recorded completed collection groups: `3`" in card
     assert "No completed training group was selected" not in card
     assert "`trained` identifies the final-evaluation condition" in card
@@ -214,3 +223,22 @@ def test_allowlisted_record_symlink_cannot_export_private_file(tmp_path):
     (run / "preparation.json").symlink_to(private)
     with pytest.raises(ValueError, match="symlink"):
         export_checkpoint(run, report, tmp_path / "export")
+
+
+def test_export_refreshes_authored_source_guide_and_its_provenance(tmp_path, monkeypatch):
+    run, report = _fixture(tmp_path)
+    bundle = tmp_path / "export"
+    (bundle / "docs").mkdir(parents=True)
+    (bundle / "docs/sources.md").write_text("Outdated source guide")
+    write_json(bundle / "license-provenance.json", {"files": [
+        {"path": "docs/sources.md", "revision": "old", "sha256": "old"},
+        {"path": "LICENSE", "revision": "frozen-upstream", "sha256": "untouched"}]})
+    monkeypatch.setattr("multi_agent_ssr.publication._source_commit", lambda: "current-fixture")
+    export_checkpoint(run, report, bundle)
+    from multi_agent_ssr.publication import _SOURCE_GUIDE
+    assert (bundle / "docs/sources.md").read_bytes() == _SOURCE_GUIDE.read_bytes()
+    provenance = json.loads((bundle / "license-provenance.json").read_text())
+    guide, notice = provenance["files"]
+    assert guide["revision"] == "current-fixture"
+    assert guide["sha256"] == sha256((bundle / "docs/sources.md").read_bytes()).hexdigest()
+    assert notice == {"path": "LICENSE", "revision": "frozen-upstream", "sha256": "untouched"}
