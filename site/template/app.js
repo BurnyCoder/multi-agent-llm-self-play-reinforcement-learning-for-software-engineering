@@ -28,7 +28,7 @@ function renderEvidence() {
     const messages = {
       positive_task_level_evidence: "The recorded task comparison favors the final condition. This does not establish seed robustness or the causal benefit of subagents.",
       nonpositive_task_level_evidence: "The recorded task comparison does not support the predicted improvement. Negative results remain part of the research record.",
-      no_observed_difference: "No difference was observed on the paired tasks. The preregistered interval rule contradicts the predicted improvement, while this degenerate interval does not establish equivalence or rule out an effect beyond this sample.",
+      no_observed_difference: "No difference was observed on the paired tasks. The degenerate interval does not establish equivalence or rule out an effect beyond this sample.",
       inconclusive: "The paired interval includes zero. This pilot is inconclusive about an improvement in held-out human-bug repair."
     };
     byId("interpretation").textContent = messages[pair.interpretation] || "The paired comparison is not yet available.";
@@ -39,6 +39,7 @@ function renderEvidence() {
     const decision = pair.preregistered_decision.replaceAll("_", " ");
     byId("interpretation").textContent = `${dataset.training_intervention_disclosure} ${byId("interpretation").textContent} Recorded interval-rule decision: ${decision}.`;
   }
+  byId("oracle-disclosure").textContent = dataset.oracle_disclosure || "No saved grader and patch diagnostic is available.";
   renderTable();
 }
 
@@ -55,7 +56,7 @@ function renderTable() {
   const body = byId("evaluation-table"); body.replaceChildren();
   for (const row of rows) {
     const tr = element("tr");
-    tr.append(element("td", row.task_id), element("td", row.source), element("td", row.condition));
+    tr.append(element("td", row.task_id), element("td", row.source), element("td", row.condition === "trained" ? "final condition" : row.condition));
     const scored = row.status === "completed" && typeof row.success === "boolean";
     const td = element("td");
     const badge = element("span", scored ? (row.success ? "Resolved" : "Not resolved") : row.status || "Unscored",
@@ -94,7 +95,8 @@ function renderTraces() {
     button.append(element("strong", `${session.parent ? "↳ " : ""}${session.role}`), element("span", session.id));
     button.onclick = () => {
       tree.querySelectorAll("button").forEach(item => item.classList.remove("active")); button.classList.add("active");
-      const panel = byId("event-panel"); panel.replaceChildren(element("h3", `${session.role} · ${session.id}`));
+      const panel = byId("event-panel"); panel.replaceChildren(element("h3", `${session.role} · ${session.id}`),
+        element("p", "Model outputs are preserved historical text and may contain errors. Only harness tool events establish actual execution.", "muted"));
       for (const event of session.events) {
         const article = element("article", undefined, "event");
         const header = element("div", undefined, "event-head");
@@ -130,7 +132,8 @@ function renderPatches() {
 function renderDiagnostics() {
   const diagnostics = dataset.diagnostics || {};
   const labels = {generated_action_tokens: "Generated action tokens", delegation_calls: "Delegation tool calls",
-    child_sessions: "Child sessions", optimizer_steps: "Optimizer steps", validated_artifacts: "Validated artifacts"};
+    child_sessions: "Child sessions", optimizer_steps: "Recorded optimizer steps",
+    artifact_validation_checks: "Artifact checks (accepted + rejected)", valid_artifacts: "Accepted valid artifacts"};
   const list = byId("diagnostic-list");
   for (const [key, label] of Object.entries(labels)) list.append(element("dt", label), element("dd", number(diagnostics[key])));
   byId("diagnostic-data").textContent = JSON.stringify(diagnostics, null, 2);
@@ -150,7 +153,8 @@ async function start() {
   byId("generated-at").textContent = `Generated ${new Date(dataset.generated_at).toISOString().slice(0, 16).replace("T", " ")} UTC`;
   byId("summary-link").href = "data.json";
   byId("run-metadata").textContent = JSON.stringify({manifest: dataset.manifest, preflight: dataset.preflight,
-    failure: dataset.failure, preparation: dataset.preparation, budget: dataset.budget, run_summary: dataset.run_summary}, null, 2);
+    failure: dataset.failure, preparation: dataset.preparation, budget: dataset.budget, run_summary: dataset.run_summary,
+    checkpoint_evidence: dataset.checkpoint_evidence, oracle_diagnostics: dataset.oracle_diagnostics}, null, 2);
   for (const source of dataset.sources) {
     const li = element("li"), a = element("a", source.title); a.href = source.url; a.rel = "noopener"; li.append(a); byId("source-list").append(li);
   }

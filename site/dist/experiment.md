@@ -29,15 +29,15 @@ These are unscored harness diagnostics, excluded from benchmark success and trai
 | Bug source | Condition | Planned | Attempted | Resolved / scored | Rate | Unscored recorded | Unrecorded |
 | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
 | human | base | 32 | 22 | 0 / 21 | 0.0% | 11 | 0 |
-| human | trained | 32 | 30 | 0 / 29 | 0.0% | 3 | 0 |
+| human | final condition | 32 | 30 | 0 / 29 | 0.0% | 3 | 0 |
 | synthetic | base | 16 | 0 | Not evaluated | Not evaluated | 16 | 0 |
-| synthetic | trained | 16 | 0 | Not evaluated | Not evaluated | 16 | 0 |
+| synthetic | final condition | 16 | 0 | Not evaluated | Not evaluated | 16 | 0 |
 
-The final condition received no recorded optimizer updates. Any observed paired differences concern two evaluations of unchanged weights, not an estimated self-play training effect. The primary hypothesis's learning intervention did not occur. The saved trained condition label, confidence intervals and preregistered interval rule remain unchanged.
+Recorded research optimizer steps: 0. The initial and selected adapter weights and configurations have identical SHA256 digests and the same pinned base identity. This is two evaluations of unchanged weights, not an estimated self-play training effect. The planned learning hypothesis was not tested by this unchanged-policy comparison. The raw trained label and mechanical preregistered interval decision are preserved for provenance.
 
 ### Human bugs
 
-Across 21 paired tasks, the trained-minus-base resolution difference was +0.0 percentage points (95% paired bootstrap interval [+0.0, +0.0]). Improved: 0; regressed: 0; unchanged: 21. Under the preregistered interval rule, this comparison contradicts the predicted improvement. The bootstrap interval is degenerate; it does not establish equivalence or rule out a population effect.
+Across 21 paired tasks, the final-minus-base resolution difference was +0.0 percentage points (95% paired bootstrap interval [+0.0, +0.0]). Improved: 0; regressed: 0; unchanged: 21. The mechanical preregistered interval rule contradicts the predicted improvement. This rule alone does not establish that the planned learning intervention occurred. The bootstrap interval is degenerate; it does not establish equivalence or rule out a population effect.
 
 ### Synthetic bugs
 
@@ -68,7 +68,8 @@ Completed collection groups: 2 (with saved training_group outcomes); valid bugs 
 | delegation calls | 8 |
 | generated tokens from research agents (excludes preflight) | 64920 |
 | generation calls by research agents (excludes preflight) | 1322 |
-| validated artifacts | 4 |
+| artifact validation checks (accepted and rejected) | 4 |
+| accepted valid artifacts | 0 |
 | invalid artifacts | 4 |
 | invalid artifact rate | 1 |
 | optimizer steps | 0 |
@@ -76,8 +77,8 @@ Completed collection groups: 2 (with saved training_group outcomes); valid bugs 
 | peak allocated bytes | 5136889856 |
 | evaluation seconds | 18533.5 |
 | training group seconds | 995.584 |
-| pass to pass regressions | 208 |
-| regression scored records | 50 |
+| PASS_TO_PASS failure entries (causal attribution unverified) | 208 |
+| scored rows with PASS_TO_PASS reports | 50 |
 
 These are event-level counts, including incomplete collections and unscored protocol diagnostics; memory can include preflight. Unrecorded planned tasks remain missing coverage.
 
@@ -90,6 +91,12 @@ This post-hoc descriptive analysis counts 1242 actual tool_finished events acros
 Native read/edit path arguments require repository-relative paths [11]. The frozen prompt says Work in /repo without explicitly stating that read/edit path arguments must be relative [12]. This interface limitation and the fixed context capacity are potential confounders when interpreting repair outcomes. These counts do not establish a causal explanation for every unresolved result. Prompts, API semantics, and budgets remain fixed after held-out scoring; this analysis does not adapt them to observed benchmark outcomes.
 
 Sources: [pinned path guard](https://github.com/BurnyCoder/multi-agent-llm-self-play-reinforcement-learning-for-software-engineering/blob/109dfa67740ff9f0260d22be9407d047d90565f7/src/multi_agent_ssr/sandbox.py#L29) and [pinned prompt](https://github.com/BurnyCoder/multi-agent-llm-self-play-reinforcement-learning-for-software-engineering/blob/109dfa67740ff9f0260d22be9407d047d90565f7/src/multi_agent_ssr/agents.py#L146).
+
+## Official test failures and empty patches
+
+The saved official reports contain 208 PASS_TO_PASS failure entries across 9 scored rows. Of those rows, 9 submitted an empty patch. Across all 50 scored human rows, 50 saved patches are empty. These are failures of tests designated as passing in benchmark metadata, not established regressions caused by agent edits. The grader's failure category can also include tests missing from parsed output. The cause of the failures is unverified; no clean-environment re-evaluation was performed in this audit. The official scores remain unchanged, with this limitation on their interpretation. This is a post-hoc descriptive check of saved reports and submitted patches.
+
+Source: [SWE-bench scoring](https://www.swebench.com/SWE-bench/guides/evaluation/) and the saved per-task reports in [summary.json](summary.json).
 
 ## Method and learnings
 
@@ -2437,7 +2444,8 @@ One shared model serves the primary agents and asynchronous children. The pilot 
         "Linked upstream main branches can change; installed source and distribution versions were the local evidence.",
         "No installations, model execution, or cache modifications were performed."
       ]
-    }
+    },
+    "kernel_review_evidence_status": "Historical diagnostic commentary retained for provenance; not independent evidence for this audit."
   }
 }
 ```
@@ -2545,7 +2553,9 @@ One shared model serves the primary agents and asynchronous children. The pilot 
 
 ## Reproduction and limitations
 
-Regenerate this report with `uv run selfplay report --run <run-directory>`. Task-paired intervals condition on one training checkpoint; training-seed uncertainty is unmeasured. Degenerate bootstrap intervals do not establish equivalence. Missing evaluations and infrastructure errors are excluded from scored denominators and reported separately. Public-data pretraining contamination remains unknown.
+[Independent raw-record cross-check](evidence-audit.json) recomputes scores, paired intervals, action accounting, and saved official-report agreement without using the reporting analysis. [Retrospective claim ledger](independent-audit-2026-11-12.md) records corrections and uncertainties.
+
+Regenerate this report with `uv run selfplay report --run <run-directory>`. Task-paired intervals condition on the recorded checkpoints; training-seed uncertainty is unmeasured. Degenerate bootstrap intervals do not establish equivalence. Missing evaluations and infrastructure errors are excluded from scored denominators and reported separately. Public-data pretraining contamination remains unknown.
 
 ## Sources
 
@@ -2554,7 +2564,7 @@ Regenerate this report with `uv run selfplay report --run <run-directory>`. Task
 - [Self-play SWE-RL: task construction and rewards](https://arxiv.org/html/2512.18552v3)
 - [CWM: clipped token objective and trajectory masks](https://arxiv.org/html/2510.02387v1#A3)
 - [OpenCode: asynchronous child sessions](https://github.com/anomalyco/opencode/blob/e761e265d2d5e6ff4a1c0756ab8d8eeee0db501e/packages/core/src/tool/plugin/subagent.ts)
-- [Qwen3.5-2B model card](https://huggingface.co/Qwen/Qwen3.5-2B)
+- [Qwen3.5-2B pinned model card](https://huggingface.co/Qwen/Qwen3.5-2B/blob/15852e8c16360a2fea060d615a32b45270f8a8fc/README.md)
 - [Unsloth Qwen3.5 fine-tuning](https://unsloth.ai/docs/models/qwen3.5/fine-tune.md)
 - [SWE-bench evaluation harness](https://www.swebench.com/SWE-bench/guides/evaluation/)
 - [Anchored Self-Play: synthetic-to-human bug distribution shift](https://arxiv.org/html/2607.03523v1)
@@ -2563,3 +2573,6 @@ Regenerate this report with `uv run selfplay report --run <run-directory>`. Task
 - [Qwen3.5 cached/full-forward BF16 numerical analysis](https://github.com/huggingface/transformers/issues/46190)
 - [Frozen repository-relative path guard](https://github.com/BurnyCoder/multi-agent-llm-self-play-reinforcement-learning-for-software-engineering/blob/109dfa67740ff9f0260d22be9407d047d90565f7/src/multi_agent_ssr/sandbox.py#L29)
 - [Frozen agent prompt and native tool descriptions](https://github.com/BurnyCoder/multi-agent-llm-self-play-reinforcement-learning-for-software-engineering/blob/109dfa67740ff9f0260d22be9407d047d90565f7/src/multi_agent_ssr/agents.py#L146)
+- [CWM clipping thresholds and normalization choices](https://arxiv.org/html/2510.02387v1#S5.SS2)
+- [Frozen local reward and optimizer implementation](https://github.com/BurnyCoder/multi-agent-llm-self-play-reinforcement-learning-for-software-engineering/blob/109dfa67740ff9f0260d22be9407d047d90565f7/src/multi_agent_ssr/learning.py)
+- [Independent correction ledger (retrospective)](https://github.com/BurnyCoder/multi-agent-llm-self-play-reinforcement-learning-for-software-engineering/blob/main/reports/independent-audit-2026-11-12.md)

@@ -10,10 +10,12 @@ import shutil
 import subprocess
 from pathlib import Path
 
+from .evidence import checkpoint_evidence, intervention_text
 from .io import write_json
 
 _HARNESS = "https://github.com/BurnyCoder/multi-agent-llm-self-play-reinforcement-learning-for-software-engineering"
 _NOTICE_DIR = Path(__file__).resolve().parents[2] / "docs" / "licenses"
+_SOURCE_GUIDE = _NOTICE_DIR.parent / "sources.md"
 _PEFT_REVISION_SOURCE = "https://github.com/huggingface/peft/blob/v0.21.2/src/peft/auto.py#L104"
 # Match the designated reporting inputs and action records, never a run-wide
 # recursive glob. Oracle caches, repository snapshots and host config are absent.
@@ -65,6 +67,32 @@ def _source_commit() -> str:
                               text=True, capture_output=True, check=True).stdout.strip()
     except (OSError, subprocess.CalledProcessError):
         return "unrecorded"
+
+
+def _copy_source_guide(destination: Path, source_commit: str) -> list[Path]:
+    """Refresh authored guidance while preserving all upstream notice entries."""
+    guide = destination / "docs/sources.md"
+    guide.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copyfile(_SOURCE_GUIDE, guide)
+    provenance = destination / "license-provenance.json"
+    if provenance.exists():
+        record = json.loads(provenance.read_text())
+        entries = record.setdefault("files", [])
+        entry = next((row for row in entries if row["path"] == "docs/sources.md"), None)
+        if entry is None:
+            entry = {"path": "docs/sources.md"}
+            entries.append(entry)
+        entry.update(source=f"{_HARNESS}/blob/{source_commit}/docs/sources.md",
+                     local_source="${PROJECT}/docs/sources.md", revision=source_commit,
+                     license_or_notice="Source attribution and upstream license references",
+                     bytes=guide.stat().st_size, sha256=hashlib.sha256(guide.read_bytes()).hexdigest())
+        if "benchmark_source_notices" in record:
+            notice = destination / "licenses/provenance.json"
+            record["benchmark_source_notices"].update(
+                path="licenses/provenance.json", sha256=hashlib.sha256(notice.read_bytes()).hexdigest())
+        record["report_source_commit"] = source_commit
+        write_json(provenance, record)
+    return [guide]
 
 
 def _inventory(destination: Path, files: list[Path], source_commit: str) -> None:
@@ -124,12 +152,16 @@ def export_checkpoint(run_dir: Path, report_dir: Path, destination: Path) -> Pat
         raise ValueError("Selected checkpoint policy version differs from completed-group metadata")
     manifest = json.loads((run_dir / "manifest.json").read_text())
     report = json.loads((report_dir / "summary.json").read_text())
+    evidence = checkpoint_evidence(run_dir)
+    if report.get("checkpoint_evidence") and report["checkpoint_evidence"] != evidence:
+        raise ValueError("Report checkpoint evidence differs from the selected run; regenerate the report")
     if not (checkpoint / "adapter_model.safetensors").is_file():
         raise ValueError("Selected adapter weights are missing")
     records = _record_paths(run_dir)
     source_commit = _source_commit()
     files = copy_source_notices(destination / "licenses")
     destination.mkdir(parents=True, exist_ok=True)
+    files.extend(_copy_source_guide(destination, source_commit))
     # Checkpoints are harness-owned; exclude arbitrary extensions and symlinks.
     allowed = {".json", ".safetensors", ".pt", ".jinja", ".txt"}
     for path in checkpoint.iterdir():
@@ -151,18 +183,25 @@ def export_checkpoint(run_dir: Path, report_dir: Path, destination: Path) -> Pat
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(path, target)
         files.append(target)
-    for name in ["experiment.md", "paper.pdf", "preregistration.md"]:
+    # Derived hash evidence travels separately; original run files remain intact.
+    evidence_path = destination / records_relative / "checkpoint-evidence.json"
+    write_json(evidence_path, evidence)
+    files.append(evidence_path)
+    for name in ["experiment.md", "experiments-summary.md", "paper.md", "paper.pdf", "preregistration.md",
+                 "evidence-audit.json", "independent-audit-2026-11-12.md"]:
         if (report_dir / name).exists():
             shutil.copyfile(report_dir / name, destination / name)
             files.append(destination / name)
     base = record["model_config"]
     aggregate_analysis = {key: value for key, value in report["analysis"].items() if key != "records"}
-    updated = record["policy_version"] > 0
-    status = ("A locally updated shared LoRA research adapter." if updated else
-              "An unchanged research adapter: the pilot completed no optimizer updates. This is not a trained checkpoint.")
-    selection = ("Selection uses the final completed collection group, independently of evaluation score." if updated else
-                 "The selected adapter has no optimizer updates; completed zero-advantage collection groups can leave it unchanged. "
-                 "In the saved analysis, `trained` identifies the final-evaluation condition, not evidence of an optimizer update.")
+    status = ("An unchanged research adapter, verified against the initial saved adapter. This is not a trained checkpoint."
+              if evidence["status"] == "unchanged" else
+              "A research adapter whose saved bytes differ from initialization; this alone does not establish improvement."
+              if evidence["status"] == "changed" else
+              "A selected research adapter; initial-to-final identity is unverified.")
+    selection = ("Selection uses the final completed collection group, independently of evaluation score. "
+                 "In the saved analysis, `trained` identifies the final-evaluation condition, not evidence of an optimizer update. "
+                 + intervention_text(evidence, report.get("diagnostics", {}).get("optimizer_steps")))
     pilot_commit = manifest.get("phase_code_commits", {}).get("pilot", manifest.get("code_commit", "unrecorded"))
     # License files may already be staged from pinned upstream snapshots; keep
     # their original names and provenance, and never infer files from log paths.
@@ -207,12 +246,16 @@ def export_checkpoint(run_dir: Path, report_dir: Path, destination: Path) -> Pat
         f'uv run --no-sync selfplay report --run "$BUNDLE"/{shlex.quote(records_relative.as_posix())} '
         '--output "$BUNDLE/regenerated-reports" --site "$BUNDLE/regenerated-site"\n```\n\n'
         "## Recorded evaluation\n\n"
+        + report.get("oracle_disclosure", "") + "\n\n"
         "Aggregate results are shown below. [Complete evaluation records](evaluation-summary.json) "
         "contain the full saved analysis, including task-level outcomes and official reports.\n\n```json\n"
         + json.dumps(aggregate_analysis, indent=2) + "\n```\n\n"
         "Human and synthetic bugs are separate evaluations. Null results are unscored, not failures or successes. "
         "The small cohort and single training seed do not establish robustness; pretraining contamination is unknown. "
         "See experiment.md and paper.pdf for coverage, paired uncertainty, limitations and negative results.\n\n"
+        "The [independent correction ledger](independent-audit-2026-11-12.md) and "
+        "[raw-record cross-check](evidence-audit.json) distinguish observed execution from design. "
+        "Original scorer-cache agreement in that audit refers to the local source run; the caches are excluded from this export.\n\n"
         "## Method and licenses\n\n"
         "This adapts [Self-play SWE-RL](https://arxiv.org/html/2512.18552v3), "
         "[CWM](https://arxiv.org/html/2510.02387v1#A3), and "

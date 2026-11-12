@@ -16,7 +16,11 @@ def utc_now() -> str:
 
 
 def write_json(path: Path, data: Any) -> None:
-    """Replace metadata atomically so interrupted runs never leave partial JSON."""
+    """Publish JSON through a same-directory rename; this is not a power-loss guarantee.
+
+    https://docs.python.org/3.12/library/pathlib.html#pathlib.Path.replace
+    No fsync is performed; filesystem and storage durability remain external.
+    """
     path.parent.mkdir(parents=True, exist_ok=True)
     temporary = path.with_suffix(path.suffix + ".tmp")
     temporary.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
@@ -52,7 +56,7 @@ class EventLog:
         self.lock = threading.Lock()
 
     def emit(self, kind: str, **values: Any) -> dict[str, Any]:
-        """Durably append an event before showing the identical record live."""
+        """Append and flush an event before mirroring it; flush does not imply fsync."""
         event = {"timestamp": utc_now(), "event": kind, **values}
         line = json.dumps(event, ensure_ascii=False)
         with self.lock:

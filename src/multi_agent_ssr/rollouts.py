@@ -30,8 +30,8 @@ from .validation import (
 def repair_prompt(spec: RepoSpec, artifact: BugArtifact, validation: ValidationResult) -> str:
     """Expose the reversed test change, never the clean implementation/bug diff."""
     weak = Path(validation.buggy_tree)
-    # Build the inverse by swapping the two verified test-file snapshots. No
-    # source text enters the task prompt or the repair agent's filesystem.
+    # Build the inverse from verified test-file snapshots. The repair filesystem
+    # contains buggy source; clean reference source and the injection diff are withheld.
     before = _files(weak)
     after = _files(Path(spec.source_path))
     inverse = _diff(before, after, artifact.test_files)
