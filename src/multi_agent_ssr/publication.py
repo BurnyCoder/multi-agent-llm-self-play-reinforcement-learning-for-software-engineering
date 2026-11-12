@@ -86,6 +86,10 @@ def _copy_source_guide(destination: Path, source_commit: str) -> list[Path]:
                      local_source="${PROJECT}/docs/sources.md", revision=source_commit,
                      license_or_notice="Source attribution and upstream license references",
                      bytes=guide.stat().st_size, sha256=hashlib.sha256(guide.read_bytes()).hexdigest())
+        if "benchmark_source_notices" in record:
+            notice = destination / "licenses/provenance.json"
+            record["benchmark_source_notices"].update(
+                path="licenses/provenance.json", sha256=hashlib.sha256(notice.read_bytes()).hexdigest())
         record["report_source_commit"] = source_commit
         write_json(provenance, record)
     return [guide]

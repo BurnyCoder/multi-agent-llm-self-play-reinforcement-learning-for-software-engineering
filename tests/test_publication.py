@@ -230,7 +230,7 @@ def test_export_refreshes_authored_source_guide_and_its_provenance(tmp_path, mon
     bundle = tmp_path / "export"
     (bundle / "docs").mkdir(parents=True)
     (bundle / "docs/sources.md").write_text("Outdated source guide")
-    write_json(bundle / "license-provenance.json", {"files": [
+    write_json(bundle / "license-provenance.json", {"benchmark_source_notices": {"path": "docs/licenses/provenance.json"}, "files": [
         {"path": "docs/sources.md", "revision": "old", "sha256": "old"},
         {"path": "LICENSE", "revision": "frozen-upstream", "sha256": "untouched"}]})
     monkeypatch.setattr("multi_agent_ssr.publication._source_commit", lambda: "current-fixture")
@@ -241,4 +241,7 @@ def test_export_refreshes_authored_source_guide_and_its_provenance(tmp_path, mon
     guide, notice = provenance["files"]
     assert guide["revision"] == "current-fixture"
     assert guide["sha256"] == sha256((bundle / "docs/sources.md").read_bytes()).hexdigest()
+    notices = provenance["benchmark_source_notices"]
+    assert (bundle / notices["path"]).is_file()
+    assert notices["sha256"] == sha256((bundle / notices["path"]).read_bytes()).hexdigest()
     assert notice == {"path": "LICENSE", "revision": "frozen-upstream", "sha256": "untouched"}
