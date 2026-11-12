@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "run_id": "pilot-recovery",
-  "generated_at": "2026-11-06T05:03:41.933303+00:00",
+  "generated_at": "2026-11-12T11:58:24.304106+00:00",
   "status": "pilot_failed",
   "failure": {
     "phase": "pilot",
@@ -1209,7 +1209,8 @@
         "Linked upstream main branches can change; installed source and distribution versions were the local evidence.",
         "No installations, model execution, or cache modifications were performed."
       ]
-    }
+    },
+    "kernel_review_evidence_status": "Historical diagnostic commentary retained for provenance; not independent evidence for this audit."
   },
   "manifest": {
     "created_at": "2026-11-05T20:58:47.386714+00:00",
@@ -1380,6 +1381,30 @@
     "initial_adapter_fingerprint": "9312a507ea4ffa381a7dedfb8b880b1169761ac338a899ce4ed6732b0c503958",
     "updated_adapter_fingerprint": "5c9cf94ff86fb3f65238c40a415b2aa4a3c2efb3dc040f062391d7b49e6c67a0",
     "elapsed_seconds": 693.0180330580006
+  },
+  "checkpoint_evidence": {
+    "initial": {
+      "path": "checkpoints/initial",
+      "sha256": "79a29bf78880fce8ef6ed7924e2b79e7b1f54eabd3556fd7f923acf8cb9899a3",
+      "adapter_config_sha256": "95fa5afde7b9ae174e4d59e794c3325c00c3f09e8bb218001894fe54836481ad",
+      "checkpoint_metadata_sha256": "bb4b051b1371d0b4cb28f67e56def53a35359568011bc654532cd7e8c547ca7d",
+      "base_model": "Qwen/Qwen3.5-2B",
+      "base_revision": "15852e8c16360a2fea060d615a32b45270f8a8fc",
+      "policy_version": 0,
+      "adapter_fingerprint": "9312a507ea4ffa381a7dedfb8b880b1169761ac338a899ce4ed6732b0c503958"
+    },
+    "selected": {
+      "path": "checkpoints/group-00002",
+      "sha256": "79a29bf78880fce8ef6ed7924e2b79e7b1f54eabd3556fd7f923acf8cb9899a3",
+      "adapter_config_sha256": "95fa5afde7b9ae174e4d59e794c3325c00c3f09e8bb218001894fe54836481ad",
+      "checkpoint_metadata_sha256": "281c1331d906b1a08ec3e913f9fb9ea4ffcb655fa5b629787ee07c662b56b5cc",
+      "base_model": "Qwen/Qwen3.5-2B",
+      "base_revision": "15852e8c16360a2fea060d615a32b45270f8a8fc",
+      "policy_version": 0,
+      "adapter_fingerprint": "9312a507ea4ffa381a7dedfb8b880b1169761ac338a899ce4ed6732b0c503958"
+    },
+    "status": "unchanged",
+    "basis": "SHA256 of saved adapter weights/configuration and pinned base identities"
   },
   "parameter_dtype_counts": {
     "frozen:torch.bfloat16": 2213035584,
@@ -57567,6 +57592,8 @@
     "delegation_calls": 8,
     "generated_action_tokens": 64920,
     "generation_calls": 1322,
+    "artifact_validation_checks": 4,
+    "valid_artifacts": 0,
     "validated_artifacts": 4,
     "invalid_artifacts": 4,
     "invalid_artifact_rate": 1.0,
@@ -57579,6 +57606,7 @@
     "peak_allocated_bytes": 5136889856,
     "evaluation_seconds": 18533.48212033199,
     "training_group_seconds": 995.5838733060045,
+    "pass_to_pass_test_failures": 208,
     "pass_to_pass_regressions": 208,
     "regression_scored_records": 50
   },
@@ -57624,8 +57652,8 @@
       "url": "https://github.com/anomalyco/opencode/blob/e761e265d2d5e6ff4a1c0756ab8d8eeee0db501e/packages/core/src/tool/plugin/subagent.ts"
     },
     {
-      "title": "Qwen3.5-2B model card",
-      "url": "https://huggingface.co/Qwen/Qwen3.5-2B"
+      "title": "Qwen3.5-2B pinned model card",
+      "url": "https://huggingface.co/Qwen/Qwen3.5-2B/blob/15852e8c16360a2fea060d615a32b45270f8a8fc/README.md"
     },
     {
       "title": "Unsloth Qwen3.5 fine-tuning",
@@ -57658,12 +57686,33 @@
     {
       "title": "Frozen agent prompt and native tool descriptions",
       "url": "https://github.com/BurnyCoder/multi-agent-llm-self-play-reinforcement-learning-for-software-engineering/blob/109dfa67740ff9f0260d22be9407d047d90565f7/src/multi_agent_ssr/agents.py#L146"
+    },
+    {
+      "title": "CWM clipping thresholds and normalization choices",
+      "url": "https://arxiv.org/html/2510.02387v1#S5.SS2"
+    },
+    {
+      "title": "Frozen local reward and optimizer implementation",
+      "url": "https://github.com/BurnyCoder/multi-agent-llm-self-play-reinforcement-learning-for-software-engineering/blob/109dfa67740ff9f0260d22be9407d047d90565f7/src/multi_agent_ssr/learning.py"
+    },
+    {
+      "title": "Independent correction ledger (retrospective)",
+      "url": "https://github.com/BurnyCoder/multi-agent-llm-self-play-reinforcement-learning-for-software-engineering/blob/main/reports/independent-audit-2026-11-12.md"
     }
   ],
   "likelihood_disclosure": "Check at 2026-11-05T21:58:00.067+00:00: 101 sampled action tokens; maximum cached-replay log-probability difference 0; maximum trainer-versus-sampling log-probability difference 0.152151. Pre-update scoring/behavior ratio range [0.858858, 1.10626]; 0/101 tokens outside [0.8, 1.25]. Recorded trainer guard: absolute log-probability difference limit 0.05; cached-replay difference limit 0.05. Check at 2026-11-05T22:16:41.480+00:00: 101 sampled action tokens; maximum cached-replay log-probability difference 0; maximum trainer-versus-sampling log-probability difference 0.151829. Pre-update scoring/behavior ratio range [0.859135, 1.06795]; 0/101 tokens outside [0.8, 1.25]. Recorded trainer guard: preupdate_ratios_inside_clip_interval with interval [0.8, 1.25]; cached-replay difference limit 0.05. CWM retains sampled behavior probabilities in the denominator [2]. Upstream Qwen analysis attributes some BF16 cached/full-forward differences to rounding [10]. Each check is a single-prompt software diagnostic; it does not bound drift in training contexts or establish training quality.",
   "runtime_disclosure": "This post-hoc descriptive analysis counts 1242 actual tool_finished events across recorded phases, excluding protocol-diagnostic episodes. Of these, 426 have result.error values, including 316 ValueError unsafe-path rejections. Generated text and nonzero command/test exit codes alone are not counted as tool errors. Evaluation agent_error counts are separated by source/condition after the report's task deduplication, excluding protocol diagnostics: human/base: 6 ContextLimitError records among 32 retained rows (6 with completed scoring); human/trained: 10 ContextLimitError records among 32 retained rows (9 with completed scoring); synthetic/base: 0 ContextLimitError records among 16 retained rows (0 with completed scoring); synthetic/trained: 0 ContextLimitError records among 16 retained rows (0 with completed scoring). Completed scoring can still be recorded after an agent context error.\n\nNative read/edit path arguments require repository-relative paths [11]. The frozen prompt says Work in /repo without explicitly stating that read/edit path arguments must be relative [12]. This interface limitation and the fixed context capacity are potential confounders when interpreting repair outcomes. These counts do not establish a causal explanation for every unresolved result. Prompts, API semantics, and budgets remain fixed after held-out scoring; this analysis does not adapt them to observed benchmark outcomes.",
-  "training_intervention_disclosure": "The final condition received no recorded optimizer updates. Any observed paired differences concern two evaluations of unchanged weights, not an estimated self-play training effect. The primary hypothesis's learning intervention did not occur. The saved trained condition label, confidence intervals and preregistered interval rule remain unchanged.",
+  "training_intervention_disclosure": "Recorded research optimizer steps: 0. The initial and selected adapter weights and configurations have identical SHA256 digests and the same pinned base identity. This is two evaluations of unchanged weights, not an estimated self-play training effect. The planned learning hypothesis was not tested by this unchanged-policy comparison. The raw trained label and mechanical preregistered interval decision are preserved for provenance.",
   "training_outcome_disclosure": "Completed collection groups: 2 (with saved training_group outcomes); valid bugs / injector episodes: 0 / 4; recorded repair attempts: 0; zero-advantage episodes: 4; optimizer steps: 0. Collection groups with sampled actions but only zero advantages: 2. Subtracting the length-weighted group mean turns equal returns into zero advantages. These groups had no nonzero-advantage action tokens and recorded no learning update. Saved invalidity reason counts across all logged artifact checks, including incomplete collections: {\"At least one test target is required\": 4}.",
+  "oracle_diagnostics": {
+    "analysis_type": "post_hoc_descriptive",
+    "scored_rows": 50,
+    "saved_empty_patches": 50,
+    "pass_to_pass_test_failures": 208,
+    "rows_with_failures": 9,
+    "empty_patch_rows_with_failures": 9
+  },
+  "oracle_disclosure": "The saved official reports contain 208 PASS_TO_PASS failure entries across 9 scored rows. Of those rows, 9 submitted an empty patch. Across all 50 scored human rows, 50 saved patches are empty. These are failures of tests designated as passing in benchmark metadata, not established regressions caused by agent edits. The grader's failure category can also include tests missing from parsed output. The cause of the failures is unverified; no clean-environment re-evaluation was performed in this audit. The official scores remain unchanged, with this limitation on their interpretation. This is a post-hoc descriptive check of saved reports and submitted patches.",
   "figures": {
     "architecture": "figures/architecture.png",
     "scores": "figures/scores.png",

@@ -2,13 +2,15 @@
 
 Libor "Burny" Burian
 
+Report generated: 2026-11-12. Original run dates are retained below.
+
 ## Abstract
 
-We implement a local shared-policy extension of Self-play SWE-RL in which bug-injection and repair teams can delegate to asynchronous subagents. All roles use one Qwen3.5-2B policy with a shared trainable LoRA adapter. This report is generated from the saved run records. Recorded run status: pilot_failed. Recorded failure at 2026-11-05T21:30:15.600645+00:00 in preflight: RuntimeError: Generation/scoring log probabilities disagree: 0.152308. Recorded failure at 2026-11-05T21:58:00.073528+00:00 in preflight: RuntimeError: Generation/scoring log probabilities disagree: 0.152151. Recorded failure at 2026-11-06T04:49:29.416350+00:00 in pilot: Worker and supervisor remained alive 45.619 seconds past the persisted wall-clock deadline; the worker process group was externally terminated. The interrupted task has no admitted score. The overrun's cause is not established.. No completed policy optimizer steps are recorded; this record does not establish a learned checkpoint. The final condition received no recorded optimizer updates. Any observed paired differences concern two evaluations of unchanged weights, not an estimated self-play training effect. The primary hypothesis's learning intervention did not occur. The saved trained condition label, confidence intervals and preregistered interval rule remain unchanged. Across 21 paired tasks, the trained-minus-base resolution difference was +0.0 percentage points (95% paired bootstrap interval [+0.0, +0.0]). Improved: 0; regressed: 0; unchanged: 21. Under the preregistered interval rule, this comparison contradicts the predicted improvement. The bootstrap interval is degenerate; it does not establish equivalence or rule out a population effect.
+We implement a local shared-policy extension of Self-play SWE-RL in which bug-injection and repair teams can delegate to asynchronous subagents. All roles use one Qwen3.5-2B policy with a shared trainable LoRA adapter. This report is generated from the saved run records. Recorded run status: pilot_failed. Recorded failure at 2026-11-05T21:30:15.600645+00:00 in preflight: RuntimeError: Generation/scoring log probabilities disagree: 0.152308. Recorded failure at 2026-11-05T21:58:00.073528+00:00 in preflight: RuntimeError: Generation/scoring log probabilities disagree: 0.152151. Recorded failure at 2026-11-06T04:49:29.416350+00:00 in pilot: Worker and supervisor remained alive 45.619 seconds past the persisted wall-clock deadline; the worker process group was externally terminated. The interrupted task has no admitted score. The overrun's cause is not established.. No completed policy optimizer steps are recorded; this record does not establish a learned checkpoint. Recorded research optimizer steps: 0. The initial and selected adapter weights and configurations have identical SHA256 digests and the same pinned base identity. This is two evaluations of unchanged weights, not an estimated self-play training effect. The planned learning hypothesis was not tested by this unchanged-policy comparison. The raw trained label and mechanical preregistered interval decision are preserved for provenance. Across 21 paired tasks, the final-minus-base resolution difference was +0.0 percentage points (95% paired bootstrap interval [+0.0, +0.0]). Improved: 0; regressed: 0; unchanged: 21. The mechanical preregistered interval rule contradicts the predicted improvement. This rule alone does not establish that the planned learning intervention occurred. The bootstrap interval is degenerate; it does not establish equivalence or rule out a population effect.
 
 ## Context and motivation
 
-The experiment asks whether reinforcement learning from executable repository feedback improves held-out human-bug repair. Prior SSR work motivates repository-grounded bug injection and repair [1]. Anchored Self-Play demonstrates that gains on synthetic bugs need not transfer to human bugs [7], so the two evaluation sources remain separate.
+The experiment asks whether reinforcement learning from executable repository feedback improves held-out human-bug repair. Prior SSR work motivates repository-grounded bug injection and repair [1]. Anchored Self-Play reports distribution drift in function-level BugSourceBench repair [7]. That motivates separate evaluation here but does not validate this repository-level adaptation.
 
 ## Method
 
@@ -20,13 +22,13 @@ The clean selected test suite must contain at least five passing tests. The sour
 
 ## Agents and optimization
 
-Primary agents delegate through a tool patterned after OpenCode [3]. Child sessions have independent contexts and can work while the primary agent continues. GPU generation requests are serialized through the shared policy. One team execution includes all descendant actions. Each actual generated token contributes once; a child's text repeated in its parent's context is an observation. The update extends CWM's length-weighted centered returns, clipped token likelihood ratios, and action masks [2]. The precise run configuration is included in the appendix.
+Primary agents delegate through a tool patterned after OpenCode [3]. Child sessions have independent contexts and can work while the primary agent continues. GPU generation requests are serialized through the shared policy. One team execution includes all descendant actions. Each actual generated token belongs to one action record; nonzero-advantage actions contribute once per optimization pass. A child's text repeated in its parent's context is an observation. The update extends CWM's length-weighted centered returns, clipped token likelihood ratios, and action masks [2]. The precise run configuration is included in the appendix.
 
 ## Exact objective and team credit
 
 For a group G of episodes with the same task and team role, let L_e be the number of unique generated action tokens and R_e the episode return. The length-weighted baseline and advantage are mu_G = sum_e(L_e R_e) / sum_e(L_e), and A_e = R_e - mu_G. Injector and solver groups remain separate. Every primary/child action in episode e receives A_e; prompt tokens, tool output, and copied child output receive no action loss [2].
 
-For an action token t, r_et = exp(log pi_theta(a_et | original_context_et) - old_logprob_et). The minimized objective is L(theta) = -(1/C) sum_G sum_e sum_t min(r_et A_e, clip(r_et, 0.8, 1.25) A_e). C is the maximum planned collection token capacity, not the observed trajectory length. In primary self-play, C = injector_samples * (1 + repair_samples * max_bug_order) * team_generated_token_budget. There is no reward-standard-deviation normalization or KL term. Each generated call appears once in the collection and once per optimization pass. The original behavior log probabilities remain fixed across both passes [2].
+For an action token t, r_et = exp(log pi_theta(a_et | original_context_et) - old_logprob_et). The minimized objective is L(theta) = -(1/C) sum_G sum_e sum_t min(r_et A_e, clip(r_et, 0.8, 1.25) A_e). C is the maximum planned collection token capacity, not the observed trajectory length. In primary self-play, C = injector_samples * (1 + repair_samples * max_bug_order) * team_generated_token_budget. There is no reward-standard-deviation normalization or KL term. Each eligible nonzero-advantage generated call contributes once per optimization pass. The original behavior log probabilities remain fixed across passes. Clipping and normalization follow CWM Section 5.2 [13]; team-level grouping and capacity are local adaptations [14].
 
 Injector returns follow SSR: -1 for an invalid artifact; -0.8 for a valid bug with empirical repair success rate s equal to zero or one; otherwise 1 - 1.8s. A repair receives +1 only when the restored oracle passes completely, and -1 otherwise [1]. Zero-advantage groups are recorded without an update. Incomplete or infrastructure-corrupted groups never enter optimization.
 
@@ -38,7 +40,7 @@ Recorded parameter storage counts (scalar elements, separate from compute dtype)
 
 A call has at most 2048 input-plus-action tokens and 256 generated tokens. Each team shares a generated-token cap of 4096, a tool-call cap of 32, and 2 child sessions at depth 1. Sampling temperature is one; thinking is disabled. Root and child threads progress concurrently, but calls acquire one shared GPU policy lock. All workers finish before an update.
 
-The recorded collection uses 2 independent injectors per clean starting state and 4 repairs per valid bug, followed by 2 optimization passes. AdamW uses betas (0.9, 0.99), weight decay zero, gradient clipping at norm 1.0, gradient checkpointing, and one call per microbatch. Likelihood computation retains only action-position logits and accumulates gradients sequentially.
+The configuration requests 2 injector episodes per clean starting state and 4 repairs per valid bug, with 2 optimization passes for nonzero-advantage groups. These are design settings, not counts of executed repairs or updates. AdamW uses betas (0.9, 0.99), weight decay zero, gradient clipping at norm 1.0, gradient checkpointing, and one call per microbatch. Likelihood computation retains only action-position logits and accumulates gradients sequentially.
 
 ## Evaluation and analysis
 
@@ -48,9 +50,9 @@ Frozen and final policies are compared on matched tasks and inference budgets. T
 
 Planned human and synthetic task counts in the run manifest are 32 and 16. Human tasks are fixed before training by sorting SHA-256 instance-ID hashes within the eligible requests, Flask, pylint, and pytest repositories. Synthetic humanize mutations are selected by deterministic syntax and executable validity, with at most one accepted mutation per function. Neither cohort is selected using model performance. Gold human fixes and evaluator test patches are withheld from agents [6].
 
-Each source is analyzed separately with 10000 task resamples, bootstrap seed 0, and percentile endpoints at 2.5% and 97.5%. The paired difference is mean(trained_success - base_success) over completed pairs. A positive lower bound supports the prediction; an upper bound at or below zero contradicts it; an interval spanning zero is inconclusive. Degenerate intervals are explicitly qualified [8].
+Each source is analyzed separately with 10000 task resamples, bootstrap seed 0, and percentile endpoints at 2.5% and 97.5%. The paired difference is mean(trained_success - base_success) over completed pairs. A positive lower bound returns the preregistered support decision; an upper bound at or below zero returns its contradiction decision; otherwise the rule is inconclusive. These are mechanical decisions and require an actual learning intervention to test the learning hypothesis. Degenerate intervals are explicitly qualified [8, 9].
 
-This run's recorded single-GPU wall-clock cap is 28200 seconds. It includes model loading, compilation, preflight, baseline, training, and final evaluation, using a persisted deadline that restarts cannot reset. Baseline allocation is capped at (remaining - 1800) / 2.25 seconds. Training reserves the greater of the configured minimum final-evaluation reserve and 1.25 times measured baseline runtime. A new collection must fit its measured duration with margin. If an optimizer pass crosses the reserve boundary, restore the last complete checkpoint. Nonfinite gradients, memory failure, likelihood incompatibility, or corrupt state stop training without a silent model/precision substitution. Preregistration and any amendments remain authoritative [9].
+This run's recorded single-GPU wall-clock cap is 28200 seconds. It includes model loading, compilation, preflight, baseline, training, and final evaluation, using a persisted deadline that restarts cannot reset. Baseline allocation is capped at (remaining - 1800) / 2.25 seconds. Training reserves the greater of the configured minimum final-evaluation reserve and 1.25 times measured baseline runtime. A new collection starts only when the remaining allocation exceeds an estimate based on previous group durations, with a margin; this does not guarantee timely completion. If an optimizer pass crosses the reserve boundary, restore the last complete checkpoint. Nonfinite gradients, memory failure, likelihood incompatibility, or corrupt state stop training without a silent model/precision substitution. Preregistration and any amendments remain authoritative [9].
 
 ## Differences from prior SSR
 
@@ -70,16 +72,16 @@ These are unscored harness diagnostics, excluded from benchmark success and trai
 
 Recorded run status: pilot_failed. Recorded failure at 2026-11-05T21:30:15.600645+00:00 in preflight: RuntimeError: Generation/scoring log probabilities disagree: 0.152308. Recorded failure at 2026-11-05T21:58:00.073528+00:00 in preflight: RuntimeError: Generation/scoring log probabilities disagree: 0.152151. Recorded failure at 2026-11-06T04:49:29.416350+00:00 in pilot: Worker and supervisor remained alive 45.619 seconds past the persisted wall-clock deadline; the worker process group was externally terminated. The interrupted task has no admitted score. The overrun's cause is not established.. No completed policy optimizer steps are recorded; this record does not establish a learned checkpoint.
 
-The final condition received no recorded optimizer updates. Any observed paired differences concern two evaluations of unchanged weights, not an estimated self-play training effect. The primary hypothesis's learning intervention did not occur. The saved trained condition label, confidence intervals and preregistered interval rule remain unchanged. Across 21 paired tasks, the trained-minus-base resolution difference was +0.0 percentage points (95% paired bootstrap interval [+0.0, +0.0]). Improved: 0; regressed: 0; unchanged: 21. Under the preregistered interval rule, this comparison contradicts the predicted improvement. The bootstrap interval is degenerate; it does not establish equivalence or rule out a population effect.
+Recorded research optimizer steps: 0. The initial and selected adapter weights and configurations have identical SHA256 digests and the same pinned base identity. This is two evaluations of unchanged weights, not an estimated self-play training effect. The planned learning hypothesis was not tested by this unchanged-policy comparison. The raw trained label and mechanical preregistered interval decision are preserved for provenance. Across 21 paired tasks, the final-minus-base resolution difference was +0.0 percentage points (95% paired bootstrap interval [+0.0, +0.0]). Improved: 0; regressed: 0; unchanged: 21. The mechanical preregistered interval rule contradicts the predicted improvement. This rule alone does not establish that the planned learning intervention occurred. The bootstrap interval is degenerate; it does not establish equivalence or rule out a population effect.
 
 Synthetic diagnostic set: Not evaluated: no tasks have completed outcomes for both conditions.
 
 | Bug source | Condition | Planned | Attempted | Resolved / scored | Rate | Unscored recorded | Unrecorded |
 | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
 | human | base | 32 | 22 | 0 / 21 | 0.0% | 11 | 0 |
-| human | trained | 32 | 30 | 0 / 29 | 0.0% | 3 | 0 |
+| human | final condition | 32 | 30 | 0 / 29 | 0.0% | 3 | 0 |
 | synthetic | base | 16 | 0 | Not evaluated | Not evaluated | 16 | 0 |
-| synthetic | trained | 16 | 0 | Not evaluated | Not evaluated | 16 | 0 |
+| synthetic | final condition | 16 | 0 | Not evaluated | Not evaluated | 16 | 0 |
 
 | Deferred condition | Purpose | Result |
 | --- | --- | --- |
@@ -110,7 +112,8 @@ The following diagnostics are derived from saved event, evaluation, and optimize
 | delegation calls | 8 |
 | generated tokens from research agents (excludes preflight) | 64920 |
 | generation calls by research agents (excludes preflight) | 1322 |
-| validated artifacts | 4 |
+| artifact validation checks (accepted and rejected) | 4 |
+| accepted valid artifacts | 0 |
 | invalid artifacts | 4 |
 | invalid artifact rate | 1 |
 | optimizer steps | 0 |
@@ -118,14 +121,18 @@ The following diagnostics are derived from saved event, evaluation, and optimize
 | peak allocated bytes | 5136889856 |
 | evaluation seconds | 18533.5 |
 | training group seconds | 995.584 |
-| pass to pass regressions | 208 |
-| regression scored records | 50 |
+| PASS_TO_PASS failure entries (causal attribution unverified) | 208 |
+| scored rows with PASS_TO_PASS reports | 50 |
 
 ## Runtime interface and context diagnostics
 
 This post-hoc descriptive analysis counts 1242 actual tool_finished events across recorded phases, excluding protocol-diagnostic episodes. Of these, 426 have result.error values, including 316 ValueError unsafe-path rejections. Generated text and nonzero command/test exit codes alone are not counted as tool errors. Evaluation agent_error counts are separated by source/condition after the report's task deduplication, excluding protocol diagnostics: human/base: 6 ContextLimitError records among 32 retained rows (6 with completed scoring); human/trained: 10 ContextLimitError records among 32 retained rows (9 with completed scoring); synthetic/base: 0 ContextLimitError records among 16 retained rows (0 with completed scoring); synthetic/trained: 0 ContextLimitError records among 16 retained rows (0 with completed scoring). Completed scoring can still be recorded after an agent context error.
 
 Native read/edit path arguments require repository-relative paths [11]. The frozen prompt says Work in /repo without explicitly stating that read/edit path arguments must be relative [12]. This interface limitation and the fixed context capacity are potential confounders when interpreting repair outcomes. These counts do not establish a causal explanation for every unresolved result. Prompts, API semantics, and budgets remain fixed after held-out scoring; this analysis does not adapt them to observed benchmark outcomes.
+
+## Official test failures and empty patches
+
+The saved official reports contain 208 PASS_TO_PASS failure entries across 9 scored rows. Of those rows, 9 submitted an empty patch. Across all 50 scored human rows, 50 saved patches are empty. These are failures of tests designated as passing in benchmark metadata, not established regressions caused by agent edits. The grader's failure category can also include tests missing from parsed output. The cause of the failures is unverified; no clean-environment re-evaluation was performed in this audit. The official scores remain unchanged, with this limitation on their interpretation. This is a post-hoc descriptive check of saved reports and submitted patches. Grading semantics: [6].
 
 ## Claims and implications
 
@@ -141,7 +148,7 @@ The pilot uses one training seed, a small task sample, a short context window, a
 
 ## Conclusion
 
-The saved artifacts establish what ran and what was measured. The final condition received no recorded optimizer updates. Any observed paired differences concern two evaluations of unchanged weights, not an estimated self-play training effect. The primary hypothesis's learning intervention did not occur. The saved trained condition label, confidence intervals and preregistered interval rule remain unchanged. Across 21 paired tasks, the trained-minus-base resolution difference was +0.0 percentage points (95% paired bootstrap interval [+0.0, +0.0]). Improved: 0; regressed: 0; unchanged: 21. Under the preregistered interval rule, this comparison contradicts the predicted improvement. The bootstrap interval is degenerate; it does not establish equivalence or rule out a population effect.
+The saved artifacts establish what ran and what was measured. Recorded research optimizer steps: 0. The initial and selected adapter weights and configurations have identical SHA256 digests and the same pinned base identity. This is two evaluations of unchanged weights, not an estimated self-play training effect. The planned learning hypothesis was not tested by this unchanged-policy comparison. The raw trained label and mechanical preregistered interval decision are preserved for provenance. Across 21 paired tasks, the final-minus-base resolution difference was +0.0 percentage points (95% paired bootstrap interval [+0.0, +0.0]). Improved: 0; regressed: 0; unchanged: 21. The mechanical preregistered interval rule contradicts the predicted improvement. This rule alone does not establish that the planned learning intervention occurred. The bootstrap interval is degenerate; it does not establish equivalence or rule out a population effect.
 
 ## Appendix: configuration
 
@@ -249,7 +256,7 @@ The saved artifacts establish what ran and what was measured. The final conditio
 1. [Self-play SWE-RL: task construction and rewards](https://arxiv.org/html/2512.18552v3)
 2. [CWM: clipped token objective and trajectory masks](https://arxiv.org/html/2510.02387v1#A3)
 3. [OpenCode: asynchronous child sessions](https://github.com/anomalyco/opencode/blob/e761e265d2d5e6ff4a1c0756ab8d8eeee0db501e/packages/core/src/tool/plugin/subagent.ts)
-4. [Qwen3.5-2B model card](https://huggingface.co/Qwen/Qwen3.5-2B)
+4. [Qwen3.5-2B pinned model card](https://huggingface.co/Qwen/Qwen3.5-2B/blob/15852e8c16360a2fea060d615a32b45270f8a8fc/README.md)
 5. [Unsloth Qwen3.5 fine-tuning](https://unsloth.ai/docs/models/qwen3.5/fine-tune.md)
 6. [SWE-bench evaluation harness](https://www.swebench.com/SWE-bench/guides/evaluation/)
 7. [Anchored Self-Play: synthetic-to-human bug distribution shift](https://arxiv.org/html/2607.03523v1)
@@ -258,6 +265,9 @@ The saved artifacts establish what ran and what was measured. The final conditio
 10. [Qwen3.5 cached/full-forward BF16 numerical analysis](https://github.com/huggingface/transformers/issues/46190)
 11. [Frozen repository-relative path guard](https://github.com/BurnyCoder/multi-agent-llm-self-play-reinforcement-learning-for-software-engineering/blob/109dfa67740ff9f0260d22be9407d047d90565f7/src/multi_agent_ssr/sandbox.py#L29)
 12. [Frozen agent prompt and native tool descriptions](https://github.com/BurnyCoder/multi-agent-llm-self-play-reinforcement-learning-for-software-engineering/blob/109dfa67740ff9f0260d22be9407d047d90565f7/src/multi_agent_ssr/agents.py#L146)
+13. [CWM clipping thresholds and normalization choices](https://arxiv.org/html/2510.02387v1#S5.SS2)
+14. [Frozen local reward and optimizer implementation](https://github.com/BurnyCoder/multi-agent-llm-self-play-reinforcement-learning-for-software-engineering/blob/109dfa67740ff9f0260d22be9407d047d90565f7/src/multi_agent_ssr/learning.py)
+15. [Independent correction ledger (retrospective)](https://github.com/BurnyCoder/multi-agent-llm-self-play-reinforcement-learning-for-software-engineering/blob/main/reports/independent-audit-2026-11-12.md)
 
 ## AI statement
 

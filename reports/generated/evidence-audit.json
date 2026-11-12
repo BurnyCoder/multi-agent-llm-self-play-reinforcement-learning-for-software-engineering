@@ -1,0 +1,173 @@
+{
+  "method": "independent raw-record recomputation; no model execution or prior audit conclusions",
+  "input_streams": {
+    "evaluation.jsonl": {
+      "bytes": 319850,
+      "sha256": "9e470f50adbbeacf7ae029d4129ef3d26d8c28672742b36d3dc10dce45aa9dc6"
+    },
+    "metrics.jsonl": {
+      "bytes": 1431,
+      "sha256": "ec29c2ae6509686c92df61fc64adbbec0138e7a4cbcc996f0fa113c1e628b7c5"
+    },
+    "events.jsonl": {
+      "bytes": 16425111,
+      "sha256": "e6833ed470484c1778729f90295676ab85651d7d989a5b24c85c83fa89077f84"
+    }
+  },
+  "raw_evaluation_rows": 98,
+  "conditions": {
+    "human": {
+      "base": {
+        "recorded_tasks": 32,
+        "scored": 21,
+        "resolved": 0,
+        "unscored": 11,
+        "statuses": {
+          "completed": 21,
+          "timeout": 1,
+          "pending": 10
+        }
+      },
+      "trained": {
+        "recorded_tasks": 32,
+        "scored": 29,
+        "resolved": 0,
+        "unscored": 3,
+        "statuses": {
+          "completed": 29,
+          "interrupted_budget": 1,
+          "not_run_budget": 2
+        }
+      }
+    },
+    "synthetic": {
+      "base": {
+        "recorded_tasks": 16,
+        "scored": 0,
+        "resolved": 0,
+        "unscored": 16,
+        "statuses": {
+          "not_run_budget": 16
+        }
+      },
+      "trained": {
+        "recorded_tasks": 16,
+        "scored": 0,
+        "resolved": 0,
+        "unscored": 16,
+        "statuses": {
+          "not_run_budget": 16
+        }
+      }
+    }
+  },
+  "paired": {
+    "human": {
+      "task_ids": [
+        "psf__requests-1142",
+        "psf__requests-1766",
+        "psf__requests-1921",
+        "psf__requests-2931",
+        "psf__requests-5414",
+        "pylint-dev__pylint-4551",
+        "pylint-dev__pylint-4661",
+        "pylint-dev__pylint-4970",
+        "pylint-dev__pylint-6386",
+        "pylint-dev__pylint-6903",
+        "pylint-dev__pylint-7080",
+        "pytest-dev__pytest-10051",
+        "pytest-dev__pytest-10356",
+        "pytest-dev__pytest-5262",
+        "pytest-dev__pytest-5631",
+        "pytest-dev__pytest-5809",
+        "pytest-dev__pytest-6202",
+        "pytest-dev__pytest-7205",
+        "pytest-dev__pytest-7432",
+        "pytest-dev__pytest-7521",
+        "pytest-dev__pytest-7982"
+      ],
+      "deltas": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "difference": 0.0,
+      "ci95": [
+        0.0,
+        0.0
+      ]
+    },
+    "synthetic": {
+      "task_ids": [],
+      "deltas": [],
+      "difference": null,
+      "ci95": null
+    }
+  },
+  "duplicate_completed_outcomes": [],
+  "official": {
+    "scored_human_records": 50,
+    "embedded_reports": 50,
+    "embedded_score_agreements": 50,
+    "cached_reports_available": 50,
+    "cached_report_agreements": 50,
+    "saved_patches": 50,
+    "empty_patches": 50,
+    "pass_to_pass_failure_entries": 208,
+    "rows_with_pass_to_pass_failures": 9
+  },
+  "collections": [
+    {
+      "path": "collection_groups/group-00001.json",
+      "episode_rewards": [
+        -1.0,
+        -1.0
+      ],
+      "action_tokens": 3144,
+      "recorded_sampled_tokens": 3144,
+      "optimizer_steps": 0,
+      "optimized_field_meaning": "update routine completed; inspect optimizer_steps for actual updates"
+    },
+    {
+      "path": "collection_groups/group-00002.json",
+      "episode_rewards": [
+        -1.0,
+        -1.0
+      ],
+      "action_tokens": 3063,
+      "recorded_sampled_tokens": 3063,
+      "optimizer_steps": 0,
+      "optimized_field_meaning": "update routine completed; inspect optimizer_steps for actual updates"
+    }
+  ],
+  "action_calls": 1322,
+  "action_tokens": 64920,
+  "action_token_logprob_lengths_agree": true,
+  "delegation_calls": 8,
+  "child_sessions": 7,
+  "artifact_validation_checks": 4,
+  "valid_artifacts": 0,
+  "invalidity_reasons": {
+    "At least one test target is required": 4
+  },
+  "optimizer_steps": 0,
+  "limitations": "Counts describe available records. Missing original grader caches in an export cannot be rechecked. No clean-environment regrading or contamination test was performed."
+}

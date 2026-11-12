@@ -1,0 +1,794 @@
+{
+  "method": "installed metadata versus uv.lock; upstream-byte comparison; original notices",
+  "installed_versions": {
+    "torch": {
+      "installed": "2.14.1",
+      "locked": "2.14.1",
+      "matches": true
+    },
+    "transformers": {
+      "installed": "5.17.0",
+      "locked": "5.17.0",
+      "matches": true
+    },
+    "peft": {
+      "installed": "0.21.2",
+      "locked": "0.21.2",
+      "matches": true
+    },
+    "unsloth": {
+      "installed": "2026.10.10",
+      "locked": "2026.10.10",
+      "matches": true
+    },
+    "unsloth-zoo": {
+      "installed": "2026.10.10",
+      "locked": "2026.10.10",
+      "matches": true
+    },
+    "swebench": {
+      "installed": "5.0.2",
+      "locked": "5.0.2",
+      "matches": true
+    },
+    "huggingface-hub": {
+      "installed": "1.33.0",
+      "locked": "1.33.0",
+      "matches": true
+    },
+    "numpy": {
+      "installed": "2.5.4",
+      "locked": "2.5.4",
+      "matches": true
+    },
+    "reportlab": {
+      "installed": "5.1.0",
+      "locked": "5.1.0",
+      "matches": true
+    },
+    "pypdf": {
+      "installed": "6.21.4",
+      "locked": "6.21.4",
+      "matches": true
+    },
+    "docker": {
+      "installed": "7.2.0",
+      "locked": "7.2.0",
+      "matches": true
+    },
+    "datasets": {
+      "installed": "4.8.5",
+      "locked": "4.8.5",
+      "matches": true
+    }
+  },
+  "sources": {
+    "grading": {
+      "url": "https://raw.githubusercontent.com/SWE-bench/SWE-bench/ca6e4e0d252f32f8762625b73575d5dee49d0a5a/swebench/harness/grading.py",
+      "bytes": 14144,
+      "sha256": "a095273010175001a6779e365b3b77abb8657c7ac2e4f80b4bc360faa6f09483",
+      "expected_sha256": "a095273010175001a6779e365b3b77abb8657c7ac2e4f80b4bc360faa6f09483",
+      "matches": true
+    },
+    "qwen_api": {
+      "url": "https://raw.githubusercontent.com/huggingface/transformers/v5.17.0/src/transformers/models/qwen3_5/modeling_qwen3_5.py",
+      "bytes": 95685,
+      "sha256": "762feb6c7426a7f15b5bf830df54c07438bf9e7c27b8cdb23179045920412c3b",
+      "expected_sha256": "762feb6c7426a7f15b5bf830df54c07438bf9e7c27b8cdb23179045920412c3b",
+      "matches": true
+    },
+    "peft_loading": {
+      "url": "https://raw.githubusercontent.com/huggingface/peft/v0.21.2/src/peft/auto.py",
+      "bytes": 9306,
+      "sha256": "cb31d32a9bbb695b09e152bd94f5885428abba0876ce702a46908df5b07acbd6",
+      "expected_sha256": "cb31d32a9bbb695b09e152bd94f5885428abba0876ce702a46908df5b07acbd6",
+      "matches": true
+    },
+    "qwen_license": {
+      "url": "https://huggingface.co/Qwen/Qwen3.5-2B/resolve/15852e8c16360a2fea060d615a32b45270f8a8fc/LICENSE",
+      "bytes": 11544,
+      "sha256": "bbedc3fda3305820b977265f01b8619d87570a6739de3a5582c3464840f1e57a"
+    },
+    "unsloth_license": {
+      "url": "https://pypi.org/pypi/unsloth/2026.10.10/json",
+      "bytes": 73764,
+      "sha256": "a6793a92d9bc8ffe7e08d524946e520b50eafd4a66f82a92aad68b638b358196",
+      "declared_license": "Apache-2.0"
+    },
+    "zoo_license": {
+      "url": "https://pypi.org/pypi/unsloth-zoo/2026.10.10/json",
+      "bytes": 35947,
+      "sha256": "5d0b77c839a193e96a9afb1949619c02353585f060adeb25c775e9bab761e336",
+      "declared_license": "LGPL-3.0-or-later"
+    },
+    "ssr_paper": {
+      "url": "https://arxiv.org/html/2512.18552v3",
+      "bytes": 369348,
+      "sha256": "3b093d072df1d2c2f6c7e8075ecb2d52a33a6b493343ec5871f2135edeb80881"
+    },
+    "cwm_paper": {
+      "url": "https://arxiv.org/html/2510.02387v1",
+      "bytes": 2461976,
+      "sha256": "19a703c08788a45b76f81ee05de0f274f0625db18d4d4f763fde11189bdb65bd"
+    },
+    "asp_paper": {
+      "url": "https://arxiv.org/html/2607.03523v1",
+      "bytes": 591156,
+      "sha256": "b5bb8897d0c96a7dff64a49304d4d15e256c321a2d7bd927bca958ae9eeee980"
+    },
+    "opencode_delegation": {
+      "url": "https://raw.githubusercontent.com/anomalyco/opencode/e761e265d2d5e6ff4a1c0756ab8d8eeee0db501e/packages/core/src/tool/plugin/subagent.ts",
+      "bytes": 14780,
+      "sha256": "93589430676f924d57fa06c13cb29a70baef9beac4d85078f5523ddec9810832"
+    },
+    "opencode_license": {
+      "url": "https://raw.githubusercontent.com/anomalyco/opencode/e761e265d2d5e6ff4a1c0756ab8d8eeee0db501e/LICENSE",
+      "bytes": 1065,
+      "sha256": "625f0f619133f89bbbb2abe37369613dfa1885eba1e50d02170deb62bb42cb6b"
+    },
+    "more-itertools_license": {
+      "url": "https://raw.githubusercontent.com/more-itertools/more-itertools/4aeb4338ae1407d8da9723e86da99efeb446f719/LICENSE",
+      "bytes": 1053,
+      "sha256": "09f1c8c9e941af3e584d59641ea9b87d83c0cb0fd007eb5ef391a7e2643c1a46"
+    },
+    "boltons_license": {
+      "url": "https://raw.githubusercontent.com/mahmoud/boltons/d31d821d56c8f7756af9c30a864077f2e5855321/LICENSE",
+      "bytes": 1497,
+      "sha256": "c301912653a8d8c99eab6212aa3aea8d164ea249d8ad53c941e0558a0a5ac1e3"
+    },
+    "cachetools_license": {
+      "url": "https://raw.githubusercontent.com/tkem/cachetools/505aece98f29a1aca26c4ae5ba57e03a8a3397f3/LICENSE",
+      "bytes": 1085,
+      "sha256": "28c000b52b0ee27138a68ef778227e4057046e86b65f62f1cacb99b0cc49e0d2"
+    },
+    "humanize_license": {
+      "url": "https://raw.githubusercontent.com/python-humanize/humanize/6b817b963dbb091b9ad20a746cb6a26653a93b95/LICENCE",
+      "bytes": 1078,
+      "sha256": "8ba6c18112a431400ad3c743f70670079b302545d98884fc2f28a91c383a0380"
+    },
+    "https://github.com/psf/requests/blob/39d0fdd9096f7dceccbc8f82e1eda7dd64717a8e/LICENSE": {
+      "url": "https://raw.githubusercontent.com/psf/requests/39d0fdd9096f7dceccbc8f82e1eda7dd64717a8e/LICENSE",
+      "bytes": 10142,
+      "sha256": "09e8a9bcec8067104652c168685ab0931e7868f9c8284b66f5ae6edae5f1130b",
+      "expected_sha256": "09e8a9bcec8067104652c168685ab0931e7868f9c8284b66f5ae6edae5f1130b",
+      "matches": true
+    },
+    "https://github.com/psf/requests/blob/0192aac24123735b3eaf9b08df46429bb770c283/LICENSE": {
+      "url": "https://raw.githubusercontent.com/psf/requests/0192aac24123735b3eaf9b08df46429bb770c283/LICENSE",
+      "bytes": 10142,
+      "sha256": "09e8a9bcec8067104652c168685ab0931e7868f9c8284b66f5ae6edae5f1130b",
+      "expected_sha256": "09e8a9bcec8067104652c168685ab0931e7868f9c8284b66f5ae6edae5f1130b",
+      "matches": true
+    },
+    "https://github.com/pallets/flask/blob/7ee9ceb71e868944a46e1ff00b506772a53a4f1d/artwork/LICENSE.rst": {
+      "url": "https://raw.githubusercontent.com/pallets/flask/7ee9ceb71e868944a46e1ff00b506772a53a4f1d/artwork/LICENSE.rst",
+      "bytes": 780,
+      "sha256": "2e63a3bd3a1f97e2fa9fa33bbf4f61bbb56ee16beb125b5346b0012388dc3b49",
+      "expected_sha256": "2e63a3bd3a1f97e2fa9fa33bbf4f61bbb56ee16beb125b5346b0012388dc3b49",
+      "matches": true
+    },
+    "https://github.com/psf/requests/blob/39d0fdd9096f7dceccbc8f82e1eda7dd64717a8e/ext/LICENSE": {
+      "url": "https://raw.githubusercontent.com/psf/requests/39d0fdd9096f7dceccbc8f82e1eda7dd64717a8e/ext/LICENSE",
+      "bytes": 51,
+      "sha256": "3172d399cbd8f10609e73fec73d0e0b33eecd3c572a68b0722229d8c7059f725",
+      "expected_sha256": "3172d399cbd8f10609e73fec73d0e0b33eecd3c572a68b0722229d8c7059f725",
+      "matches": true
+    },
+    "https://github.com/psf/requests/blob/0192aac24123735b3eaf9b08df46429bb770c283/ext/LICENSE": {
+      "url": "https://raw.githubusercontent.com/psf/requests/0192aac24123735b3eaf9b08df46429bb770c283/ext/LICENSE",
+      "bytes": 51,
+      "sha256": "3172d399cbd8f10609e73fec73d0e0b33eecd3c572a68b0722229d8c7059f725",
+      "expected_sha256": "3172d399cbd8f10609e73fec73d0e0b33eecd3c572a68b0722229d8c7059f725",
+      "matches": true
+    },
+    "https://github.com/psf/requests/blob/5f7a3a74aab1625c2bb65f643197ee885e3da576/NOTICE": {
+      "url": "https://raw.githubusercontent.com/psf/requests/5f7a3a74aab1625c2bb65f643197ee885e3da576/NOTICE",
+      "bytes": 2292,
+      "sha256": "3299f3fac35b42fbd3338044d9519ad8fd51ca72466a928a8732c54f8e2c9fd0",
+      "expected_sha256": "3299f3fac35b42fbd3338044d9519ad8fd51ca72466a928a8732c54f8e2c9fd0",
+      "matches": true
+    },
+    "https://github.com/psf/requests/blob/091991be0da19de9108dbe5e3752917fea3d7fdc/NOTICE": {
+      "url": "https://raw.githubusercontent.com/psf/requests/091991be0da19de9108dbe5e3752917fea3d7fdc/NOTICE",
+      "bytes": 2292,
+      "sha256": "3299f3fac35b42fbd3338044d9519ad8fd51ca72466a928a8732c54f8e2c9fd0",
+      "expected_sha256": "3299f3fac35b42fbd3338044d9519ad8fd51ca72466a928a8732c54f8e2c9fd0",
+      "matches": true
+    },
+    "https://github.com/psf/requests/blob/22623bd8c265b78b161542663ee980738441c307/NOTICE": {
+      "url": "https://raw.githubusercontent.com/psf/requests/22623bd8c265b78b161542663ee980738441c307/NOTICE",
+      "bytes": 4377,
+      "sha256": "4158d74a42b099b603e597d24a344f395f47da8e187638f451795900f28d9bc4",
+      "expected_sha256": "4158d74a42b099b603e597d24a344f395f47da8e187638f451795900f28d9bc4",
+      "matches": true
+    },
+    "https://github.com/pytest-dev/pytest/blob/3c1534944cbd34e8a41bc9e76818018fadefc9a1/doc/en/license.rst": {
+      "url": "https://raw.githubusercontent.com/pytest-dev/pytest/3c1534944cbd34e8a41bc9e76818018fadefc9a1/doc/en/license.rst",
+      "bytes": 1372,
+      "sha256": "45b6addd843b2ed89f9f8f363f61092db2e3c2461e3f178c3c3793648c3c4e07",
+      "expected_sha256": "45b6addd843b2ed89f9f8f363f61092db2e3c2461e3f178c3c3793648c3c4e07",
+      "matches": true
+    },
+    "https://github.com/pytest-dev/pytest/blob/aa55975c7d3f6c9f6d7f68accc41bb7cadf0eb9a/doc/en/license.rst": {
+      "url": "https://raw.githubusercontent.com/pytest-dev/pytest/aa55975c7d3f6c9f6d7f68accc41bb7cadf0eb9a/doc/en/license.rst",
+      "bytes": 1372,
+      "sha256": "45b6addd843b2ed89f9f8f363f61092db2e3c2461e3f178c3c3793648c3c4e07",
+      "expected_sha256": "45b6addd843b2ed89f9f8f363f61092db2e3c2461e3f178c3c3793648c3c4e07",
+      "matches": true
+    },
+    "https://github.com/pallets/flask/blob/7ee9ceb71e868944a46e1ff00b506772a53a4f1d/LICENSE.rst": {
+      "url": "https://raw.githubusercontent.com/pallets/flask/7ee9ceb71e868944a46e1ff00b506772a53a4f1d/LICENSE.rst",
+      "bytes": 1475,
+      "sha256": "489a8e1108509ed98a37bb983e11e0f7e1d31f0bd8f99a79c8448e7ff37d07ea",
+      "expected_sha256": "489a8e1108509ed98a37bb983e11e0f7e1d31f0bd8f99a79c8448e7ff37d07ea",
+      "matches": true
+    },
+    "https://github.com/pallets/flask/blob/7ee9ceb71e868944a46e1ff00b506772a53a4f1d/examples/tutorial/LICENSE.rst": {
+      "url": "https://raw.githubusercontent.com/pallets/flask/7ee9ceb71e868944a46e1ff00b506772a53a4f1d/examples/tutorial/LICENSE.rst",
+      "bytes": 1475,
+      "sha256": "489a8e1108509ed98a37bb983e11e0f7e1d31f0bd8f99a79c8448e7ff37d07ea",
+      "expected_sha256": "489a8e1108509ed98a37bb983e11e0f7e1d31f0bd8f99a79c8448e7ff37d07ea",
+      "matches": true
+    },
+    "https://github.com/pallets/flask/blob/7ee9ceb71e868944a46e1ff00b506772a53a4f1d/examples/javascript/LICENSE.rst": {
+      "url": "https://raw.githubusercontent.com/pallets/flask/7ee9ceb71e868944a46e1ff00b506772a53a4f1d/examples/javascript/LICENSE.rst",
+      "bytes": 1475,
+      "sha256": "489a8e1108509ed98a37bb983e11e0f7e1d31f0bd8f99a79c8448e7ff37d07ea",
+      "expected_sha256": "489a8e1108509ed98a37bb983e11e0f7e1d31f0bd8f99a79c8448e7ff37d07ea",
+      "matches": true
+    },
+    "https://github.com/pytest-dev/pytest/blob/cb828ebe70b4fa35cd5f9a7ee024272237eab351/LICENSE": {
+      "url": "https://raw.githubusercontent.com/pytest-dev/pytest/cb828ebe70b4fa35cd5f9a7ee024272237eab351/LICENSE",
+      "bytes": 1096,
+      "sha256": "4be38574daf05665b6194e4fd84c5ef6ce7c3a2810308a5222d5cdffc2d04d18",
+      "expected_sha256": "4be38574daf05665b6194e4fd84c5ef6ce7c3a2810308a5222d5cdffc2d04d18",
+      "matches": true
+    },
+    "https://github.com/pytest-dev/pytest/blob/8aba863a634f40560e25055d179220f0eefabe9a/LICENSE": {
+      "url": "https://raw.githubusercontent.com/pytest-dev/pytest/8aba863a634f40560e25055d179220f0eefabe9a/LICENSE",
+      "bytes": 1096,
+      "sha256": "4be38574daf05665b6194e4fd84c5ef6ce7c3a2810308a5222d5cdffc2d04d18",
+      "expected_sha256": "4be38574daf05665b6194e4fd84c5ef6ce7c3a2810308a5222d5cdffc2d04d18",
+      "matches": true
+    },
+    "https://github.com/pytest-dev/pytest/blob/58e6a09db49f34886ff13f3b7520dd0bcd7063cd/LICENSE": {
+      "url": "https://raw.githubusercontent.com/pytest-dev/pytest/58e6a09db49f34886ff13f3b7520dd0bcd7063cd/LICENSE",
+      "bytes": 1096,
+      "sha256": "4be38574daf05665b6194e4fd84c5ef6ce7c3a2810308a5222d5cdffc2d04d18",
+      "expected_sha256": "4be38574daf05665b6194e4fd84c5ef6ce7c3a2810308a5222d5cdffc2d04d18",
+      "matches": true
+    },
+    "https://github.com/pytest-dev/pytest/blob/3a668ea6ff24b0c8f00498c3144c63bac561d925/LICENSE": {
+      "url": "https://raw.githubusercontent.com/pytest-dev/pytest/3a668ea6ff24b0c8f00498c3144c63bac561d925/LICENSE",
+      "bytes": 1096,
+      "sha256": "4be38574daf05665b6194e4fd84c5ef6ce7c3a2810308a5222d5cdffc2d04d18",
+      "expected_sha256": "4be38574daf05665b6194e4fd84c5ef6ce7c3a2810308a5222d5cdffc2d04d18",
+      "matches": true
+    },
+    "https://github.com/pytest-dev/pytest/blob/955e54221008aba577ecbaefa15679f6777d3bf8/LICENSE": {
+      "url": "https://raw.githubusercontent.com/pytest-dev/pytest/955e54221008aba577ecbaefa15679f6777d3bf8/LICENSE",
+      "bytes": 1096,
+      "sha256": "4be38574daf05665b6194e4fd84c5ef6ce7c3a2810308a5222d5cdffc2d04d18",
+      "expected_sha256": "4be38574daf05665b6194e4fd84c5ef6ce7c3a2810308a5222d5cdffc2d04d18",
+      "matches": true
+    },
+    "https://github.com/pytest-dev/pytest/blob/e856638ba086fcf5bebf1bebea32d5cf78de87b4/LICENSE": {
+      "url": "https://raw.githubusercontent.com/pytest-dev/pytest/e856638ba086fcf5bebf1bebea32d5cf78de87b4/LICENSE",
+      "bytes": 1096,
+      "sha256": "4be38574daf05665b6194e4fd84c5ef6ce7c3a2810308a5222d5cdffc2d04d18",
+      "expected_sha256": "4be38574daf05665b6194e4fd84c5ef6ce7c3a2810308a5222d5cdffc2d04d18",
+      "matches": true
+    },
+    "https://github.com/psf/requests/blob/3c88e520da24ae6f736929a750876e7654accc3d/NOTICE": {
+      "url": "https://raw.githubusercontent.com/psf/requests/3c88e520da24ae6f736929a750876e7654accc3d/NOTICE",
+      "bytes": 2795,
+      "sha256": "548eb62c9f5f5f7a121d15f26bb0d6a5ebb0cf7260584e0529ad65c56b39e83d",
+      "expected_sha256": "548eb62c9f5f5f7a121d15f26bb0d6a5ebb0cf7260584e0529ad65c56b39e83d",
+      "matches": true
+    },
+    "https://github.com/psf/requests/blob/5f7a3a74aab1625c2bb65f643197ee885e3da576/docs/_themes/LICENSE": {
+      "url": "https://raw.githubusercontent.com/psf/requests/5f7a3a74aab1625c2bb65f643197ee885e3da576/docs/_themes/LICENSE",
+      "bytes": 1861,
+      "sha256": "6afc9d58f919ab52f4806a895a37aefe4d263f8e52278e6a1e87c5d7ec82299c",
+      "expected_sha256": "6afc9d58f919ab52f4806a895a37aefe4d263f8e52278e6a1e87c5d7ec82299c",
+      "matches": true
+    },
+    "https://github.com/psf/requests/blob/22623bd8c265b78b161542663ee980738441c307/docs/_themes/LICENSE": {
+      "url": "https://raw.githubusercontent.com/psf/requests/22623bd8c265b78b161542663ee980738441c307/docs/_themes/LICENSE",
+      "bytes": 1861,
+      "sha256": "6afc9d58f919ab52f4806a895a37aefe4d263f8e52278e6a1e87c5d7ec82299c",
+      "expected_sha256": "6afc9d58f919ab52f4806a895a37aefe4d263f8e52278e6a1e87c5d7ec82299c",
+      "matches": true
+    },
+    "https://github.com/psf/requests/blob/3c88e520da24ae6f736929a750876e7654accc3d/docs/_themes/LICENSE": {
+      "url": "https://raw.githubusercontent.com/psf/requests/3c88e520da24ae6f736929a750876e7654accc3d/docs/_themes/LICENSE",
+      "bytes": 1861,
+      "sha256": "6afc9d58f919ab52f4806a895a37aefe4d263f8e52278e6a1e87c5d7ec82299c",
+      "expected_sha256": "6afc9d58f919ab52f4806a895a37aefe4d263f8e52278e6a1e87c5d7ec82299c",
+      "matches": true
+    },
+    "https://github.com/psf/requests/blob/847735553aeda6e6633f2b32e14ba14ba86887a4/docs/_themes/LICENSE": {
+      "url": "https://raw.githubusercontent.com/psf/requests/847735553aeda6e6633f2b32e14ba14ba86887a4/docs/_themes/LICENSE",
+      "bytes": 1861,
+      "sha256": "6afc9d58f919ab52f4806a895a37aefe4d263f8e52278e6a1e87c5d7ec82299c",
+      "expected_sha256": "6afc9d58f919ab52f4806a895a37aefe4d263f8e52278e6a1e87c5d7ec82299c",
+      "matches": true
+    },
+    "https://github.com/psf/requests/blob/39d0fdd9096f7dceccbc8f82e1eda7dd64717a8e/docs/_themes/LICENSE": {
+      "url": "https://raw.githubusercontent.com/psf/requests/39d0fdd9096f7dceccbc8f82e1eda7dd64717a8e/docs/_themes/LICENSE",
+      "bytes": 1861,
+      "sha256": "6afc9d58f919ab52f4806a895a37aefe4d263f8e52278e6a1e87c5d7ec82299c",
+      "expected_sha256": "6afc9d58f919ab52f4806a895a37aefe4d263f8e52278e6a1e87c5d7ec82299c",
+      "matches": true
+    },
+    "https://github.com/psf/requests/blob/0192aac24123735b3eaf9b08df46429bb770c283/docs/_themes/LICENSE": {
+      "url": "https://raw.githubusercontent.com/psf/requests/0192aac24123735b3eaf9b08df46429bb770c283/docs/_themes/LICENSE",
+      "bytes": 1861,
+      "sha256": "6afc9d58f919ab52f4806a895a37aefe4d263f8e52278e6a1e87c5d7ec82299c",
+      "expected_sha256": "6afc9d58f919ab52f4806a895a37aefe4d263f8e52278e6a1e87c5d7ec82299c",
+      "matches": true
+    },
+    "https://github.com/psf/requests/blob/091991be0da19de9108dbe5e3752917fea3d7fdc/docs/_themes/LICENSE": {
+      "url": "https://raw.githubusercontent.com/psf/requests/091991be0da19de9108dbe5e3752917fea3d7fdc/docs/_themes/LICENSE",
+      "bytes": 1861,
+      "sha256": "6afc9d58f919ab52f4806a895a37aefe4d263f8e52278e6a1e87c5d7ec82299c",
+      "expected_sha256": "6afc9d58f919ab52f4806a895a37aefe4d263f8e52278e6a1e87c5d7ec82299c",
+      "matches": true
+    },
+    "https://github.com/psf/requests/blob/1ba83c47ce7b177efe90d5f51f7760680f72eda0/docs/_themes/LICENSE": {
+      "url": "https://raw.githubusercontent.com/psf/requests/1ba83c47ce7b177efe90d5f51f7760680f72eda0/docs/_themes/LICENSE",
+      "bytes": 1861,
+      "sha256": "6afc9d58f919ab52f4806a895a37aefe4d263f8e52278e6a1e87c5d7ec82299c",
+      "expected_sha256": "6afc9d58f919ab52f4806a895a37aefe4d263f8e52278e6a1e87c5d7ec82299c",
+      "matches": true
+    },
+    "https://github.com/pallets/flask/blob/7ee9ceb71e868944a46e1ff00b506772a53a4f1d/docs/license.rst": {
+      "url": "https://raw.githubusercontent.com/pallets/flask/7ee9ceb71e868944a46e1ff00b506772a53a4f1d/docs/license.rst",
+      "bytes": 398,
+      "sha256": "7535eac513edd12fb8e33f203c6a403549629e34b363418cdbd6c6ea5464515d",
+      "expected_sha256": "7535eac513edd12fb8e33f203c6a403549629e34b363418cdbd6c6ea5464515d",
+      "matches": true
+    },
+    "https://github.com/pytest-dev/pytest/blob/a7e38c5c61928033a2dc1915cbee8caa8544a4d0/LICENSE": {
+      "url": "https://raw.githubusercontent.com/pytest-dev/pytest/a7e38c5c61928033a2dc1915cbee8caa8544a4d0/LICENSE",
+      "bytes": 1096,
+      "sha256": "7898b9b164d4f93fd9a562fd0f592935518b48c4745303964110eb7f7fe64faf",
+      "expected_sha256": "7898b9b164d4f93fd9a562fd0f592935518b48c4745303964110eb7f7fe64faf",
+      "matches": true
+    },
+    "https://github.com/pytest-dev/pytest/blob/e6e300e729dd33956e5448d8be9a0b1540b4e53a/LICENSE": {
+      "url": "https://raw.githubusercontent.com/pytest-dev/pytest/e6e300e729dd33956e5448d8be9a0b1540b4e53a/LICENSE",
+      "bytes": 1096,
+      "sha256": "7898b9b164d4f93fd9a562fd0f592935518b48c4745303964110eb7f7fe64faf",
+      "expected_sha256": "7898b9b164d4f93fd9a562fd0f592935518b48c4745303964110eb7f7fe64faf",
+      "matches": true
+    },
+    "https://github.com/pytest-dev/pytest/blob/41d211c24a6781843b174379d6d6538f5c17adb9/LICENSE": {
+      "url": "https://raw.githubusercontent.com/pytest-dev/pytest/41d211c24a6781843b174379d6d6538f5c17adb9/LICENSE",
+      "bytes": 1096,
+      "sha256": "7898b9b164d4f93fd9a562fd0f592935518b48c4745303964110eb7f7fe64faf",
+      "expected_sha256": "7898b9b164d4f93fd9a562fd0f592935518b48c4745303964110eb7f7fe64faf",
+      "matches": true
+    },
+    "https://github.com/pytest-dev/pytest/blob/5e7f1ab4bf58e473e5d7f878eb2b499d7deabd29/LICENSE": {
+      "url": "https://raw.githubusercontent.com/pytest-dev/pytest/5e7f1ab4bf58e473e5d7f878eb2b499d7deabd29/LICENSE",
+      "bytes": 1096,
+      "sha256": "7898b9b164d4f93fd9a562fd0f592935518b48c4745303964110eb7f7fe64faf",
+      "expected_sha256": "7898b9b164d4f93fd9a562fd0f592935518b48c4745303964110eb7f7fe64faf",
+      "matches": true
+    },
+    "https://github.com/pytest-dev/pytest/blob/7f7a36478abe7dd1fa993b115d22606aa0e35e88/LICENSE": {
+      "url": "https://raw.githubusercontent.com/pytest-dev/pytest/7f7a36478abe7dd1fa993b115d22606aa0e35e88/LICENSE",
+      "bytes": 1096,
+      "sha256": "7898b9b164d4f93fd9a562fd0f592935518b48c4745303964110eb7f7fe64faf",
+      "expected_sha256": "7898b9b164d4f93fd9a562fd0f592935518b48c4745303964110eb7f7fe64faf",
+      "matches": true
+    },
+    "https://github.com/pytest-dev/pytest/blob/422685d0bdc110547535036c1ff398b5e1c44145/LICENSE": {
+      "url": "https://raw.githubusercontent.com/pytest-dev/pytest/422685d0bdc110547535036c1ff398b5e1c44145/LICENSE",
+      "bytes": 1096,
+      "sha256": "7898b9b164d4f93fd9a562fd0f592935518b48c4745303964110eb7f7fe64faf",
+      "expected_sha256": "7898b9b164d4f93fd9a562fd0f592935518b48c4745303964110eb7f7fe64faf",
+      "matches": true
+    },
+    "https://github.com/pytest-dev/pytest/blob/c98bc4cd3d687fe9b392d8eecd905627191d4f06/LICENSE": {
+      "url": "https://raw.githubusercontent.com/pytest-dev/pytest/c98bc4cd3d687fe9b392d8eecd905627191d4f06/LICENSE",
+      "bytes": 1096,
+      "sha256": "7898b9b164d4f93fd9a562fd0f592935518b48c4745303964110eb7f7fe64faf",
+      "expected_sha256": "7898b9b164d4f93fd9a562fd0f592935518b48c4745303964110eb7f7fe64faf",
+      "matches": true
+    },
+    "https://github.com/psf/requests/blob/3c88e520da24ae6f736929a750876e7654accc3d/LICENSE": {
+      "url": "https://raw.githubusercontent.com/psf/requests/3c88e520da24ae6f736929a750876e7654accc3d/LICENSE",
+      "bytes": 581,
+      "sha256": "89478f1915fbb6b6585a685d071bf006ba5649d2615fab787f66e9693c622ae4",
+      "expected_sha256": "89478f1915fbb6b6585a685d071bf006ba5649d2615fab787f66e9693c622ae4",
+      "matches": true
+    },
+    "https://github.com/psf/requests/blob/091991be0da19de9108dbe5e3752917fea3d7fdc/LICENSE": {
+      "url": "https://raw.githubusercontent.com/psf/requests/091991be0da19de9108dbe5e3752917fea3d7fdc/LICENSE",
+      "bytes": 581,
+      "sha256": "89478f1915fbb6b6585a685d071bf006ba5649d2615fab787f66e9693c622ae4",
+      "expected_sha256": "89478f1915fbb6b6585a685d071bf006ba5649d2615fab787f66e9693c622ae4",
+      "matches": true
+    },
+    "https://huggingface.co/datasets/SWE-bench/SWE-bench_Verified/blob/78f471bf655a3137b2e8a75af1501690ec009ec3/README.md": {
+      "url": "https://huggingface.co/datasets/SWE-bench/SWE-bench_Verified/resolve/78f471bf655a3137b2e8a75af1501690ec009ec3/README.md",
+      "bytes": 3485,
+      "sha256": "923e6b481ff75c709737251e602bdc311a9be49235b5c20107366747f5640fe4",
+      "expected_sha256": "923e6b481ff75c709737251e602bdc311a9be49235b5c20107366747f5640fe4",
+      "matches": true
+    },
+    "https://github.com/pytest-dev/pytest/blob/cb828ebe70b4fa35cd5f9a7ee024272237eab351/doc/en/_themes/LICENSE": {
+      "url": "https://raw.githubusercontent.com/pytest-dev/pytest/cb828ebe70b4fa35cd5f9a7ee024272237eab351/doc/en/_themes/LICENSE",
+      "bytes": 1789,
+      "sha256": "9c1e620a5cf8e74fe81c1fd4c55e9cc0b189fc04e677cfc7ef915de746c3f59e",
+      "expected_sha256": "9c1e620a5cf8e74fe81c1fd4c55e9cc0b189fc04e677cfc7ef915de746c3f59e",
+      "matches": true
+    },
+    "https://github.com/pytest-dev/pytest/blob/8aba863a634f40560e25055d179220f0eefabe9a/doc/en/_themes/LICENSE": {
+      "url": "https://raw.githubusercontent.com/pytest-dev/pytest/8aba863a634f40560e25055d179220f0eefabe9a/doc/en/_themes/LICENSE",
+      "bytes": 1789,
+      "sha256": "9c1e620a5cf8e74fe81c1fd4c55e9cc0b189fc04e677cfc7ef915de746c3f59e",
+      "expected_sha256": "9c1e620a5cf8e74fe81c1fd4c55e9cc0b189fc04e677cfc7ef915de746c3f59e",
+      "matches": true
+    },
+    "https://github.com/pytest-dev/pytest/blob/58e6a09db49f34886ff13f3b7520dd0bcd7063cd/doc/en/_themes/LICENSE": {
+      "url": "https://raw.githubusercontent.com/pytest-dev/pytest/58e6a09db49f34886ff13f3b7520dd0bcd7063cd/doc/en/_themes/LICENSE",
+      "bytes": 1789,
+      "sha256": "9c1e620a5cf8e74fe81c1fd4c55e9cc0b189fc04e677cfc7ef915de746c3f59e",
+      "expected_sha256": "9c1e620a5cf8e74fe81c1fd4c55e9cc0b189fc04e677cfc7ef915de746c3f59e",
+      "matches": true
+    },
+    "https://github.com/pytest-dev/pytest/blob/3a668ea6ff24b0c8f00498c3144c63bac561d925/doc/en/_themes/LICENSE": {
+      "url": "https://raw.githubusercontent.com/pytest-dev/pytest/3a668ea6ff24b0c8f00498c3144c63bac561d925/doc/en/_themes/LICENSE",
+      "bytes": 1789,
+      "sha256": "9c1e620a5cf8e74fe81c1fd4c55e9cc0b189fc04e677cfc7ef915de746c3f59e",
+      "expected_sha256": "9c1e620a5cf8e74fe81c1fd4c55e9cc0b189fc04e677cfc7ef915de746c3f59e",
+      "matches": true
+    },
+    "https://github.com/pytest-dev/pytest/blob/5e7f1ab4bf58e473e5d7f878eb2b499d7deabd29/doc/en/_themes/LICENSE": {
+      "url": "https://raw.githubusercontent.com/pytest-dev/pytest/5e7f1ab4bf58e473e5d7f878eb2b499d7deabd29/doc/en/_themes/LICENSE",
+      "bytes": 1789,
+      "sha256": "9c1e620a5cf8e74fe81c1fd4c55e9cc0b189fc04e677cfc7ef915de746c3f59e",
+      "expected_sha256": "9c1e620a5cf8e74fe81c1fd4c55e9cc0b189fc04e677cfc7ef915de746c3f59e",
+      "matches": true
+    },
+    "https://github.com/pytest-dev/pytest/blob/955e54221008aba577ecbaefa15679f6777d3bf8/doc/en/_themes/LICENSE": {
+      "url": "https://raw.githubusercontent.com/pytest-dev/pytest/955e54221008aba577ecbaefa15679f6777d3bf8/doc/en/_themes/LICENSE",
+      "bytes": 1789,
+      "sha256": "9c1e620a5cf8e74fe81c1fd4c55e9cc0b189fc04e677cfc7ef915de746c3f59e",
+      "expected_sha256": "9c1e620a5cf8e74fe81c1fd4c55e9cc0b189fc04e677cfc7ef915de746c3f59e",
+      "matches": true
+    },
+    "https://github.com/pytest-dev/pytest/blob/e856638ba086fcf5bebf1bebea32d5cf78de87b4/doc/en/_themes/LICENSE": {
+      "url": "https://raw.githubusercontent.com/pytest-dev/pytest/e856638ba086fcf5bebf1bebea32d5cf78de87b4/doc/en/_themes/LICENSE",
+      "bytes": 1789,
+      "sha256": "9c1e620a5cf8e74fe81c1fd4c55e9cc0b189fc04e677cfc7ef915de746c3f59e",
+      "expected_sha256": "9c1e620a5cf8e74fe81c1fd4c55e9cc0b189fc04e677cfc7ef915de746c3f59e",
+      "matches": true
+    },
+    "https://github.com/pytest-dev/pytest/blob/c98bc4cd3d687fe9b392d8eecd905627191d4f06/doc/en/_themes/LICENSE": {
+      "url": "https://raw.githubusercontent.com/pytest-dev/pytest/c98bc4cd3d687fe9b392d8eecd905627191d4f06/doc/en/_themes/LICENSE",
+      "bytes": 1789,
+      "sha256": "9c1e620a5cf8e74fe81c1fd4c55e9cc0b189fc04e677cfc7ef915de746c3f59e",
+      "expected_sha256": "9c1e620a5cf8e74fe81c1fd4c55e9cc0b189fc04e677cfc7ef915de746c3f59e",
+      "matches": true
+    },
+    "https://github.com/pytest-dev/pytest/blob/8aba863a634f40560e25055d179220f0eefabe9a/doc/en/license.rst": {
+      "url": "https://raw.githubusercontent.com/pytest-dev/pytest/8aba863a634f40560e25055d179220f0eefabe9a/doc/en/license.rst",
+      "bytes": 1379,
+      "sha256": "b081522b6b841e6a5348025fa8897f8ec2b8b7fd2e8da0240a219d78ce955d72",
+      "expected_sha256": "b081522b6b841e6a5348025fa8897f8ec2b8b7fd2e8da0240a219d78ce955d72",
+      "matches": true
+    },
+    "https://github.com/pytest-dev/pytest/blob/58e6a09db49f34886ff13f3b7520dd0bcd7063cd/doc/en/license.rst": {
+      "url": "https://raw.githubusercontent.com/pytest-dev/pytest/58e6a09db49f34886ff13f3b7520dd0bcd7063cd/doc/en/license.rst",
+      "bytes": 1379,
+      "sha256": "b081522b6b841e6a5348025fa8897f8ec2b8b7fd2e8da0240a219d78ce955d72",
+      "expected_sha256": "b081522b6b841e6a5348025fa8897f8ec2b8b7fd2e8da0240a219d78ce955d72",
+      "matches": true
+    },
+    "https://github.com/psf/requests/blob/5f7a3a74aab1625c2bb65f643197ee885e3da576/LICENSE": {
+      "url": "https://raw.githubusercontent.com/psf/requests/5f7a3a74aab1625c2bb65f643197ee885e3da576/LICENSE",
+      "bytes": 581,
+      "sha256": "c031540c6951209351ce0b9bcf1cdf689abb277bcb07780d74f448f882a4a869",
+      "expected_sha256": "c031540c6951209351ce0b9bcf1cdf689abb277bcb07780d74f448f882a4a869",
+      "matches": true
+    },
+    "https://github.com/psf/requests/blob/22623bd8c265b78b161542663ee980738441c307/LICENSE": {
+      "url": "https://raw.githubusercontent.com/psf/requests/22623bd8c265b78b161542663ee980738441c307/LICENSE",
+      "bytes": 581,
+      "sha256": "c11460418c5164a489643eae3da311d0fb1d61931c71c64ff83090c1cad1184b",
+      "expected_sha256": "c11460418c5164a489643eae3da311d0fb1d61931c71c64ff83090c1cad1184b",
+      "matches": true
+    },
+    "https://github.com/psf/requests/blob/847735553aeda6e6633f2b32e14ba14ba86887a4/LICENSE": {
+      "url": "https://raw.githubusercontent.com/psf/requests/847735553aeda6e6633f2b32e14ba14ba86887a4/LICENSE",
+      "bytes": 581,
+      "sha256": "c11460418c5164a489643eae3da311d0fb1d61931c71c64ff83090c1cad1184b",
+      "expected_sha256": "c11460418c5164a489643eae3da311d0fb1d61931c71c64ff83090c1cad1184b",
+      "matches": true
+    },
+    "https://github.com/psf/requests/blob/1ba83c47ce7b177efe90d5f51f7760680f72eda0/LICENSE": {
+      "url": "https://raw.githubusercontent.com/psf/requests/1ba83c47ce7b177efe90d5f51f7760680f72eda0/LICENSE",
+      "bytes": 581,
+      "sha256": "c11460418c5164a489643eae3da311d0fb1d61931c71c64ff83090c1cad1184b",
+      "expected_sha256": "c11460418c5164a489643eae3da311d0fb1d61931c71c64ff83090c1cad1184b",
+      "matches": true
+    },
+    "https://github.com/psf/requests/blob/847735553aeda6e6633f2b32e14ba14ba86887a4/NOTICE": {
+      "url": "https://raw.githubusercontent.com/psf/requests/847735553aeda6e6633f2b32e14ba14ba86887a4/NOTICE",
+      "bytes": 4377,
+      "sha256": "c5a19279faa765293604633bae8b70a06582416c93cdac20b1b81af77a51d957",
+      "expected_sha256": "c5a19279faa765293604633bae8b70a06582416c93cdac20b1b81af77a51d957",
+      "matches": true
+    },
+    "https://github.com/psf/requests/blob/1ba83c47ce7b177efe90d5f51f7760680f72eda0/NOTICE": {
+      "url": "https://raw.githubusercontent.com/psf/requests/1ba83c47ce7b177efe90d5f51f7760680f72eda0/NOTICE",
+      "bytes": 4377,
+      "sha256": "c5a19279faa765293604633bae8b70a06582416c93cdac20b1b81af77a51d957",
+      "expected_sha256": "c5a19279faa765293604633bae8b70a06582416c93cdac20b1b81af77a51d957",
+      "matches": true
+    },
+    "https://github.com/pytest-dev/pytest/blob/3c1534944cbd34e8a41bc9e76818018fadefc9a1/LICENSE": {
+      "url": "https://raw.githubusercontent.com/pytest-dev/pytest/3c1534944cbd34e8a41bc9e76818018fadefc9a1/LICENSE",
+      "bytes": 1091,
+      "sha256": "ca836a5f9ecca3b2f350230faa20a48fb8b145653b5568d784862df864706b9b",
+      "expected_sha256": "ca836a5f9ecca3b2f350230faa20a48fb8b145653b5568d784862df864706b9b",
+      "matches": true
+    },
+    "https://github.com/pytest-dev/pytest/blob/aa55975c7d3f6c9f6d7f68accc41bb7cadf0eb9a/LICENSE": {
+      "url": "https://raw.githubusercontent.com/pytest-dev/pytest/aa55975c7d3f6c9f6d7f68accc41bb7cadf0eb9a/LICENSE",
+      "bytes": 1091,
+      "sha256": "ca836a5f9ecca3b2f350230faa20a48fb8b145653b5568d784862df864706b9b",
+      "expected_sha256": "ca836a5f9ecca3b2f350230faa20a48fb8b145653b5568d784862df864706b9b",
+      "matches": true
+    },
+    "https://github.com/pytest-dev/pytest/blob/a7e38c5c61928033a2dc1915cbee8caa8544a4d0/doc/en/license.rst": {
+      "url": "https://raw.githubusercontent.com/pytest-dev/pytest/a7e38c5c61928033a2dc1915cbee8caa8544a4d0/doc/en/license.rst",
+      "bytes": 1379,
+      "sha256": "d1a0ff0c217e8885134a5759953e971addadafee9cd7f428901d0c22af10a741",
+      "expected_sha256": "d1a0ff0c217e8885134a5759953e971addadafee9cd7f428901d0c22af10a741",
+      "matches": true
+    },
+    "https://github.com/pytest-dev/pytest/blob/e6e300e729dd33956e5448d8be9a0b1540b4e53a/doc/en/license.rst": {
+      "url": "https://raw.githubusercontent.com/pytest-dev/pytest/e6e300e729dd33956e5448d8be9a0b1540b4e53a/doc/en/license.rst",
+      "bytes": 1379,
+      "sha256": "d1a0ff0c217e8885134a5759953e971addadafee9cd7f428901d0c22af10a741",
+      "expected_sha256": "d1a0ff0c217e8885134a5759953e971addadafee9cd7f428901d0c22af10a741",
+      "matches": true
+    },
+    "https://github.com/pytest-dev/pytest/blob/41d211c24a6781843b174379d6d6538f5c17adb9/doc/en/license.rst": {
+      "url": "https://raw.githubusercontent.com/pytest-dev/pytest/41d211c24a6781843b174379d6d6538f5c17adb9/doc/en/license.rst",
+      "bytes": 1379,
+      "sha256": "d1a0ff0c217e8885134a5759953e971addadafee9cd7f428901d0c22af10a741",
+      "expected_sha256": "d1a0ff0c217e8885134a5759953e971addadafee9cd7f428901d0c22af10a741",
+      "matches": true
+    },
+    "https://github.com/pytest-dev/pytest/blob/5e7f1ab4bf58e473e5d7f878eb2b499d7deabd29/doc/en/license.rst": {
+      "url": "https://raw.githubusercontent.com/pytest-dev/pytest/5e7f1ab4bf58e473e5d7f878eb2b499d7deabd29/doc/en/license.rst",
+      "bytes": 1379,
+      "sha256": "d1a0ff0c217e8885134a5759953e971addadafee9cd7f428901d0c22af10a741",
+      "expected_sha256": "d1a0ff0c217e8885134a5759953e971addadafee9cd7f428901d0c22af10a741",
+      "matches": true
+    },
+    "https://github.com/pytest-dev/pytest/blob/7f7a36478abe7dd1fa993b115d22606aa0e35e88/doc/en/license.rst": {
+      "url": "https://raw.githubusercontent.com/pytest-dev/pytest/7f7a36478abe7dd1fa993b115d22606aa0e35e88/doc/en/license.rst",
+      "bytes": 1379,
+      "sha256": "d1a0ff0c217e8885134a5759953e971addadafee9cd7f428901d0c22af10a741",
+      "expected_sha256": "d1a0ff0c217e8885134a5759953e971addadafee9cd7f428901d0c22af10a741",
+      "matches": true
+    },
+    "https://github.com/pytest-dev/pytest/blob/422685d0bdc110547535036c1ff398b5e1c44145/doc/en/license.rst": {
+      "url": "https://raw.githubusercontent.com/pytest-dev/pytest/422685d0bdc110547535036c1ff398b5e1c44145/doc/en/license.rst",
+      "bytes": 1379,
+      "sha256": "d1a0ff0c217e8885134a5759953e971addadafee9cd7f428901d0c22af10a741",
+      "expected_sha256": "d1a0ff0c217e8885134a5759953e971addadafee9cd7f428901d0c22af10a741",
+      "matches": true
+    },
+    "https://github.com/pytest-dev/pytest/blob/c98bc4cd3d687fe9b392d8eecd905627191d4f06/doc/en/license.rst": {
+      "url": "https://raw.githubusercontent.com/pytest-dev/pytest/c98bc4cd3d687fe9b392d8eecd905627191d4f06/doc/en/license.rst",
+      "bytes": 1379,
+      "sha256": "d1a0ff0c217e8885134a5759953e971addadafee9cd7f428901d0c22af10a741",
+      "expected_sha256": "d1a0ff0c217e8885134a5759953e971addadafee9cd7f428901d0c22af10a741",
+      "matches": true
+    },
+    "https://github.com/psf/requests/blob/39d0fdd9096f7dceccbc8f82e1eda7dd64717a8e/NOTICE": {
+      "url": "https://raw.githubusercontent.com/psf/requests/39d0fdd9096f7dceccbc8f82e1eda7dd64717a8e/NOTICE",
+      "bytes": 38,
+      "sha256": "f5110972dedad2b4e9d314518daf3b7d72d6e02e499acd802181de6f74571dcc",
+      "expected_sha256": "f5110972dedad2b4e9d314518daf3b7d72d6e02e499acd802181de6f74571dcc",
+      "matches": true
+    },
+    "https://github.com/psf/requests/blob/0192aac24123735b3eaf9b08df46429bb770c283/NOTICE": {
+      "url": "https://raw.githubusercontent.com/psf/requests/0192aac24123735b3eaf9b08df46429bb770c283/NOTICE",
+      "bytes": 38,
+      "sha256": "f5110972dedad2b4e9d314518daf3b7d72d6e02e499acd802181de6f74571dcc",
+      "expected_sha256": "f5110972dedad2b4e9d314518daf3b7d72d6e02e499acd802181de6f74571dcc",
+      "matches": true
+    },
+    "https://github.com/pytest-dev/pytest/blob/cb828ebe70b4fa35cd5f9a7ee024272237eab351/doc/en/license.rst": {
+      "url": "https://raw.githubusercontent.com/pytest-dev/pytest/cb828ebe70b4fa35cd5f9a7ee024272237eab351/doc/en/license.rst",
+      "bytes": 1379,
+      "sha256": "f5984f7fb86791cd3de98fe74008db28c6bf4139323b8912ab5441af5ddc79fe",
+      "expected_sha256": "f5984f7fb86791cd3de98fe74008db28c6bf4139323b8912ab5441af5ddc79fe",
+      "matches": true
+    },
+    "https://github.com/pytest-dev/pytest/blob/3a668ea6ff24b0c8f00498c3144c63bac561d925/doc/en/license.rst": {
+      "url": "https://raw.githubusercontent.com/pytest-dev/pytest/3a668ea6ff24b0c8f00498c3144c63bac561d925/doc/en/license.rst",
+      "bytes": 1379,
+      "sha256": "f5984f7fb86791cd3de98fe74008db28c6bf4139323b8912ab5441af5ddc79fe",
+      "expected_sha256": "f5984f7fb86791cd3de98fe74008db28c6bf4139323b8912ab5441af5ddc79fe",
+      "matches": true
+    },
+    "https://github.com/pytest-dev/pytest/blob/955e54221008aba577ecbaefa15679f6777d3bf8/doc/en/license.rst": {
+      "url": "https://raw.githubusercontent.com/pytest-dev/pytest/955e54221008aba577ecbaefa15679f6777d3bf8/doc/en/license.rst",
+      "bytes": 1379,
+      "sha256": "f5984f7fb86791cd3de98fe74008db28c6bf4139323b8912ab5441af5ddc79fe",
+      "expected_sha256": "f5984f7fb86791cd3de98fe74008db28c6bf4139323b8912ab5441af5ddc79fe",
+      "matches": true
+    },
+    "https://github.com/pytest-dev/pytest/blob/e856638ba086fcf5bebf1bebea32d5cf78de87b4/doc/en/license.rst": {
+      "url": "https://raw.githubusercontent.com/pytest-dev/pytest/e856638ba086fcf5bebf1bebea32d5cf78de87b4/doc/en/license.rst",
+      "bytes": 1379,
+      "sha256": "f5984f7fb86791cd3de98fe74008db28c6bf4139323b8912ab5441af5ddc79fe",
+      "expected_sha256": "f5984f7fb86791cd3de98fe74008db28c6bf4139323b8912ab5441af5ddc79fe",
+      "matches": true
+    },
+    "https://github.com/pylint-dev/pylint/blob/3c5eca2ded3dd2b59ebaf23eb289453b5d2930f0/LICENSE": {
+      "url": "https://raw.githubusercontent.com/pylint-dev/pylint/3c5eca2ded3dd2b59ebaf23eb289453b5d2930f0/LICENSE",
+      "bytes": 17984,
+      "sha256": "f97b14080de8b8490d60eb3d620ebc419943e0779466d1dd0d5d6f68fe195dcd",
+      "expected_sha256": "f97b14080de8b8490d60eb3d620ebc419943e0779466d1dd0d5d6f68fe195dcd",
+      "matches": true
+    },
+    "https://github.com/pylint-dev/pylint/blob/754b487f4d892e3d4872b6fc7468a71db4e31c13/LICENSE": {
+      "url": "https://raw.githubusercontent.com/pylint-dev/pylint/754b487f4d892e3d4872b6fc7468a71db4e31c13/LICENSE",
+      "bytes": 17984,
+      "sha256": "f97b14080de8b8490d60eb3d620ebc419943e0779466d1dd0d5d6f68fe195dcd",
+      "expected_sha256": "f97b14080de8b8490d60eb3d620ebc419943e0779466d1dd0d5d6f68fe195dcd",
+      "matches": true
+    },
+    "https://github.com/pylint-dev/pylint/blob/40cc2ffd7887959157aaf469e09585ec2be7f528/LICENSE": {
+      "url": "https://raw.githubusercontent.com/pylint-dev/pylint/40cc2ffd7887959157aaf469e09585ec2be7f528/LICENSE",
+      "bytes": 17984,
+      "sha256": "f97b14080de8b8490d60eb3d620ebc419943e0779466d1dd0d5d6f68fe195dcd",
+      "expected_sha256": "f97b14080de8b8490d60eb3d620ebc419943e0779466d1dd0d5d6f68fe195dcd",
+      "matches": true
+    },
+    "https://github.com/pylint-dev/pylint/blob/ca80f03a43bc39e4cc2c67dc99817b3c9f13b8a6/LICENSE": {
+      "url": "https://raw.githubusercontent.com/pylint-dev/pylint/ca80f03a43bc39e4cc2c67dc99817b3c9f13b8a6/LICENSE",
+      "bytes": 17984,
+      "sha256": "f97b14080de8b8490d60eb3d620ebc419943e0779466d1dd0d5d6f68fe195dcd",
+      "expected_sha256": "f97b14080de8b8490d60eb3d620ebc419943e0779466d1dd0d5d6f68fe195dcd",
+      "matches": true
+    },
+    "https://github.com/pylint-dev/pylint/blob/1d1619ef913b99b06647d2030bddff4800abdf63/LICENSE": {
+      "url": "https://raw.githubusercontent.com/pylint-dev/pylint/1d1619ef913b99b06647d2030bddff4800abdf63/LICENSE",
+      "bytes": 17984,
+      "sha256": "f97b14080de8b8490d60eb3d620ebc419943e0779466d1dd0d5d6f68fe195dcd",
+      "expected_sha256": "f97b14080de8b8490d60eb3d620ebc419943e0779466d1dd0d5d6f68fe195dcd",
+      "matches": true
+    },
+    "https://github.com/pylint-dev/pylint/blob/99589b08de8c5a2c6cc61e13a37420a868c80599/LICENSE": {
+      "url": "https://raw.githubusercontent.com/pylint-dev/pylint/99589b08de8c5a2c6cc61e13a37420a868c80599/LICENSE",
+      "bytes": 17984,
+      "sha256": "f97b14080de8b8490d60eb3d620ebc419943e0779466d1dd0d5d6f68fe195dcd",
+      "expected_sha256": "f97b14080de8b8490d60eb3d620ebc419943e0779466d1dd0d5d6f68fe195dcd",
+      "matches": true
+    },
+    "https://github.com/pylint-dev/pylint/blob/273a8b25620467c1e5686aa8d2a1dbb8c02c78d0/LICENSE": {
+      "url": "https://raw.githubusercontent.com/pylint-dev/pylint/273a8b25620467c1e5686aa8d2a1dbb8c02c78d0/LICENSE",
+      "bytes": 17984,
+      "sha256": "f97b14080de8b8490d60eb3d620ebc419943e0779466d1dd0d5d6f68fe195dcd",
+      "expected_sha256": "f97b14080de8b8490d60eb3d620ebc419943e0779466d1dd0d5d6f68fe195dcd",
+      "matches": true
+    },
+    "https://github.com/pylint-dev/pylint/blob/1f8c4d9eb185c16a2c1d881c054f015e1c2eb334/LICENSE": {
+      "url": "https://raw.githubusercontent.com/pylint-dev/pylint/1f8c4d9eb185c16a2c1d881c054f015e1c2eb334/LICENSE",
+      "bytes": 17984,
+      "sha256": "f97b14080de8b8490d60eb3d620ebc419943e0779466d1dd0d5d6f68fe195dcd",
+      "expected_sha256": "f97b14080de8b8490d60eb3d620ebc419943e0779466d1dd0d5d6f68fe195dcd",
+      "matches": true
+    }
+  },
+  "local_notice_hashes": [
+    {
+      "path": "docs/licenses/files/09e8a9bcec8067104652c168685ab0931e7868f9c8284b66f5ae6edae5f1130b/LICENSE",
+      "matches": true
+    },
+    {
+      "path": "docs/licenses/files/2e63a3bd3a1f97e2fa9fa33bbf4f61bbb56ee16beb125b5346b0012388dc3b49/LICENSE.rst",
+      "matches": true
+    },
+    {
+      "path": "docs/licenses/files/3172d399cbd8f10609e73fec73d0e0b33eecd3c572a68b0722229d8c7059f725/LICENSE",
+      "matches": true
+    },
+    {
+      "path": "docs/licenses/files/3299f3fac35b42fbd3338044d9519ad8fd51ca72466a928a8732c54f8e2c9fd0/NOTICE",
+      "matches": true
+    },
+    {
+      "path": "docs/licenses/files/4158d74a42b099b603e597d24a344f395f47da8e187638f451795900f28d9bc4/NOTICE",
+      "matches": true
+    },
+    {
+      "path": "docs/licenses/files/45b6addd843b2ed89f9f8f363f61092db2e3c2461e3f178c3c3793648c3c4e07/license.rst",
+      "matches": true
+    },
+    {
+      "path": "docs/licenses/files/489a8e1108509ed98a37bb983e11e0f7e1d31f0bd8f99a79c8448e7ff37d07ea/LICENSE.rst",
+      "matches": true
+    },
+    {
+      "path": "docs/licenses/files/4be38574daf05665b6194e4fd84c5ef6ce7c3a2810308a5222d5cdffc2d04d18/LICENSE",
+      "matches": true
+    },
+    {
+      "path": "docs/licenses/files/548eb62c9f5f5f7a121d15f26bb0d6a5ebb0cf7260584e0529ad65c56b39e83d/NOTICE",
+      "matches": true
+    },
+    {
+      "path": "docs/licenses/files/6afc9d58f919ab52f4806a895a37aefe4d263f8e52278e6a1e87c5d7ec82299c/LICENSE",
+      "matches": true
+    },
+    {
+      "path": "docs/licenses/files/7535eac513edd12fb8e33f203c6a403549629e34b363418cdbd6c6ea5464515d/license.rst",
+      "matches": true
+    },
+    {
+      "path": "docs/licenses/files/7898b9b164d4f93fd9a562fd0f592935518b48c4745303964110eb7f7fe64faf/LICENSE",
+      "matches": true
+    },
+    {
+      "path": "docs/licenses/files/89478f1915fbb6b6585a685d071bf006ba5649d2615fab787f66e9693c622ae4/LICENSE",
+      "matches": true
+    },
+    {
+      "path": "docs/licenses/files/923e6b481ff75c709737251e602bdc311a9be49235b5c20107366747f5640fe4/README.md",
+      "matches": true
+    },
+    {
+      "path": "docs/licenses/files/9c1e620a5cf8e74fe81c1fd4c55e9cc0b189fc04e677cfc7ef915de746c3f59e/LICENSE",
+      "matches": true
+    },
+    {
+      "path": "docs/licenses/files/b081522b6b841e6a5348025fa8897f8ec2b8b7fd2e8da0240a219d78ce955d72/license.rst",
+      "matches": true
+    },
+    {
+      "path": "docs/licenses/files/c031540c6951209351ce0b9bcf1cdf689abb277bcb07780d74f448f882a4a869/LICENSE",
+      "matches": true
+    },
+    {
+      "path": "docs/licenses/files/c11460418c5164a489643eae3da311d0fb1d61931c71c64ff83090c1cad1184b/LICENSE",
+      "matches": true
+    },
+    {
+      "path": "docs/licenses/files/c5a19279faa765293604633bae8b70a06582416c93cdac20b1b81af77a51d957/NOTICE",
+      "matches": true
+    },
+    {
+      "path": "docs/licenses/files/ca836a5f9ecca3b2f350230faa20a48fb8b145653b5568d784862df864706b9b/LICENSE",
+      "matches": true
+    },
+    {
+      "path": "docs/licenses/files/d1a0ff0c217e8885134a5759953e971addadafee9cd7f428901d0c22af10a741/license.rst",
+      "matches": true
+    },
+    {
+      "path": "docs/licenses/files/f5110972dedad2b4e9d314518daf3b7d72d6e02e499acd802181de6f74571dcc/NOTICE",
+      "matches": true
+    },
+    {
+      "path": "docs/licenses/files/f5984f7fb86791cd3de98fe74008db28c6bf4139323b8912ab5441af5ddc79fe/license.rst",
+      "matches": true
+    },
+    {
+      "path": "docs/licenses/files/f97b14080de8b8490d60eb3d620ebc419943e0779466d1dd0d5d6f68fe195dcd/LICENSE",
+      "matches": true
+    }
+  ]
+}

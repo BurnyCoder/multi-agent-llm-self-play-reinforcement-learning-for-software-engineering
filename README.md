@@ -1,10 +1,10 @@
 # Local multi-agent self-play RL
 
-Train one local language model to introduce and repair bugs in real Python repositories. Both teams use the same Qwen3.5-2B weights and one shared LoRA adapter. Primary agents delegate work to subagents, keep working while they run, and receive results asynchronously. Executable tests provide rewards; every primary/child generation in a completed group enters its team's policy-gradient update once per optimization pass (zero-advantage groups make no update).
+This repository implements a local training loop for introducing and repairing bugs in real Python repositories. Both teams use the same Qwen3.5-2B weights and one shared LoRA adapter. Primary agents can delegate work and receive results asynchronously. Executable tests provide rewards; eligible nonzero-advantage actions enter the team's policy-gradient objective once per optimization pass. The recorded pilot produced no accepted bugs or research optimizer updates; the selected adapter is unchanged from initialization. These outcomes and their evidence are generated below.
 
 [Interactive dashboard](https://burnycoder.github.io/multi-agent-llm-self-play-reinforcement-learning-for-software-engineering/) · [Checkpoint and raw records](https://huggingface.co/BurnyCoder/multi-agent-swe-rl-qwen3.5-2b-pilot) · [Research collection](https://huggingface.co/collections/BurnyCoder/local-multi-agent-swe-rl-6ae4480aaae11ec43fdecb36) · [Paper](reports/generated/paper.pdf)
 
-The project adapts [Self-play SWE-RL](https://arxiv.org/html/2512.18552v3), the [CWM training objective](https://arxiv.org/html/2510.02387v1#A3), and [OpenCode's subagent interface](https://github.com/anomalyco/opencode/blob/e761e265d2d5e6ff4a1c0756ab8d8eeee0db501e/packages/core/src/tool/plugin/subagent.ts) to one laptop GPU. It tests whether self-play gains transfer to independently held-out human bugs; [prior work](https://arxiv.org/html/2607.03523v1) shows that synthetic gains alone are insufficient evidence.
+The project adapts [Self-play SWE-RL](https://arxiv.org/html/2512.18552v3), the [CWM training objective](https://arxiv.org/html/2510.02387v1#A3), and [OpenCode's subagent interface](https://github.com/anomalyco/opencode/blob/e761e265d2d5e6ff4a1c0756ab8d8eeee0db501e/packages/core/src/tool/plugin/subagent.ts) to one laptop GPU. The planned hypothesis concerns transfer to held-out human bugs. [Anchored Self-Play](https://arxiv.org/html/2607.03523v1#S4.SS4) motivates separate evaluation through function-level BugSourceBench experiments; it does not validate this repository-level method. The unchanged-weight pilot did not test the planned learning intervention.
 
 **Research status:** the generated results below report the recorded run, checkpoint and evaluation status. A [dated recovery amendment](reports/preregistration.md#recovery-amendment-2026-11-05) preserves the interrupted initial attempt and deducts its compute charge from the recovery allocation. Preflight parameter updates are software checks, not evidence of self-play learning. The first delivery covers one bounded pilot; the larger seed/control study remains deferred.
 
@@ -31,15 +31,15 @@ These are unscored harness diagnostics, excluded from benchmark success and trai
 | Bug source | Condition | Planned | Attempted | Resolved / scored | Rate | Unscored recorded | Unrecorded |
 | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
 | human | base | 32 | 22 | 0 / 21 | 0.0% | 11 | 0 |
-| human | trained | 32 | 30 | 0 / 29 | 0.0% | 3 | 0 |
+| human | final condition | 32 | 30 | 0 / 29 | 0.0% | 3 | 0 |
 | synthetic | base | 16 | 0 | Not evaluated | Not evaluated | 16 | 0 |
-| synthetic | trained | 16 | 0 | Not evaluated | Not evaluated | 16 | 0 |
+| synthetic | final condition | 16 | 0 | Not evaluated | Not evaluated | 16 | 0 |
 
-The final condition received no recorded optimizer updates. Any observed paired differences concern two evaluations of unchanged weights, not an estimated self-play training effect. The primary hypothesis's learning intervention did not occur. The saved trained condition label, confidence intervals and preregistered interval rule remain unchanged.
+Recorded research optimizer steps: 0. The initial and selected adapter weights and configurations have identical SHA256 digests and the same pinned base identity. This is two evaluations of unchanged weights, not an estimated self-play training effect. The planned learning hypothesis was not tested by this unchanged-policy comparison. The raw trained label and mechanical preregistered interval decision are preserved for provenance.
 
 ### Human bugs
 
-Across 21 paired tasks, the trained-minus-base resolution difference was +0.0 percentage points (95% paired bootstrap interval [+0.0, +0.0]). Improved: 0; regressed: 0; unchanged: 21. Under the preregistered interval rule, this comparison contradicts the predicted improvement. The bootstrap interval is degenerate; it does not establish equivalence or rule out a population effect.
+Across 21 paired tasks, the final-minus-base resolution difference was +0.0 percentage points (95% paired bootstrap interval [+0.0, +0.0]). Improved: 0; regressed: 0; unchanged: 21. The mechanical preregistered interval rule contradicts the predicted improvement. This rule alone does not establish that the planned learning intervention occurred. The bootstrap interval is degenerate; it does not establish equivalence or rule out a population effect.
 
 ### Synthetic bugs
 
@@ -57,13 +57,15 @@ Completed collection groups: 2 (with saved training_group outcomes); valid bugs 
 | no-delegation evaluation | Measure inference-time delegation dependence | Not run |
 | seed sensitivity | Measure training-seed variation | Not run |
 
-![Recorded evaluation outcomes](reports/generated/figures/scores.png)
+The saved official reports contain 208 PASS_TO_PASS failure entries across 9 scored rows. Of those rows, 9 submitted an empty patch. Across all 50 scored human rows, 50 saved patches are empty. These are failures of tests designated as passing in benchmark metadata, not established regressions caused by agent edits. The grader's failure category can also include tests missing from parsed output. The cause of the failures is unverified; no clean-environment re-evaluation was performed in this audit. The official scores remain unchanged, with this limitation on their interpretation. This is a post-hoc descriptive check of saved reports and submitted patches.
 
-[Experiment report](reports/generated/experiment.md) · [PDF paper](reports/generated/paper.pdf)
+Source: saved evaluation records and patches in the [experiment report](reports/generated/experiment.md); [official grader field semantics](https://www.swebench.com/SWE-bench/guides/evaluation/).
 
 Regenerate all results with `uv run selfplay report --run <run-directory>`.
 
 <!-- SSR_RESULTS:END -->
+
+The diagram shows the implemented design, including repair and optimization paths that the recorded pilot did not reach.
 
 ```mermaid
 flowchart LR
@@ -107,7 +109,7 @@ uv run --no-sync selfplay pilot --run runs/pilot
 uv run --no-sync selfplay report --run runs/pilot
 ```
 
-Preflight verifies real generation, likelihood accounting, maximum-shape backward propagation, an adapter update and checkpoint reload. Its synthetic-check adapter is never the research initialization. The pilot evaluates the unchanged model, collects complete self-play groups, updates the shared adapter, checkpoints, and evaluates the last completed checkpoint. The persisted eight-hour deadline includes preflight and evaluations. Restarting cannot reset it.
+Preflight checks real generation, likelihood accounting, maximum-shape backward propagation, an adapter update and checkpoint reload. Its synthetic-check adapter is never the research initialization. The pilot evaluates the initial model, collects complete self-play groups, updates the shared adapter only when nonzero advantages are available, checkpoints, and evaluates the last completed checkpoint. The persisted deadline includes preflight and evaluations. Restarting cannot reset it; the reported overrun shows that deadline enforcement was imperfect in this execution.
 
 The documented restart recovery uses `--config configs/pilot_recovery.toml --run runs/pilot-recovery` for both preflight and pilot, then `selfplay report --run runs/pilot-recovery`. Its separate, reduced deadline and original failure evidence are committed in the recovery manifest. For long runs, redirect the supervisor's stdout/stderr directly to a file and attach a terminal using `tail -f`; closing that display then leaves the worker's output destination intact. Keep the original run directory.
 
@@ -136,4 +138,4 @@ The primary evaluation is a preregistered subset of SWE-bench Verified using its
 - `site/`: static interactive results explorer deployed through GitHub Pages.
 - `runs/` (ignored): full local traces, temporary workspaces, checkpoints and raw outcomes. Publication exports only the documented subset of records.
 
-See [delivery verification](reports/delivery-verification.json), [optional controls and sensitivity runs](docs/controls.md), [sources and licensing](docs/sources.md), and [research instructions](AGENTS.md). Source code is MIT licensed; dependencies, pretrained weights and upstream repositories retain their own licenses.
+See the [independent claim ledger](reports/independent-audit-2026-11-12.md), [optional controls and sensitivity runs](docs/controls.md), [sources and licensing](docs/sources.md), and [research instructions](AGENTS.md). The older [delivery verification](reports/delivery-verification.json) is a historical record, not evidence for this audit. Source code is [MIT licensed](LICENSE); dependencies, pretrained weights and upstream repositories retain their own licenses.

@@ -25,15 +25,15 @@ These are unscored harness diagnostics, excluded from benchmark success and trai
 | Bug source | Condition | Planned | Attempted | Resolved / scored | Rate | Unscored recorded | Unrecorded |
 | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
 | human | base | 32 | 22 | 0 / 21 | 0.0% | 11 | 0 |
-| human | trained | 32 | 30 | 0 / 29 | 0.0% | 3 | 0 |
+| human | final condition | 32 | 30 | 0 / 29 | 0.0% | 3 | 0 |
 | synthetic | base | 16 | 0 | Not evaluated | Not evaluated | 16 | 0 |
-| synthetic | trained | 16 | 0 | Not evaluated | Not evaluated | 16 | 0 |
+| synthetic | final condition | 16 | 0 | Not evaluated | Not evaluated | 16 | 0 |
 
-The final condition received no recorded optimizer updates. Any observed paired differences concern two evaluations of unchanged weights, not an estimated self-play training effect. The primary hypothesis's learning intervention did not occur. The saved trained condition label, confidence intervals and preregistered interval rule remain unchanged.
+Recorded research optimizer steps: 0. The initial and selected adapter weights and configurations have identical SHA256 digests and the same pinned base identity. This is two evaluations of unchanged weights, not an estimated self-play training effect. The planned learning hypothesis was not tested by this unchanged-policy comparison. The raw trained label and mechanical preregistered interval decision are preserved for provenance.
 
 ### Human bugs
 
-Across 21 paired tasks, the trained-minus-base resolution difference was +0.0 percentage points (95% paired bootstrap interval [+0.0, +0.0]). Improved: 0; regressed: 0; unchanged: 21. Under the preregistered interval rule, this comparison contradicts the predicted improvement. The bootstrap interval is degenerate; it does not establish equivalence or rule out a population effect.
+Across 21 paired tasks, the final-minus-base resolution difference was +0.0 percentage points (95% paired bootstrap interval [+0.0, +0.0]). Improved: 0; regressed: 0; unchanged: 21. The mechanical preregistered interval rule contradicts the predicted improvement. This rule alone does not establish that the planned learning intervention occurred. The bootstrap interval is degenerate; it does not establish equivalence or rule out a population effect.
 
 ### Synthetic bugs
 
@@ -64,7 +64,8 @@ Completed collection groups: 2 (with saved training_group outcomes); valid bugs 
 | delegation calls | 8 |
 | generated tokens from research agents (excludes preflight) | 64920 |
 | generation calls by research agents (excludes preflight) | 1322 |
-| validated artifacts | 4 |
+| artifact validation checks (accepted and rejected) | 4 |
+| accepted valid artifacts | 0 |
 | invalid artifacts | 4 |
 | invalid artifact rate | 1 |
 | optimizer steps | 0 |
@@ -72,8 +73,8 @@ Completed collection groups: 2 (with saved training_group outcomes); valid bugs 
 | peak allocated bytes | 5136889856 |
 | evaluation seconds | 18533.5 |
 | training group seconds | 995.584 |
-| pass to pass regressions | 208 |
-| regression scored records | 50 |
+| PASS_TO_PASS failure entries (causal attribution unverified) | 208 |
+| scored rows with PASS_TO_PASS reports | 50 |
 
 ## Runtime interface and context diagnostics
 
@@ -83,18 +84,24 @@ Native read/edit path arguments require repository-relative paths [11]. The froz
 
 Sources: [pinned path guard](https://github.com/BurnyCoder/multi-agent-llm-self-play-reinforcement-learning-for-software-engineering/blob/109dfa67740ff9f0260d22be9407d047d90565f7/src/multi_agent_ssr/sandbox.py#L29) and [pinned prompt](https://github.com/BurnyCoder/multi-agent-llm-self-play-reinforcement-learning-for-software-engineering/blob/109dfa67740ff9f0260d22be9407d047d90565f7/src/multi_agent_ssr/agents.py#L146).
 
+## Official test failures and empty patches
+
+The saved official reports contain 208 PASS_TO_PASS failure entries across 9 scored rows. Of those rows, 9 submitted an empty patch. Across all 50 scored human rows, 50 saved patches are empty. These are failures of tests designated as passing in benchmark metadata, not established regressions caused by agent edits. The grader's failure category can also include tests missing from parsed output. The cause of the failures is unverified; no clean-environment re-evaluation was performed in this audit. The official scores remain unchanged, with this limitation on their interpretation. This is a post-hoc descriptive check of saved reports and submitted patches.
+
+Source: [SWE-bench scoring](https://www.swebench.com/SWE-bench/guides/evaluation/) and the saved per-task reports in [summary.json](summary.json).
+
 
 
 ## Network and experiment design
 
 | Condition | Architecture | Training in this experiment | Objective | Data and domain |
 | --- | --- | --- | --- | --- |
-| base | Qwen3.5-2B; one shared policy for all roles | None | Frozen comparison | Held-out repository repair |
-| trained | Same base plus one shared language-model LoRA adapter | Recorded local RL updates | CWM-style clipped token objective with SSR team returns | Self-play on training repositories; held-out repository repair |
+| base | Pinned base plus the initial shared language-model LoRA adapter | Frozen initialization | Frozen comparison | Held-out repository repair |
+| final condition (raw: trained) | Same adapter architecture; identity: unchanged | 0 recorded optimizer steps | Configured CWM-style objective with SSR team returns | Configured self-play on training repositories; held-out repository repair |
 
 ## Terms in plain language
 
-- **Self-play:** the model generates challenges and learns from attempts to solve them.
+- **Self-play:** a training design in which a model generates challenges and can learn from attempts to solve them; a particular run may produce no learning update.
 - **Shared policy:** every primary agent and subagent uses the same model parameters.
 - **LoRA:** small trainable adapter matrices modify a frozen base model.
 - **Oracle:** executable tests that determine whether the required behavior is satisfied.
@@ -102,4 +109,4 @@ Sources: [pinned path guard](https://github.com/BurnyCoder/multi-agent-llm-self-
 - **Bootstrap interval:** uncertainty estimated by repeatedly resampling the observed tasks.
 
 
-The base condition is the unchanged model; trained is the final completed checkpoint. Human bugs come from benchmark issues; synthetic bugs are independently generated diagnostic mutations. Resolution requires passing the executable oracle. An unscored task has no valid completed outcome. The larger controlled study and seed sensitivity remain unexecuted.
+The base condition uses the initial adapter; the raw trained label denotes the final selected condition. Human bugs come from benchmark issues; synthetic bugs are independently generated diagnostic mutations. Resolution requires passing the executable oracle. An unscored task has no valid completed outcome. The larger controlled study and seed sensitivity remain unexecuted.
