@@ -1,0 +1,1733 @@
+{
+  "versions": {
+    "swebench": {
+      "installed": "5.0.2",
+      "locked": [
+        "5.0.2"
+      ]
+    },
+    "transformers": {
+      "installed": "5.17.0",
+      "locked": [
+        "5.17.0"
+      ]
+    },
+    "peft": {
+      "installed": "0.21.2",
+      "locked": [
+        "0.21.2"
+      ]
+    },
+    "unsloth": {
+      "installed": "2026.10.10",
+      "locked": [
+        "2026.10.10"
+      ]
+    },
+    "unsloth-zoo": {
+      "installed": "2026.10.10",
+      "locked": [
+        "2026.10.10"
+      ]
+    },
+    "torch": {
+      "installed": "2.14.1",
+      "locked": [
+        "2.14.1"
+      ]
+    },
+    "huggingface-hub": {
+      "installed": "1.33.0",
+      "locked": [
+        "1.33.0"
+      ]
+    }
+  },
+  "byte_checks": [
+    {
+      "file": "swebench/harness/grading.py",
+      "source": "https://raw.githubusercontent.com/SWE-bench/SWE-bench/490635b2e9e775dca1e1d6b40ce9dbcff91e780f/swebench/harness/grading.py",
+      "local_sha256": "a095273010175001a6779e365b3b77abb8657c7ac2e4f80b4bc360faa6f09483",
+      "upstream_sha256": "a095273010175001a6779e365b3b77abb8657c7ac2e4f80b4bc360faa6f09483",
+      "match": true
+    },
+    {
+      "file": "swebench/harness/run_evaluation.py",
+      "source": "https://raw.githubusercontent.com/SWE-bench/SWE-bench/490635b2e9e775dca1e1d6b40ce9dbcff91e780f/swebench/harness/run_evaluation.py",
+      "local_sha256": "39b7e95f726df65c67f19f8d79a0f5f10f9d9e12e224076c8cb011851d060016",
+      "upstream_sha256": "39b7e95f726df65c67f19f8d79a0f5f10f9d9e12e224076c8cb011851d060016",
+      "match": true
+    },
+    {
+      "file": "swebench/harness/log_parsers/python.py",
+      "source": "https://raw.githubusercontent.com/SWE-bench/SWE-bench/490635b2e9e775dca1e1d6b40ce9dbcff91e780f/swebench/harness/log_parsers/python.py",
+      "local_sha256": "cd56156414f8327221e525665ace9b184f7d73e83b272d9eb3f545fb17c2d9bc",
+      "upstream_sha256": "cd56156414f8327221e525665ace9b184f7d73e83b272d9eb3f545fb17c2d9bc",
+      "match": true
+    },
+    {
+      "file": "swebench/harness/docker_utils.py",
+      "source": "https://raw.githubusercontent.com/SWE-bench/SWE-bench/490635b2e9e775dca1e1d6b40ce9dbcff91e780f/swebench/harness/docker_utils.py",
+      "local_sha256": "2c7bec870d5af8f439c468a019db3a4ec69be7c2f87972f32aed64aa95bf5025",
+      "upstream_sha256": "2c7bec870d5af8f439c468a019db3a4ec69be7c2f87972f32aed64aa95bf5025",
+      "match": true
+    },
+    {
+      "file": "swebench/harness/utils.py",
+      "source": "https://raw.githubusercontent.com/SWE-bench/SWE-bench/490635b2e9e775dca1e1d6b40ce9dbcff91e780f/swebench/harness/utils.py",
+      "local_sha256": "c22f38fdd4ffd34301da7f837b82926cf261d81ca0387d92dd2990b393517c79",
+      "upstream_sha256": "c22f38fdd4ffd34301da7f837b82926cf261d81ca0387d92dd2990b393517c79",
+      "match": true
+    },
+    {
+      "file": "transformers/models/qwen3_5/modeling_qwen3_5.py",
+      "source": "https://raw.githubusercontent.com/huggingface/transformers/v5.17.0/src/transformers/models/qwen3_5/modeling_qwen3_5.py",
+      "local_sha256": "762feb6c7426a7f15b5bf830df54c07438bf9e7c27b8cdb23179045920412c3b",
+      "upstream_sha256": "762feb6c7426a7f15b5bf830df54c07438bf9e7c27b8cdb23179045920412c3b",
+      "match": true
+    },
+    {
+      "file": "transformers/generation/utils.py",
+      "source": "https://raw.githubusercontent.com/huggingface/transformers/v5.17.0/src/transformers/generation/utils.py",
+      "local_sha256": "bb558d8676be95457126c82a32600dad206c13e4fb96b4f5d114f1f2483d7f62",
+      "upstream_sha256": "bb558d8676be95457126c82a32600dad206c13e4fb96b4f5d114f1f2483d7f62",
+      "match": true
+    },
+    {
+      "file": "peft/auto.py",
+      "source": "https://raw.githubusercontent.com/huggingface/peft/v0.21.2/src/peft/auto.py",
+      "local_sha256": "cb31d32a9bbb695b09e152bd94f5885428abba0876ce702a46908df5b07acbd6",
+      "upstream_sha256": "cb31d32a9bbb695b09e152bd94f5885428abba0876ce702a46908df5b07acbd6",
+      "match": true
+    },
+    {
+      "file": "Qwen/Qwen3.5-2B/README.md",
+      "source": "https://huggingface.co/Qwen/Qwen3.5-2B/resolve/15852e8c16360a2fea060d615a32b45270f8a8fc/README.md",
+      "local_sha256": "c0e83a849c776e6fa843d011f023132d942a0f0140d903205bf1c363adad2275",
+      "upstream_sha256": "c0e83a849c776e6fa843d011f023132d942a0f0140d903205bf1c363adad2275",
+      "match": true
+    },
+    {
+      "file": "Qwen/Qwen3.5-2B/LICENSE",
+      "source": "https://huggingface.co/Qwen/Qwen3.5-2B/resolve/15852e8c16360a2fea060d615a32b45270f8a8fc/LICENSE",
+      "local_sha256": "bbedc3fda3305820b977265f01b8619d87570a6739de3a5582c3464840f1e57a",
+      "upstream_sha256": "bbedc3fda3305820b977265f01b8619d87570a6739de3a5582c3464840f1e57a",
+      "match": true
+    },
+    {
+      "file": "Qwen/Qwen3.5-2B/config.json",
+      "source": "https://huggingface.co/Qwen/Qwen3.5-2B/resolve/15852e8c16360a2fea060d615a32b45270f8a8fc/config.json",
+      "local_sha256": "ed1c1723241f23f7f4e23430759cbd7dcfb4103cbdfe052bfe7626b57c2615b4",
+      "upstream_sha256": "ed1c1723241f23f7f4e23430759cbd7dcfb4103cbdfe052bfe7626b57c2615b4",
+      "match": true
+    },
+    {
+      "file": "Qwen/Qwen3.5-2B/tokenizer_config.json",
+      "source": "https://huggingface.co/Qwen/Qwen3.5-2B/resolve/15852e8c16360a2fea060d615a32b45270f8a8fc/tokenizer_config.json",
+      "local_sha256": "49e2b6e395f959f077f1e992b338919c0d4a9732fc6e613995e06557f843500c",
+      "upstream_sha256": "49e2b6e395f959f077f1e992b338919c0d4a9732fc6e613995e06557f843500c",
+      "match": true
+    },
+    {
+      "file": "Qwen/Qwen3.5-2B/chat_template.jinja",
+      "source": "https://huggingface.co/Qwen/Qwen3.5-2B/resolve/15852e8c16360a2fea060d615a32b45270f8a8fc/chat_template.jinja",
+      "local_sha256": "273d8e0e683b885071fb17e08d71e5f2a5ddfb5309756181681de4f5a1822d80",
+      "upstream_sha256": "273d8e0e683b885071fb17e08d71e5f2a5ddfb5309756181681de4f5a1822d80",
+      "match": true
+    },
+    {
+      "file": "files/09e8a9bcec8067104652c168685ab0931e7868f9c8284b66f5ae6edae5f1130b/LICENSE",
+      "source": "https://raw.githubusercontent.com/psf/requests/39d0fdd9096f7dceccbc8f82e1eda7dd64717a8e/LICENSE",
+      "local_sha256": "09e8a9bcec8067104652c168685ab0931e7868f9c8284b66f5ae6edae5f1130b",
+      "upstream_sha256": "09e8a9bcec8067104652c168685ab0931e7868f9c8284b66f5ae6edae5f1130b",
+      "match": true
+    },
+    {
+      "file": "files/09e8a9bcec8067104652c168685ab0931e7868f9c8284b66f5ae6edae5f1130b/LICENSE",
+      "source": "https://raw.githubusercontent.com/psf/requests/0192aac24123735b3eaf9b08df46429bb770c283/LICENSE",
+      "local_sha256": "09e8a9bcec8067104652c168685ab0931e7868f9c8284b66f5ae6edae5f1130b",
+      "upstream_sha256": "09e8a9bcec8067104652c168685ab0931e7868f9c8284b66f5ae6edae5f1130b",
+      "match": true
+    },
+    {
+      "file": "files/2e63a3bd3a1f97e2fa9fa33bbf4f61bbb56ee16beb125b5346b0012388dc3b49/LICENSE.rst",
+      "source": "https://raw.githubusercontent.com/pallets/flask/7ee9ceb71e868944a46e1ff00b506772a53a4f1d/artwork/LICENSE.rst",
+      "local_sha256": "2e63a3bd3a1f97e2fa9fa33bbf4f61bbb56ee16beb125b5346b0012388dc3b49",
+      "upstream_sha256": "2e63a3bd3a1f97e2fa9fa33bbf4f61bbb56ee16beb125b5346b0012388dc3b49",
+      "match": true
+    },
+    {
+      "file": "files/3172d399cbd8f10609e73fec73d0e0b33eecd3c572a68b0722229d8c7059f725/LICENSE",
+      "source": "https://raw.githubusercontent.com/psf/requests/39d0fdd9096f7dceccbc8f82e1eda7dd64717a8e/ext/LICENSE",
+      "local_sha256": "3172d399cbd8f10609e73fec73d0e0b33eecd3c572a68b0722229d8c7059f725",
+      "upstream_sha256": "3172d399cbd8f10609e73fec73d0e0b33eecd3c572a68b0722229d8c7059f725",
+      "match": true
+    },
+    {
+      "file": "files/3172d399cbd8f10609e73fec73d0e0b33eecd3c572a68b0722229d8c7059f725/LICENSE",
+      "source": "https://raw.githubusercontent.com/psf/requests/0192aac24123735b3eaf9b08df46429bb770c283/ext/LICENSE",
+      "local_sha256": "3172d399cbd8f10609e73fec73d0e0b33eecd3c572a68b0722229d8c7059f725",
+      "upstream_sha256": "3172d399cbd8f10609e73fec73d0e0b33eecd3c572a68b0722229d8c7059f725",
+      "match": true
+    },
+    {
+      "file": "files/3299f3fac35b42fbd3338044d9519ad8fd51ca72466a928a8732c54f8e2c9fd0/NOTICE",
+      "source": "https://raw.githubusercontent.com/psf/requests/5f7a3a74aab1625c2bb65f643197ee885e3da576/NOTICE",
+      "local_sha256": "3299f3fac35b42fbd3338044d9519ad8fd51ca72466a928a8732c54f8e2c9fd0",
+      "upstream_sha256": "3299f3fac35b42fbd3338044d9519ad8fd51ca72466a928a8732c54f8e2c9fd0",
+      "match": true
+    },
+    {
+      "file": "files/3299f3fac35b42fbd3338044d9519ad8fd51ca72466a928a8732c54f8e2c9fd0/NOTICE",
+      "source": "https://raw.githubusercontent.com/psf/requests/091991be0da19de9108dbe5e3752917fea3d7fdc/NOTICE",
+      "local_sha256": "3299f3fac35b42fbd3338044d9519ad8fd51ca72466a928a8732c54f8e2c9fd0",
+      "upstream_sha256": "3299f3fac35b42fbd3338044d9519ad8fd51ca72466a928a8732c54f8e2c9fd0",
+      "match": true
+    },
+    {
+      "file": "files/4158d74a42b099b603e597d24a344f395f47da8e187638f451795900f28d9bc4/NOTICE",
+      "source": "https://raw.githubusercontent.com/psf/requests/22623bd8c265b78b161542663ee980738441c307/NOTICE",
+      "local_sha256": "4158d74a42b099b603e597d24a344f395f47da8e187638f451795900f28d9bc4",
+      "upstream_sha256": "4158d74a42b099b603e597d24a344f395f47da8e187638f451795900f28d9bc4",
+      "match": true
+    },
+    {
+      "file": "files/45b6addd843b2ed89f9f8f363f61092db2e3c2461e3f178c3c3793648c3c4e07/license.rst",
+      "source": "https://raw.githubusercontent.com/pytest-dev/pytest/3c1534944cbd34e8a41bc9e76818018fadefc9a1/doc/en/license.rst",
+      "local_sha256": "45b6addd843b2ed89f9f8f363f61092db2e3c2461e3f178c3c3793648c3c4e07",
+      "upstream_sha256": "45b6addd843b2ed89f9f8f363f61092db2e3c2461e3f178c3c3793648c3c4e07",
+      "match": true
+    },
+    {
+      "file": "files/45b6addd843b2ed89f9f8f363f61092db2e3c2461e3f178c3c3793648c3c4e07/license.rst",
+      "source": "https://raw.githubusercontent.com/pytest-dev/pytest/aa55975c7d3f6c9f6d7f68accc41bb7cadf0eb9a/doc/en/license.rst",
+      "local_sha256": "45b6addd843b2ed89f9f8f363f61092db2e3c2461e3f178c3c3793648c3c4e07",
+      "upstream_sha256": "45b6addd843b2ed89f9f8f363f61092db2e3c2461e3f178c3c3793648c3c4e07",
+      "match": true
+    },
+    {
+      "file": "files/489a8e1108509ed98a37bb983e11e0f7e1d31f0bd8f99a79c8448e7ff37d07ea/LICENSE.rst",
+      "source": "https://raw.githubusercontent.com/pallets/flask/7ee9ceb71e868944a46e1ff00b506772a53a4f1d/LICENSE.rst",
+      "local_sha256": "489a8e1108509ed98a37bb983e11e0f7e1d31f0bd8f99a79c8448e7ff37d07ea",
+      "upstream_sha256": "489a8e1108509ed98a37bb983e11e0f7e1d31f0bd8f99a79c8448e7ff37d07ea",
+      "match": true
+    },
+    {
+      "file": "files/489a8e1108509ed98a37bb983e11e0f7e1d31f0bd8f99a79c8448e7ff37d07ea/LICENSE.rst",
+      "source": "https://raw.githubusercontent.com/pallets/flask/7ee9ceb71e868944a46e1ff00b506772a53a4f1d/examples/tutorial/LICENSE.rst",
+      "local_sha256": "489a8e1108509ed98a37bb983e11e0f7e1d31f0bd8f99a79c8448e7ff37d07ea",
+      "upstream_sha256": "489a8e1108509ed98a37bb983e11e0f7e1d31f0bd8f99a79c8448e7ff37d07ea",
+      "match": true
+    },
+    {
+      "file": "files/489a8e1108509ed98a37bb983e11e0f7e1d31f0bd8f99a79c8448e7ff37d07ea/LICENSE.rst",
+      "source": "https://raw.githubusercontent.com/pallets/flask/7ee9ceb71e868944a46e1ff00b506772a53a4f1d/examples/javascript/LICENSE.rst",
+      "local_sha256": "489a8e1108509ed98a37bb983e11e0f7e1d31f0bd8f99a79c8448e7ff37d07ea",
+      "upstream_sha256": "489a8e1108509ed98a37bb983e11e0f7e1d31f0bd8f99a79c8448e7ff37d07ea",
+      "match": true
+    },
+    {
+      "file": "files/4be38574daf05665b6194e4fd84c5ef6ce7c3a2810308a5222d5cdffc2d04d18/LICENSE",
+      "source": "https://raw.githubusercontent.com/pytest-dev/pytest/cb828ebe70b4fa35cd5f9a7ee024272237eab351/LICENSE",
+      "local_sha256": "4be38574daf05665b6194e4fd84c5ef6ce7c3a2810308a5222d5cdffc2d04d18",
+      "upstream_sha256": "4be38574daf05665b6194e4fd84c5ef6ce7c3a2810308a5222d5cdffc2d04d18",
+      "match": true
+    },
+    {
+      "file": "files/4be38574daf05665b6194e4fd84c5ef6ce7c3a2810308a5222d5cdffc2d04d18/LICENSE",
+      "source": "https://raw.githubusercontent.com/pytest-dev/pytest/8aba863a634f40560e25055d179220f0eefabe9a/LICENSE",
+      "local_sha256": "4be38574daf05665b6194e4fd84c5ef6ce7c3a2810308a5222d5cdffc2d04d18",
+      "upstream_sha256": "4be38574daf05665b6194e4fd84c5ef6ce7c3a2810308a5222d5cdffc2d04d18",
+      "match": true
+    },
+    {
+      "file": "files/4be38574daf05665b6194e4fd84c5ef6ce7c3a2810308a5222d5cdffc2d04d18/LICENSE",
+      "source": "https://raw.githubusercontent.com/pytest-dev/pytest/58e6a09db49f34886ff13f3b7520dd0bcd7063cd/LICENSE",
+      "local_sha256": "4be38574daf05665b6194e4fd84c5ef6ce7c3a2810308a5222d5cdffc2d04d18",
+      "upstream_sha256": "4be38574daf05665b6194e4fd84c5ef6ce7c3a2810308a5222d5cdffc2d04d18",
+      "match": true
+    },
+    {
+      "file": "files/4be38574daf05665b6194e4fd84c5ef6ce7c3a2810308a5222d5cdffc2d04d18/LICENSE",
+      "source": "https://raw.githubusercontent.com/pytest-dev/pytest/3a668ea6ff24b0c8f00498c3144c63bac561d925/LICENSE",
+      "local_sha256": "4be38574daf05665b6194e4fd84c5ef6ce7c3a2810308a5222d5cdffc2d04d18",
+      "upstream_sha256": "4be38574daf05665b6194e4fd84c5ef6ce7c3a2810308a5222d5cdffc2d04d18",
+      "match": true
+    },
+    {
+      "file": "files/4be38574daf05665b6194e4fd84c5ef6ce7c3a2810308a5222d5cdffc2d04d18/LICENSE",
+      "source": "https://raw.githubusercontent.com/pytest-dev/pytest/955e54221008aba577ecbaefa15679f6777d3bf8/LICENSE",
+      "local_sha256": "4be38574daf05665b6194e4fd84c5ef6ce7c3a2810308a5222d5cdffc2d04d18",
+      "upstream_sha256": "4be38574daf05665b6194e4fd84c5ef6ce7c3a2810308a5222d5cdffc2d04d18",
+      "match": true
+    },
+    {
+      "file": "files/4be38574daf05665b6194e4fd84c5ef6ce7c3a2810308a5222d5cdffc2d04d18/LICENSE",
+      "source": "https://raw.githubusercontent.com/pytest-dev/pytest/e856638ba086fcf5bebf1bebea32d5cf78de87b4/LICENSE",
+      "local_sha256": "4be38574daf05665b6194e4fd84c5ef6ce7c3a2810308a5222d5cdffc2d04d18",
+      "upstream_sha256": "4be38574daf05665b6194e4fd84c5ef6ce7c3a2810308a5222d5cdffc2d04d18",
+      "match": true
+    },
+    {
+      "file": "files/548eb62c9f5f5f7a121d15f26bb0d6a5ebb0cf7260584e0529ad65c56b39e83d/NOTICE",
+      "source": "https://raw.githubusercontent.com/psf/requests/3c88e520da24ae6f736929a750876e7654accc3d/NOTICE",
+      "local_sha256": "548eb62c9f5f5f7a121d15f26bb0d6a5ebb0cf7260584e0529ad65c56b39e83d",
+      "upstream_sha256": "548eb62c9f5f5f7a121d15f26bb0d6a5ebb0cf7260584e0529ad65c56b39e83d",
+      "match": true
+    },
+    {
+      "file": "files/6afc9d58f919ab52f4806a895a37aefe4d263f8e52278e6a1e87c5d7ec82299c/LICENSE",
+      "source": "https://raw.githubusercontent.com/psf/requests/5f7a3a74aab1625c2bb65f643197ee885e3da576/docs/_themes/LICENSE",
+      "local_sha256": "6afc9d58f919ab52f4806a895a37aefe4d263f8e52278e6a1e87c5d7ec82299c",
+      "upstream_sha256": "6afc9d58f919ab52f4806a895a37aefe4d263f8e52278e6a1e87c5d7ec82299c",
+      "match": true
+    },
+    {
+      "file": "files/6afc9d58f919ab52f4806a895a37aefe4d263f8e52278e6a1e87c5d7ec82299c/LICENSE",
+      "source": "https://raw.githubusercontent.com/psf/requests/22623bd8c265b78b161542663ee980738441c307/docs/_themes/LICENSE",
+      "local_sha256": "6afc9d58f919ab52f4806a895a37aefe4d263f8e52278e6a1e87c5d7ec82299c",
+      "upstream_sha256": "6afc9d58f919ab52f4806a895a37aefe4d263f8e52278e6a1e87c5d7ec82299c",
+      "match": true
+    },
+    {
+      "file": "files/6afc9d58f919ab52f4806a895a37aefe4d263f8e52278e6a1e87c5d7ec82299c/LICENSE",
+      "source": "https://raw.githubusercontent.com/psf/requests/3c88e520da24ae6f736929a750876e7654accc3d/docs/_themes/LICENSE",
+      "local_sha256": "6afc9d58f919ab52f4806a895a37aefe4d263f8e52278e6a1e87c5d7ec82299c",
+      "upstream_sha256": "6afc9d58f919ab52f4806a895a37aefe4d263f8e52278e6a1e87c5d7ec82299c",
+      "match": true
+    },
+    {
+      "file": "files/6afc9d58f919ab52f4806a895a37aefe4d263f8e52278e6a1e87c5d7ec82299c/LICENSE",
+      "source": "https://raw.githubusercontent.com/psf/requests/847735553aeda6e6633f2b32e14ba14ba86887a4/docs/_themes/LICENSE",
+      "local_sha256": "6afc9d58f919ab52f4806a895a37aefe4d263f8e52278e6a1e87c5d7ec82299c",
+      "upstream_sha256": "6afc9d58f919ab52f4806a895a37aefe4d263f8e52278e6a1e87c5d7ec82299c",
+      "match": true
+    },
+    {
+      "file": "files/6afc9d58f919ab52f4806a895a37aefe4d263f8e52278e6a1e87c5d7ec82299c/LICENSE",
+      "source": "https://raw.githubusercontent.com/psf/requests/39d0fdd9096f7dceccbc8f82e1eda7dd64717a8e/docs/_themes/LICENSE",
+      "local_sha256": "6afc9d58f919ab52f4806a895a37aefe4d263f8e52278e6a1e87c5d7ec82299c",
+      "upstream_sha256": "6afc9d58f919ab52f4806a895a37aefe4d263f8e52278e6a1e87c5d7ec82299c",
+      "match": true
+    },
+    {
+      "file": "files/6afc9d58f919ab52f4806a895a37aefe4d263f8e52278e6a1e87c5d7ec82299c/LICENSE",
+      "source": "https://raw.githubusercontent.com/psf/requests/0192aac24123735b3eaf9b08df46429bb770c283/docs/_themes/LICENSE",
+      "local_sha256": "6afc9d58f919ab52f4806a895a37aefe4d263f8e52278e6a1e87c5d7ec82299c",
+      "upstream_sha256": "6afc9d58f919ab52f4806a895a37aefe4d263f8e52278e6a1e87c5d7ec82299c",
+      "match": true
+    },
+    {
+      "file": "files/6afc9d58f919ab52f4806a895a37aefe4d263f8e52278e6a1e87c5d7ec82299c/LICENSE",
+      "source": "https://raw.githubusercontent.com/psf/requests/091991be0da19de9108dbe5e3752917fea3d7fdc/docs/_themes/LICENSE",
+      "local_sha256": "6afc9d58f919ab52f4806a895a37aefe4d263f8e52278e6a1e87c5d7ec82299c",
+      "upstream_sha256": "6afc9d58f919ab52f4806a895a37aefe4d263f8e52278e6a1e87c5d7ec82299c",
+      "match": true
+    },
+    {
+      "file": "files/6afc9d58f919ab52f4806a895a37aefe4d263f8e52278e6a1e87c5d7ec82299c/LICENSE",
+      "source": "https://raw.githubusercontent.com/psf/requests/1ba83c47ce7b177efe90d5f51f7760680f72eda0/docs/_themes/LICENSE",
+      "local_sha256": "6afc9d58f919ab52f4806a895a37aefe4d263f8e52278e6a1e87c5d7ec82299c",
+      "upstream_sha256": "6afc9d58f919ab52f4806a895a37aefe4d263f8e52278e6a1e87c5d7ec82299c",
+      "match": true
+    },
+    {
+      "file": "files/7535eac513edd12fb8e33f203c6a403549629e34b363418cdbd6c6ea5464515d/license.rst",
+      "source": "https://raw.githubusercontent.com/pallets/flask/7ee9ceb71e868944a46e1ff00b506772a53a4f1d/docs/license.rst",
+      "local_sha256": "7535eac513edd12fb8e33f203c6a403549629e34b363418cdbd6c6ea5464515d",
+      "upstream_sha256": "7535eac513edd12fb8e33f203c6a403549629e34b363418cdbd6c6ea5464515d",
+      "match": true
+    },
+    {
+      "file": "files/7898b9b164d4f93fd9a562fd0f592935518b48c4745303964110eb7f7fe64faf/LICENSE",
+      "source": "https://raw.githubusercontent.com/pytest-dev/pytest/a7e38c5c61928033a2dc1915cbee8caa8544a4d0/LICENSE",
+      "local_sha256": "7898b9b164d4f93fd9a562fd0f592935518b48c4745303964110eb7f7fe64faf",
+      "upstream_sha256": "7898b9b164d4f93fd9a562fd0f592935518b48c4745303964110eb7f7fe64faf",
+      "match": true
+    },
+    {
+      "file": "files/7898b9b164d4f93fd9a562fd0f592935518b48c4745303964110eb7f7fe64faf/LICENSE",
+      "source": "https://raw.githubusercontent.com/pytest-dev/pytest/e6e300e729dd33956e5448d8be9a0b1540b4e53a/LICENSE",
+      "local_sha256": "7898b9b164d4f93fd9a562fd0f592935518b48c4745303964110eb7f7fe64faf",
+      "upstream_sha256": "7898b9b164d4f93fd9a562fd0f592935518b48c4745303964110eb7f7fe64faf",
+      "match": true
+    },
+    {
+      "file": "files/7898b9b164d4f93fd9a562fd0f592935518b48c4745303964110eb7f7fe64faf/LICENSE",
+      "source": "https://raw.githubusercontent.com/pytest-dev/pytest/41d211c24a6781843b174379d6d6538f5c17adb9/LICENSE",
+      "local_sha256": "7898b9b164d4f93fd9a562fd0f592935518b48c4745303964110eb7f7fe64faf",
+      "upstream_sha256": "7898b9b164d4f93fd9a562fd0f592935518b48c4745303964110eb7f7fe64faf",
+      "match": true
+    },
+    {
+      "file": "files/7898b9b164d4f93fd9a562fd0f592935518b48c4745303964110eb7f7fe64faf/LICENSE",
+      "source": "https://raw.githubusercontent.com/pytest-dev/pytest/5e7f1ab4bf58e473e5d7f878eb2b499d7deabd29/LICENSE",
+      "local_sha256": "7898b9b164d4f93fd9a562fd0f592935518b48c4745303964110eb7f7fe64faf",
+      "upstream_sha256": "7898b9b164d4f93fd9a562fd0f592935518b48c4745303964110eb7f7fe64faf",
+      "match": true
+    },
+    {
+      "file": "files/7898b9b164d4f93fd9a562fd0f592935518b48c4745303964110eb7f7fe64faf/LICENSE",
+      "source": "https://raw.githubusercontent.com/pytest-dev/pytest/7f7a36478abe7dd1fa993b115d22606aa0e35e88/LICENSE",
+      "local_sha256": "7898b9b164d4f93fd9a562fd0f592935518b48c4745303964110eb7f7fe64faf",
+      "upstream_sha256": "7898b9b164d4f93fd9a562fd0f592935518b48c4745303964110eb7f7fe64faf",
+      "match": true
+    },
+    {
+      "file": "files/7898b9b164d4f93fd9a562fd0f592935518b48c4745303964110eb7f7fe64faf/LICENSE",
+      "source": "https://raw.githubusercontent.com/pytest-dev/pytest/422685d0bdc110547535036c1ff398b5e1c44145/LICENSE",
+      "local_sha256": "7898b9b164d4f93fd9a562fd0f592935518b48c4745303964110eb7f7fe64faf",
+      "upstream_sha256": "7898b9b164d4f93fd9a562fd0f592935518b48c4745303964110eb7f7fe64faf",
+      "match": true
+    },
+    {
+      "file": "files/7898b9b164d4f93fd9a562fd0f592935518b48c4745303964110eb7f7fe64faf/LICENSE",
+      "source": "https://raw.githubusercontent.com/pytest-dev/pytest/c98bc4cd3d687fe9b392d8eecd905627191d4f06/LICENSE",
+      "local_sha256": "7898b9b164d4f93fd9a562fd0f592935518b48c4745303964110eb7f7fe64faf",
+      "upstream_sha256": "7898b9b164d4f93fd9a562fd0f592935518b48c4745303964110eb7f7fe64faf",
+      "match": true
+    },
+    {
+      "file": "files/89478f1915fbb6b6585a685d071bf006ba5649d2615fab787f66e9693c622ae4/LICENSE",
+      "source": "https://raw.githubusercontent.com/psf/requests/3c88e520da24ae6f736929a750876e7654accc3d/LICENSE",
+      "local_sha256": "89478f1915fbb6b6585a685d071bf006ba5649d2615fab787f66e9693c622ae4",
+      "upstream_sha256": "89478f1915fbb6b6585a685d071bf006ba5649d2615fab787f66e9693c622ae4",
+      "match": true
+    },
+    {
+      "file": "files/89478f1915fbb6b6585a685d071bf006ba5649d2615fab787f66e9693c622ae4/LICENSE",
+      "source": "https://raw.githubusercontent.com/psf/requests/091991be0da19de9108dbe5e3752917fea3d7fdc/LICENSE",
+      "local_sha256": "89478f1915fbb6b6585a685d071bf006ba5649d2615fab787f66e9693c622ae4",
+      "upstream_sha256": "89478f1915fbb6b6585a685d071bf006ba5649d2615fab787f66e9693c622ae4",
+      "match": true
+    },
+    {
+      "file": "files/923e6b481ff75c709737251e602bdc311a9be49235b5c20107366747f5640fe4/README.md",
+      "source": "https://huggingface.co/datasets/SWE-bench/SWE-bench_Verified/resolve/78f471bf655a3137b2e8a75af1501690ec009ec3/README.md",
+      "local_sha256": "923e6b481ff75c709737251e602bdc311a9be49235b5c20107366747f5640fe4",
+      "upstream_sha256": "923e6b481ff75c709737251e602bdc311a9be49235b5c20107366747f5640fe4",
+      "match": true
+    },
+    {
+      "file": "files/9c1e620a5cf8e74fe81c1fd4c55e9cc0b189fc04e677cfc7ef915de746c3f59e/LICENSE",
+      "source": "https://raw.githubusercontent.com/pytest-dev/pytest/cb828ebe70b4fa35cd5f9a7ee024272237eab351/doc/en/_themes/LICENSE",
+      "local_sha256": "9c1e620a5cf8e74fe81c1fd4c55e9cc0b189fc04e677cfc7ef915de746c3f59e",
+      "upstream_sha256": "9c1e620a5cf8e74fe81c1fd4c55e9cc0b189fc04e677cfc7ef915de746c3f59e",
+      "match": true
+    },
+    {
+      "file": "files/9c1e620a5cf8e74fe81c1fd4c55e9cc0b189fc04e677cfc7ef915de746c3f59e/LICENSE",
+      "source": "https://raw.githubusercontent.com/pytest-dev/pytest/8aba863a634f40560e25055d179220f0eefabe9a/doc/en/_themes/LICENSE",
+      "local_sha256": "9c1e620a5cf8e74fe81c1fd4c55e9cc0b189fc04e677cfc7ef915de746c3f59e",
+      "upstream_sha256": "9c1e620a5cf8e74fe81c1fd4c55e9cc0b189fc04e677cfc7ef915de746c3f59e",
+      "match": true
+    },
+    {
+      "file": "files/9c1e620a5cf8e74fe81c1fd4c55e9cc0b189fc04e677cfc7ef915de746c3f59e/LICENSE",
+      "source": "https://raw.githubusercontent.com/pytest-dev/pytest/58e6a09db49f34886ff13f3b7520dd0bcd7063cd/doc/en/_themes/LICENSE",
+      "local_sha256": "9c1e620a5cf8e74fe81c1fd4c55e9cc0b189fc04e677cfc7ef915de746c3f59e",
+      "upstream_sha256": "9c1e620a5cf8e74fe81c1fd4c55e9cc0b189fc04e677cfc7ef915de746c3f59e",
+      "match": true
+    },
+    {
+      "file": "files/9c1e620a5cf8e74fe81c1fd4c55e9cc0b189fc04e677cfc7ef915de746c3f59e/LICENSE",
+      "source": "https://raw.githubusercontent.com/pytest-dev/pytest/3a668ea6ff24b0c8f00498c3144c63bac561d925/doc/en/_themes/LICENSE",
+      "local_sha256": "9c1e620a5cf8e74fe81c1fd4c55e9cc0b189fc04e677cfc7ef915de746c3f59e",
+      "upstream_sha256": "9c1e620a5cf8e74fe81c1fd4c55e9cc0b189fc04e677cfc7ef915de746c3f59e",
+      "match": true
+    },
+    {
+      "file": "files/9c1e620a5cf8e74fe81c1fd4c55e9cc0b189fc04e677cfc7ef915de746c3f59e/LICENSE",
+      "source": "https://raw.githubusercontent.com/pytest-dev/pytest/5e7f1ab4bf58e473e5d7f878eb2b499d7deabd29/doc/en/_themes/LICENSE",
+      "local_sha256": "9c1e620a5cf8e74fe81c1fd4c55e9cc0b189fc04e677cfc7ef915de746c3f59e",
+      "upstream_sha256": "9c1e620a5cf8e74fe81c1fd4c55e9cc0b189fc04e677cfc7ef915de746c3f59e",
+      "match": true
+    },
+    {
+      "file": "files/9c1e620a5cf8e74fe81c1fd4c55e9cc0b189fc04e677cfc7ef915de746c3f59e/LICENSE",
+      "source": "https://raw.githubusercontent.com/pytest-dev/pytest/955e54221008aba577ecbaefa15679f6777d3bf8/doc/en/_themes/LICENSE",
+      "local_sha256": "9c1e620a5cf8e74fe81c1fd4c55e9cc0b189fc04e677cfc7ef915de746c3f59e",
+      "upstream_sha256": "9c1e620a5cf8e74fe81c1fd4c55e9cc0b189fc04e677cfc7ef915de746c3f59e",
+      "match": true
+    },
+    {
+      "file": "files/9c1e620a5cf8e74fe81c1fd4c55e9cc0b189fc04e677cfc7ef915de746c3f59e/LICENSE",
+      "source": "https://raw.githubusercontent.com/pytest-dev/pytest/e856638ba086fcf5bebf1bebea32d5cf78de87b4/doc/en/_themes/LICENSE",
+      "local_sha256": "9c1e620a5cf8e74fe81c1fd4c55e9cc0b189fc04e677cfc7ef915de746c3f59e",
+      "upstream_sha256": "9c1e620a5cf8e74fe81c1fd4c55e9cc0b189fc04e677cfc7ef915de746c3f59e",
+      "match": true
+    },
+    {
+      "file": "files/9c1e620a5cf8e74fe81c1fd4c55e9cc0b189fc04e677cfc7ef915de746c3f59e/LICENSE",
+      "source": "https://raw.githubusercontent.com/pytest-dev/pytest/c98bc4cd3d687fe9b392d8eecd905627191d4f06/doc/en/_themes/LICENSE",
+      "local_sha256": "9c1e620a5cf8e74fe81c1fd4c55e9cc0b189fc04e677cfc7ef915de746c3f59e",
+      "upstream_sha256": "9c1e620a5cf8e74fe81c1fd4c55e9cc0b189fc04e677cfc7ef915de746c3f59e",
+      "match": true
+    },
+    {
+      "file": "files/b081522b6b841e6a5348025fa8897f8ec2b8b7fd2e8da0240a219d78ce955d72/license.rst",
+      "source": "https://raw.githubusercontent.com/pytest-dev/pytest/8aba863a634f40560e25055d179220f0eefabe9a/doc/en/license.rst",
+      "local_sha256": "b081522b6b841e6a5348025fa8897f8ec2b8b7fd2e8da0240a219d78ce955d72",
+      "upstream_sha256": "b081522b6b841e6a5348025fa8897f8ec2b8b7fd2e8da0240a219d78ce955d72",
+      "match": true
+    },
+    {
+      "file": "files/b081522b6b841e6a5348025fa8897f8ec2b8b7fd2e8da0240a219d78ce955d72/license.rst",
+      "source": "https://raw.githubusercontent.com/pytest-dev/pytest/58e6a09db49f34886ff13f3b7520dd0bcd7063cd/doc/en/license.rst",
+      "local_sha256": "b081522b6b841e6a5348025fa8897f8ec2b8b7fd2e8da0240a219d78ce955d72",
+      "upstream_sha256": "b081522b6b841e6a5348025fa8897f8ec2b8b7fd2e8da0240a219d78ce955d72",
+      "match": true
+    },
+    {
+      "file": "files/c031540c6951209351ce0b9bcf1cdf689abb277bcb07780d74f448f882a4a869/LICENSE",
+      "source": "https://raw.githubusercontent.com/psf/requests/5f7a3a74aab1625c2bb65f643197ee885e3da576/LICENSE",
+      "local_sha256": "c031540c6951209351ce0b9bcf1cdf689abb277bcb07780d74f448f882a4a869",
+      "upstream_sha256": "c031540c6951209351ce0b9bcf1cdf689abb277bcb07780d74f448f882a4a869",
+      "match": true
+    },
+    {
+      "file": "files/c11460418c5164a489643eae3da311d0fb1d61931c71c64ff83090c1cad1184b/LICENSE",
+      "source": "https://raw.githubusercontent.com/psf/requests/22623bd8c265b78b161542663ee980738441c307/LICENSE",
+      "local_sha256": "c11460418c5164a489643eae3da311d0fb1d61931c71c64ff83090c1cad1184b",
+      "upstream_sha256": "c11460418c5164a489643eae3da311d0fb1d61931c71c64ff83090c1cad1184b",
+      "match": true
+    },
+    {
+      "file": "files/c11460418c5164a489643eae3da311d0fb1d61931c71c64ff83090c1cad1184b/LICENSE",
+      "source": "https://raw.githubusercontent.com/psf/requests/847735553aeda6e6633f2b32e14ba14ba86887a4/LICENSE",
+      "local_sha256": "c11460418c5164a489643eae3da311d0fb1d61931c71c64ff83090c1cad1184b",
+      "upstream_sha256": "c11460418c5164a489643eae3da311d0fb1d61931c71c64ff83090c1cad1184b",
+      "match": true
+    },
+    {
+      "file": "files/c11460418c5164a489643eae3da311d0fb1d61931c71c64ff83090c1cad1184b/LICENSE",
+      "source": "https://raw.githubusercontent.com/psf/requests/1ba83c47ce7b177efe90d5f51f7760680f72eda0/LICENSE",
+      "local_sha256": "c11460418c5164a489643eae3da311d0fb1d61931c71c64ff83090c1cad1184b",
+      "upstream_sha256": "c11460418c5164a489643eae3da311d0fb1d61931c71c64ff83090c1cad1184b",
+      "match": true
+    },
+    {
+      "file": "files/c5a19279faa765293604633bae8b70a06582416c93cdac20b1b81af77a51d957/NOTICE",
+      "source": "https://raw.githubusercontent.com/psf/requests/847735553aeda6e6633f2b32e14ba14ba86887a4/NOTICE",
+      "local_sha256": "c5a19279faa765293604633bae8b70a06582416c93cdac20b1b81af77a51d957",
+      "upstream_sha256": "c5a19279faa765293604633bae8b70a06582416c93cdac20b1b81af77a51d957",
+      "match": true
+    },
+    {
+      "file": "files/c5a19279faa765293604633bae8b70a06582416c93cdac20b1b81af77a51d957/NOTICE",
+      "source": "https://raw.githubusercontent.com/psf/requests/1ba83c47ce7b177efe90d5f51f7760680f72eda0/NOTICE",
+      "local_sha256": "c5a19279faa765293604633bae8b70a06582416c93cdac20b1b81af77a51d957",
+      "upstream_sha256": "c5a19279faa765293604633bae8b70a06582416c93cdac20b1b81af77a51d957",
+      "match": true
+    },
+    {
+      "file": "files/ca836a5f9ecca3b2f350230faa20a48fb8b145653b5568d784862df864706b9b/LICENSE",
+      "source": "https://raw.githubusercontent.com/pytest-dev/pytest/3c1534944cbd34e8a41bc9e76818018fadefc9a1/LICENSE",
+      "local_sha256": "ca836a5f9ecca3b2f350230faa20a48fb8b145653b5568d784862df864706b9b",
+      "upstream_sha256": "ca836a5f9ecca3b2f350230faa20a48fb8b145653b5568d784862df864706b9b",
+      "match": true
+    },
+    {
+      "file": "files/ca836a5f9ecca3b2f350230faa20a48fb8b145653b5568d784862df864706b9b/LICENSE",
+      "source": "https://raw.githubusercontent.com/pytest-dev/pytest/aa55975c7d3f6c9f6d7f68accc41bb7cadf0eb9a/LICENSE",
+      "local_sha256": "ca836a5f9ecca3b2f350230faa20a48fb8b145653b5568d784862df864706b9b",
+      "upstream_sha256": "ca836a5f9ecca3b2f350230faa20a48fb8b145653b5568d784862df864706b9b",
+      "match": true
+    },
+    {
+      "file": "files/d1a0ff0c217e8885134a5759953e971addadafee9cd7f428901d0c22af10a741/license.rst",
+      "source": "https://raw.githubusercontent.com/pytest-dev/pytest/a7e38c5c61928033a2dc1915cbee8caa8544a4d0/doc/en/license.rst",
+      "local_sha256": "d1a0ff0c217e8885134a5759953e971addadafee9cd7f428901d0c22af10a741",
+      "upstream_sha256": "d1a0ff0c217e8885134a5759953e971addadafee9cd7f428901d0c22af10a741",
+      "match": true
+    },
+    {
+      "file": "files/d1a0ff0c217e8885134a5759953e971addadafee9cd7f428901d0c22af10a741/license.rst",
+      "source": "https://raw.githubusercontent.com/pytest-dev/pytest/e6e300e729dd33956e5448d8be9a0b1540b4e53a/doc/en/license.rst",
+      "local_sha256": "d1a0ff0c217e8885134a5759953e971addadafee9cd7f428901d0c22af10a741",
+      "upstream_sha256": "d1a0ff0c217e8885134a5759953e971addadafee9cd7f428901d0c22af10a741",
+      "match": true
+    },
+    {
+      "file": "files/d1a0ff0c217e8885134a5759953e971addadafee9cd7f428901d0c22af10a741/license.rst",
+      "source": "https://raw.githubusercontent.com/pytest-dev/pytest/41d211c24a6781843b174379d6d6538f5c17adb9/doc/en/license.rst",
+      "local_sha256": "d1a0ff0c217e8885134a5759953e971addadafee9cd7f428901d0c22af10a741",
+      "upstream_sha256": "d1a0ff0c217e8885134a5759953e971addadafee9cd7f428901d0c22af10a741",
+      "match": true
+    },
+    {
+      "file": "files/d1a0ff0c217e8885134a5759953e971addadafee9cd7f428901d0c22af10a741/license.rst",
+      "source": "https://raw.githubusercontent.com/pytest-dev/pytest/5e7f1ab4bf58e473e5d7f878eb2b499d7deabd29/doc/en/license.rst",
+      "local_sha256": "d1a0ff0c217e8885134a5759953e971addadafee9cd7f428901d0c22af10a741",
+      "upstream_sha256": "d1a0ff0c217e8885134a5759953e971addadafee9cd7f428901d0c22af10a741",
+      "match": true
+    },
+    {
+      "file": "files/d1a0ff0c217e8885134a5759953e971addadafee9cd7f428901d0c22af10a741/license.rst",
+      "source": "https://raw.githubusercontent.com/pytest-dev/pytest/7f7a36478abe7dd1fa993b115d22606aa0e35e88/doc/en/license.rst",
+      "local_sha256": "d1a0ff0c217e8885134a5759953e971addadafee9cd7f428901d0c22af10a741",
+      "upstream_sha256": "d1a0ff0c217e8885134a5759953e971addadafee9cd7f428901d0c22af10a741",
+      "match": true
+    },
+    {
+      "file": "files/d1a0ff0c217e8885134a5759953e971addadafee9cd7f428901d0c22af10a741/license.rst",
+      "source": "https://raw.githubusercontent.com/pytest-dev/pytest/422685d0bdc110547535036c1ff398b5e1c44145/doc/en/license.rst",
+      "local_sha256": "d1a0ff0c217e8885134a5759953e971addadafee9cd7f428901d0c22af10a741",
+      "upstream_sha256": "d1a0ff0c217e8885134a5759953e971addadafee9cd7f428901d0c22af10a741",
+      "match": true
+    },
+    {
+      "file": "files/d1a0ff0c217e8885134a5759953e971addadafee9cd7f428901d0c22af10a741/license.rst",
+      "source": "https://raw.githubusercontent.com/pytest-dev/pytest/c98bc4cd3d687fe9b392d8eecd905627191d4f06/doc/en/license.rst",
+      "local_sha256": "d1a0ff0c217e8885134a5759953e971addadafee9cd7f428901d0c22af10a741",
+      "upstream_sha256": "d1a0ff0c217e8885134a5759953e971addadafee9cd7f428901d0c22af10a741",
+      "match": true
+    },
+    {
+      "file": "files/f5110972dedad2b4e9d314518daf3b7d72d6e02e499acd802181de6f74571dcc/NOTICE",
+      "source": "https://raw.githubusercontent.com/psf/requests/39d0fdd9096f7dceccbc8f82e1eda7dd64717a8e/NOTICE",
+      "local_sha256": "f5110972dedad2b4e9d314518daf3b7d72d6e02e499acd802181de6f74571dcc",
+      "upstream_sha256": "f5110972dedad2b4e9d314518daf3b7d72d6e02e499acd802181de6f74571dcc",
+      "match": true
+    },
+    {
+      "file": "files/f5110972dedad2b4e9d314518daf3b7d72d6e02e499acd802181de6f74571dcc/NOTICE",
+      "source": "https://raw.githubusercontent.com/psf/requests/0192aac24123735b3eaf9b08df46429bb770c283/NOTICE",
+      "local_sha256": "f5110972dedad2b4e9d314518daf3b7d72d6e02e499acd802181de6f74571dcc",
+      "upstream_sha256": "f5110972dedad2b4e9d314518daf3b7d72d6e02e499acd802181de6f74571dcc",
+      "match": true
+    },
+    {
+      "file": "files/f5984f7fb86791cd3de98fe74008db28c6bf4139323b8912ab5441af5ddc79fe/license.rst",
+      "source": "https://raw.githubusercontent.com/pytest-dev/pytest/cb828ebe70b4fa35cd5f9a7ee024272237eab351/doc/en/license.rst",
+      "local_sha256": "f5984f7fb86791cd3de98fe74008db28c6bf4139323b8912ab5441af5ddc79fe",
+      "upstream_sha256": "f5984f7fb86791cd3de98fe74008db28c6bf4139323b8912ab5441af5ddc79fe",
+      "match": true
+    },
+    {
+      "file": "files/f5984f7fb86791cd3de98fe74008db28c6bf4139323b8912ab5441af5ddc79fe/license.rst",
+      "source": "https://raw.githubusercontent.com/pytest-dev/pytest/3a668ea6ff24b0c8f00498c3144c63bac561d925/doc/en/license.rst",
+      "local_sha256": "f5984f7fb86791cd3de98fe74008db28c6bf4139323b8912ab5441af5ddc79fe",
+      "upstream_sha256": "f5984f7fb86791cd3de98fe74008db28c6bf4139323b8912ab5441af5ddc79fe",
+      "match": true
+    },
+    {
+      "file": "files/f5984f7fb86791cd3de98fe74008db28c6bf4139323b8912ab5441af5ddc79fe/license.rst",
+      "source": "https://raw.githubusercontent.com/pytest-dev/pytest/955e54221008aba577ecbaefa15679f6777d3bf8/doc/en/license.rst",
+      "local_sha256": "f5984f7fb86791cd3de98fe74008db28c6bf4139323b8912ab5441af5ddc79fe",
+      "upstream_sha256": "f5984f7fb86791cd3de98fe74008db28c6bf4139323b8912ab5441af5ddc79fe",
+      "match": true
+    },
+    {
+      "file": "files/f5984f7fb86791cd3de98fe74008db28c6bf4139323b8912ab5441af5ddc79fe/license.rst",
+      "source": "https://raw.githubusercontent.com/pytest-dev/pytest/e856638ba086fcf5bebf1bebea32d5cf78de87b4/doc/en/license.rst",
+      "local_sha256": "f5984f7fb86791cd3de98fe74008db28c6bf4139323b8912ab5441af5ddc79fe",
+      "upstream_sha256": "f5984f7fb86791cd3de98fe74008db28c6bf4139323b8912ab5441af5ddc79fe",
+      "match": true
+    },
+    {
+      "file": "files/f97b14080de8b8490d60eb3d620ebc419943e0779466d1dd0d5d6f68fe195dcd/LICENSE",
+      "source": "https://raw.githubusercontent.com/pylint-dev/pylint/3c5eca2ded3dd2b59ebaf23eb289453b5d2930f0/LICENSE",
+      "local_sha256": "f97b14080de8b8490d60eb3d620ebc419943e0779466d1dd0d5d6f68fe195dcd",
+      "upstream_sha256": "f97b14080de8b8490d60eb3d620ebc419943e0779466d1dd0d5d6f68fe195dcd",
+      "match": true
+    },
+    {
+      "file": "files/f97b14080de8b8490d60eb3d620ebc419943e0779466d1dd0d5d6f68fe195dcd/LICENSE",
+      "source": "https://raw.githubusercontent.com/pylint-dev/pylint/754b487f4d892e3d4872b6fc7468a71db4e31c13/LICENSE",
+      "local_sha256": "f97b14080de8b8490d60eb3d620ebc419943e0779466d1dd0d5d6f68fe195dcd",
+      "upstream_sha256": "f97b14080de8b8490d60eb3d620ebc419943e0779466d1dd0d5d6f68fe195dcd",
+      "match": true
+    },
+    {
+      "file": "files/f97b14080de8b8490d60eb3d620ebc419943e0779466d1dd0d5d6f68fe195dcd/LICENSE",
+      "source": "https://raw.githubusercontent.com/pylint-dev/pylint/40cc2ffd7887959157aaf469e09585ec2be7f528/LICENSE",
+      "local_sha256": "f97b14080de8b8490d60eb3d620ebc419943e0779466d1dd0d5d6f68fe195dcd",
+      "upstream_sha256": "f97b14080de8b8490d60eb3d620ebc419943e0779466d1dd0d5d6f68fe195dcd",
+      "match": true
+    },
+    {
+      "file": "files/f97b14080de8b8490d60eb3d620ebc419943e0779466d1dd0d5d6f68fe195dcd/LICENSE",
+      "source": "https://raw.githubusercontent.com/pylint-dev/pylint/ca80f03a43bc39e4cc2c67dc99817b3c9f13b8a6/LICENSE",
+      "local_sha256": "f97b14080de8b8490d60eb3d620ebc419943e0779466d1dd0d5d6f68fe195dcd",
+      "upstream_sha256": "f97b14080de8b8490d60eb3d620ebc419943e0779466d1dd0d5d6f68fe195dcd",
+      "match": true
+    },
+    {
+      "file": "files/f97b14080de8b8490d60eb3d620ebc419943e0779466d1dd0d5d6f68fe195dcd/LICENSE",
+      "source": "https://raw.githubusercontent.com/pylint-dev/pylint/1d1619ef913b99b06647d2030bddff4800abdf63/LICENSE",
+      "local_sha256": "f97b14080de8b8490d60eb3d620ebc419943e0779466d1dd0d5d6f68fe195dcd",
+      "upstream_sha256": "f97b14080de8b8490d60eb3d620ebc419943e0779466d1dd0d5d6f68fe195dcd",
+      "match": true
+    },
+    {
+      "file": "files/f97b14080de8b8490d60eb3d620ebc419943e0779466d1dd0d5d6f68fe195dcd/LICENSE",
+      "source": "https://raw.githubusercontent.com/pylint-dev/pylint/99589b08de8c5a2c6cc61e13a37420a868c80599/LICENSE",
+      "local_sha256": "f97b14080de8b8490d60eb3d620ebc419943e0779466d1dd0d5d6f68fe195dcd",
+      "upstream_sha256": "f97b14080de8b8490d60eb3d620ebc419943e0779466d1dd0d5d6f68fe195dcd",
+      "match": true
+    },
+    {
+      "file": "files/f97b14080de8b8490d60eb3d620ebc419943e0779466d1dd0d5d6f68fe195dcd/LICENSE",
+      "source": "https://raw.githubusercontent.com/pylint-dev/pylint/273a8b25620467c1e5686aa8d2a1dbb8c02c78d0/LICENSE",
+      "local_sha256": "f97b14080de8b8490d60eb3d620ebc419943e0779466d1dd0d5d6f68fe195dcd",
+      "upstream_sha256": "f97b14080de8b8490d60eb3d620ebc419943e0779466d1dd0d5d6f68fe195dcd",
+      "match": true
+    },
+    {
+      "file": "files/f97b14080de8b8490d60eb3d620ebc419943e0779466d1dd0d5d6f68fe195dcd/LICENSE",
+      "source": "https://raw.githubusercontent.com/pylint-dev/pylint/1f8c4d9eb185c16a2c1d881c054f015e1c2eb334/LICENSE",
+      "local_sha256": "f97b14080de8b8490d60eb3d620ebc419943e0779466d1dd0d5d6f68fe195dcd",
+      "upstream_sha256": "f97b14080de8b8490d60eb3d620ebc419943e0779466d1dd0d5d6f68fe195dcd",
+      "match": true
+    }
+  ],
+  "swebench": {
+    "release_commit": "490635b2e9e775dca1e1d6b40ce9dbcff91e780f",
+    "wheel": {
+      "url": "https://files.pythonhosted.org/packages/10/a4/bf16e5aca9d69c600a2b32ebb9212bb9c5a274621cb5f542b72fd634a75c/swebench-5.0.2-py3-none-any.whl",
+      "hash": "sha256:b7f0416a1e686eca22c2f749b5f816685a202835032f6683080e2b53545bbb62",
+      "size": 142715,
+      "upload-time": "2026-08-18T19:30:37.084Z"
+    },
+    "installed_source_sha256": {
+      "swebench/__init__.py": "39f6961d946aefd41c0ceb23ea4f910e5c3cf4a28a415efc1d9fd958f96efd8c",
+      "swebench/logger.py": "c0286d3de68cfa1ff8b816211840e3ba698dda463e0de6f73eef9ea8fe26cde8",
+      "swebench/types.py": "558b6e7193306c304f9847a8a83dcab6a03ee333f6d51e61152e8821f89e0725",
+      "swebench/utils.py": "9888a97bded2df810c466a5c660e71105780cefd1cb8c42d7f7833f2af7ee016",
+      "swebench/cli/__init__.py": "41bbc7629d8b5233d933dd1a2004440c0312d8a451b8b04e51859cb563c2abc3",
+      "swebench/cli/_datasets.py": "18fa4844d6ccc06ef45a4b94fff88a2640c86e2924151e8d7570796b80dc7b73",
+      "swebench/cli/cli.py": "83ea8c8d7ac800471f8e9499c031970d3ff6f59f445058201f93baa08844a338",
+      "swebench/cli/dataset.py": "a00c4d6ac953414dbd75479e8e3a973f01edea89d56cfaade6495085776d8351",
+      "swebench/cli/evaluate.py": "440f775a7a3ce91ac316afc5a25914f07e8bd1a922f2a6928625460112687d0b",
+      "swebench/cli/images.py": "f9ff6f3fed1105fbf54ab5f595b1d0cf73fe07340c05e531d9212a7ad2ee7e4e",
+      "swebench/collect/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "swebench/collect/build_dataset.py": "035d9e33f59e3cbc325fc7ca817b6cac9feaea9288bdfc33aac42cc7c714f5a1",
+      "swebench/collect/build_dataset_ft.py": "c7d9817b6ad5c009f79c20e1e492c869116bc2f531e5094542660e594025801f",
+      "swebench/collect/get_tasks_pipeline.py": "0c8cef1d04620095f8f448b391f205dd2c3fc43c3f78ff93480e11fdaf44c2a9",
+      "swebench/collect/get_top_pypi.py": "f3662bd7bd06b5d1f2b7f40c10879dedc587bd9966c868b2b11b8ba78612327e",
+      "swebench/collect/print_pulls.py": "09a2a626e5d16f6181e70c3f4063e24acd570d1f4f029bee078b5d1764686f64",
+      "swebench/collect/utils.py": "8ce5a1c86028c003f7b7e566a3fa3ab2002b32c0a3e362fa4785a3b79d0ae85a",
+      "swebench/harness/__init__.py": "33ed461c70f7d4490f7986f41b19c05fd95adab2bcafd513be9dae33ce5d67c5",
+      "swebench/harness/docker_utils.py": "2c7bec870d5af8f439c468a019db3a4ec69be7c2f87972f32aed64aa95bf5025",
+      "swebench/harness/grading.py": "a095273010175001a6779e365b3b77abb8657c7ac2e4f80b4bc360faa6f09483",
+      "swebench/harness/infra_failure.py": "72eaca5e8f76390ff9ac1d2d606f5390820b88efe6eed56efed8ff520c593eac",
+      "swebench/harness/remove_containers.py": "dd85def8be8f727b1f9cb247f5897c34031a79171e3ac973d50eafbf46c0dd52",
+      "swebench/harness/reporting.py": "0e0eb5be4ebec061cd7e3839c0cc3001923fea36016ad9a417a3b70efbc8a902",
+      "swebench/harness/run_evaluation.py": "39b7e95f726df65c67f19f8d79a0f5f10f9d9e12e224076c8cb011851d060016",
+      "swebench/harness/utils.py": "c22f38fdd4ffd34301da7f837b82926cf261d81ca0387d92dd2990b393517c79",
+      "swebench/harness/constants/__init__.py": "a81685ccf9d7f28d02fe7559d6ad038b6afb564ff8fc681ff12e6f976abf4bbf",
+      "swebench/harness/log_parsers/__init__.py": "2227a8696ce43a4266dccfa434374afaff43df6bd0b1769f431f5efe76500c14",
+      "swebench/harness/log_parsers/c.py": "861a34ce7e596fd5d155ac15bf88acdc495ce12da13a8ae8bbdf8b07edee5e00",
+      "swebench/harness/log_parsers/go.py": "b604f1e26ddbffad22a14ec012e0235046f006abe43c88a01b13fba3f144f731",
+      "swebench/harness/log_parsers/java.py": "427b4c1e8361c1ca11461d34ec977356f3550fdc2328a78b9be394bcc5da0bdb",
+      "swebench/harness/log_parsers/javascript.py": "87e907b21b54b08b84a4819fa8b7214f7df5f4eb93be586dfea1d5cd2245eb1a",
+      "swebench/harness/log_parsers/php.py": "869f5a8654c73f7f75a6ddd441f3068566a30bb5a0b6d242769cb0b715a14c1d",
+      "swebench/harness/log_parsers/python.py": "cd56156414f8327221e525665ace9b184f7d73e83b272d9eb3f545fb17c2d9bc",
+      "swebench/harness/log_parsers/ruby.py": "3328c72a360fc518473382dfcf8117172ed8cbb89b7838b4c0801e5fe6547bcf",
+      "swebench/harness/log_parsers/rust.py": "1cfa511d1ee6a60a858b08aed9cc14e0b5438869173c12b16022d328d8a3c587",
+      "swebench/harness/modal_eval/__init__.py": "12dfa706b83207d00f8e1f7754040d1feb034ab075dbd90e52eca7ed2b5cde53",
+      "swebench/harness/modal_eval/run_evaluation_modal.py": "6ce64c45790ea08f633044dcdbdf45998b8d09c49e55cae1e2383c03ea6d6f91",
+      "swebench/harness/modal_eval/run_evaluation_modal_entrypoint.py": "266e75d0352baadb61c10bd8169fb186f708b1a3c0f9b0985135ec8acb6c5013",
+      "swebench/harness/modal_eval/utils.py": "08bcabe245d56230e45aab9fcacdf3a7a4630d511abd50d2826f04ee40376c7d",
+      "swebench/image_builder/__init__.py": "325c78465e3b676ed03482d013655b964873fdd61bc46b8784f3007b3b36eec0",
+      "swebench/image_builder/docker_build.py": "9d979c9046a76edd0bed9385eb4835f13695610b10be17b4fc71d6b731f8517b",
+      "swebench/image_builder/docker_utils.py": "531ca159311dccadc7a5c38785c8d7ec95bd083d195f3840a074dff8d524860a",
+      "swebench/image_builder/image_spec.py": "2853e2b8f6dc957a5efee8f295813be2d5a72c7fcdaedc51fd048742c98746db",
+      "swebench/image_builder/prepare_images.py": "4979e78aa2c4bd024a8a3b8228db78ebdcbeca12e9e92f04e84657f76b077604",
+      "swebench/image_builder/constants/__init__.py": "5c7ef833bc2d6bcf50dde4de17a8c76534934b5addf4b5af308d2aa027a19da3",
+      "swebench/inference/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "swebench/inference/run_api.py": "34ec8a6b3a24170ee2fb0162b6c62ec71e0ff541e61a94f6c3521a22b6cd2618",
+      "swebench/inference/run_live.py": "9115fa213850e199e6df16778ebbfa529b5d3c725c12d36184582f0c2c9c3d21",
+      "swebench/inference/run_llama.py": "b7a4e12f2e2eb67144a187a5a6aae0ee6eb9d002a6978bcdfcb80f8539706d60",
+      "swebench/inference/usage.py": "7bb681c53dd4567f1c9dfa44061a036eea6aabc0ed7c99c9b515a7a370d4bf4f",
+      "swebench/inference/llamao/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "swebench/inference/llamao/distributed_attention.py": "f70a1dfbedadc50bddc771a0ce1f72e876d5242f940bfe11363d8afbd88d0680",
+      "swebench/inference/llamao/modeling_flash_llama.py": "e526ca1456d66c5d238d73adb22dc3f562bfc546f7b38332d3f2ccd9f680ffd5",
+      "swebench/inference/make_datasets/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "swebench/inference/make_datasets/bm25_retrieval.py": "7225665c01c3238450f5af8123ea02684b6c92a05dac34844077b06f7e7ada46",
+      "swebench/inference/make_datasets/create_instance.py": "4e91747bdba29b4931b1220fbe88ceaadf9fa8e46a23a343b508f7e6749d3bf6",
+      "swebench/inference/make_datasets/create_text_dataset.py": "d2ed0d0371bc99af1d653004a1f87fba27bfc8ee289b5482645feaaa738da261",
+      "swebench/inference/make_datasets/eval_retrieval.py": "be73a91ed6c3ae78cfe0b202fe76382689286fa0119ca1a03eaa47e8d5a6e6cd",
+      "swebench/inference/make_datasets/tokenize_dataset.py": "d867a7aef979b5e07ff11dd6fd05c52bb9553f64ad6a0308a9bd3a2fbbdf5b69",
+      "swebench/inference/make_datasets/utils.py": "3d5263c2ed851c6199a5af8481e1e51e7a8a6e476177176fb09ebc5df5c7f0a6",
+      "swebench/resources/__init__.py": "56dac1a3dc3816e1c52cab148702580e914fa629b5f2ca8feecbb6a9dcefd1e1",
+      "swebench/task/__init__.py": "63c9699663a9974aaf54a01d1cff66e627e3f4a749f634da83d1e0ee01555fc4",
+      "swebench/task/checks.py": "61d206e2a0d9c36b788fcfdbe2547bed40923936f2a6734fbcb229204cdbc7bc",
+      "swebench/task/publish.py": "e26a17b1366e9fb44ea201a8c2759e0a7de4670da63bce5df206b2ad0ff5af5b",
+      "swebench/task/repo.py": "3d473d52decec6e6f67f8ff0ad36347ae5626309d8f67c35574002f03a715894"
+    }
+  },
+  "review_input_commit": "a62534d0f283134c709c73fd8f5df6f9b5dbc811",
+  "materials": [
+    {
+      "path": ".env.example",
+      "git_blob": "6258749f300b1bb408ee13c6737f7f5b35f7ae62",
+      "role": "project instructions, license, dependency or operational configuration"
+    },
+    {
+      "path": ".gitattributes",
+      "git_blob": "a3e3192f512efeb66ecb21ffef52300ebb3baaa9",
+      "role": "project instructions, license, dependency or operational configuration"
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "git_blob": "941515c38da960e835898464475ecfab95ef102c",
+      "role": "project instructions, license, dependency or operational configuration"
+    },
+    {
+      "path": ".github/workflows/pages.yml",
+      "git_blob": "59f6367569060b7b3d3c79535d56832807902fd4",
+      "role": "project instructions, license, dependency or operational configuration"
+    },
+    {
+      "path": ".gitignore",
+      "git_blob": "0f4950d4fe4eca85b9717a1ba4f869bbe91e903c",
+      "role": "project instructions, license, dependency or operational configuration"
+    },
+    {
+      "path": ".python-version",
+      "git_blob": "e4fba2183587225f216eeada4c78dfab6b2e65f5",
+      "role": "project instructions, license, dependency or operational configuration"
+    },
+    {
+      "path": "AGENTS.md",
+      "git_blob": "c476e85b10e990c8ad3dbec89b1ac322f7cba5bb",
+      "role": "project instructions, license, dependency or operational configuration"
+    },
+    {
+      "path": "LICENSE",
+      "git_blob": "d9b2671a0c60f0c30293108013a3ca1dd34d227f",
+      "role": "project instructions, license, dependency or operational configuration"
+    },
+    {
+      "path": "README.md",
+      "git_blob": "6b4027e8b45d2ce2a7b2c89e8a773550495c3b2f",
+      "role": "authored scientific and user-facing interpretation"
+    },
+    {
+      "path": "configs/no_delegation_eval.toml",
+      "git_blob": "c3d4575db84fcd43029478f3b4426da8c6edf518",
+      "role": "original design or input identities"
+    },
+    {
+      "path": "configs/pilot.toml",
+      "git_blob": "8905e3576334729affacfc309ba05a1c222c873c",
+      "role": "original design or input identities"
+    },
+    {
+      "path": "configs/pilot_recovery.toml",
+      "git_blob": "eb8ec224f7bf4b6a255dcf9eafc44bd0e31ad88f",
+      "role": "original design or input identities"
+    },
+    {
+      "path": "configs/procedural.toml",
+      "git_blob": "3ba788a5bfe5959e64e71ae721b0e462950c7ea0",
+      "role": "original design or input identities"
+    },
+    {
+      "path": "configs/repair_only.toml",
+      "git_blob": "ff814fdac2f8685a6f17cfb5608a37f797b98df3",
+      "role": "original design or input identities"
+    },
+    {
+      "path": "configs/seed_1.toml",
+      "git_blob": "9d1b3d23e5fb1850d64309aa45068e48482c6d9e",
+      "role": "original design or input identities"
+    },
+    {
+      "path": "configs/seed_2.toml",
+      "git_blob": "e432abbb9a9d6676e822863b72b908589db5d20d",
+      "role": "original design or input identities"
+    },
+    {
+      "path": "configs/single_agent.toml",
+      "git_blob": "0386287993cd6349c370abd86e03c882a151ff96",
+      "role": "original design or input identities"
+    },
+    {
+      "path": "docs/controls.md",
+      "git_blob": "01083b055b773386f5ec4e45483d11c2a6f976ac",
+      "role": "authored scientific and user-facing interpretation"
+    },
+    {
+      "path": "docs/licenses/README.md",
+      "git_blob": "dce3ffecba2cb2e506f6fa928af34cde2cba9239",
+      "role": "upstream notices, provenance and copies"
+    },
+    {
+      "path": "docs/licenses/files/09e8a9bcec8067104652c168685ab0931e7868f9c8284b66f5ae6edae5f1130b/LICENSE",
+      "git_blob": "67db8588217f266eb561f75fae738656325deac9",
+      "role": "upstream notices, provenance and copies"
+    },
+    {
+      "path": "docs/licenses/files/2e63a3bd3a1f97e2fa9fa33bbf4f61bbb56ee16beb125b5346b0012388dc3b49/LICENSE.rst",
+      "git_blob": "99c58a2127c35d774be7d529cd359b02951b97a4",
+      "role": "upstream notices, provenance and copies"
+    },
+    {
+      "path": "docs/licenses/files/3172d399cbd8f10609e73fec73d0e0b33eecd3c572a68b0722229d8c7059f725/LICENSE",
+      "git_blob": "c38aa5c3f55a389eb2c015eb40cd67f2c15d633c",
+      "role": "upstream notices, provenance and copies"
+    },
+    {
+      "path": "docs/licenses/files/3299f3fac35b42fbd3338044d9519ad8fd51ca72466a928a8732c54f8e2c9fd0/NOTICE",
+      "git_blob": "f583e47ab293de98e4579cab28a42d2423620b89",
+      "role": "upstream notices, provenance and copies"
+    },
+    {
+      "path": "docs/licenses/files/4158d74a42b099b603e597d24a344f395f47da8e187638f451795900f28d9bc4/NOTICE",
+      "git_blob": "f523feaa13aa5c30f18446e04fe4231a97468eec",
+      "role": "upstream notices, provenance and copies"
+    },
+    {
+      "path": "docs/licenses/files/45b6addd843b2ed89f9f8f363f61092db2e3c2461e3f178c3c3793648c3c4e07/license.rst",
+      "git_blob": "acbfb8bdb110e96798813a1b96fc4f871d74f826",
+      "role": "upstream notices, provenance and copies"
+    },
+    {
+      "path": "docs/licenses/files/489a8e1108509ed98a37bb983e11e0f7e1d31f0bd8f99a79c8448e7ff37d07ea/LICENSE.rst",
+      "git_blob": "9d227a0cc43c3268d15722b763bd94ad298645a1",
+      "role": "upstream notices, provenance and copies"
+    },
+    {
+      "path": "docs/licenses/files/4be38574daf05665b6194e4fd84c5ef6ce7c3a2810308a5222d5cdffc2d04d18/LICENSE",
+      "git_blob": "477af2d2e458f6c91c16ccc330222558d85ff182",
+      "role": "upstream notices, provenance and copies"
+    },
+    {
+      "path": "docs/licenses/files/548eb62c9f5f5f7a121d15f26bb0d6a5ebb0cf7260584e0529ad65c56b39e83d/NOTICE",
+      "git_blob": "4d69475ca26f6cbc1d7eb3beea085bcd01f92549",
+      "role": "upstream notices, provenance and copies"
+    },
+    {
+      "path": "docs/licenses/files/6afc9d58f919ab52f4806a895a37aefe4d263f8e52278e6a1e87c5d7ec82299c/LICENSE",
+      "git_blob": "3d1e04a257aa9a7a51fbd87e3dc7cbef01f5b97b",
+      "role": "upstream notices, provenance and copies"
+    },
+    {
+      "path": "docs/licenses/files/7535eac513edd12fb8e33f203c6a403549629e34b363418cdbd6c6ea5464515d/license.rst",
+      "git_blob": "f3f64823b9b55e74d8e42a106d14e1efe87dd8b4",
+      "role": "upstream notices, provenance and copies"
+    },
+    {
+      "path": "docs/licenses/files/7898b9b164d4f93fd9a562fd0f592935518b48c4745303964110eb7f7fe64faf/LICENSE",
+      "git_blob": "d14fb7ff4b34be8cfb361a3ce90a0e881475a97a",
+      "role": "upstream notices, provenance and copies"
+    },
+    {
+      "path": "docs/licenses/files/89478f1915fbb6b6585a685d071bf006ba5649d2615fab787f66e9693c622ae4/LICENSE",
+      "git_blob": "8c5e758401020484b74d00c0aa75debfc7b65155",
+      "role": "upstream notices, provenance and copies"
+    },
+    {
+      "path": "docs/licenses/files/923e6b481ff75c709737251e602bdc311a9be49235b5c20107366747f5640fe4/README.md",
+      "git_blob": "daf334bb09b79f4d41a853a228c6c451fb6a8bdd",
+      "role": "upstream notices, provenance and copies"
+    },
+    {
+      "path": "docs/licenses/files/9c1e620a5cf8e74fe81c1fd4c55e9cc0b189fc04e677cfc7ef915de746c3f59e/LICENSE",
+      "git_blob": "8daab7ee6efe3b6f3c2a2594b711e7a9026eb5e2",
+      "role": "upstream notices, provenance and copies"
+    },
+    {
+      "path": "docs/licenses/files/b081522b6b841e6a5348025fa8897f8ec2b8b7fd2e8da0240a219d78ce955d72/license.rst",
+      "git_blob": "5ee55cf96f83c12db90240d69e7547dc114536c4",
+      "role": "upstream notices, provenance and copies"
+    },
+    {
+      "path": "docs/licenses/files/c031540c6951209351ce0b9bcf1cdf689abb277bcb07780d74f448f882a4a869/LICENSE",
+      "git_blob": "a103fc915e990579af74f603923df168fb8400ef",
+      "role": "upstream notices, provenance and copies"
+    },
+    {
+      "path": "docs/licenses/files/c11460418c5164a489643eae3da311d0fb1d61931c71c64ff83090c1cad1184b/LICENSE",
+      "git_blob": "ca97ae0ead74791eed720be61d19497580cb4ad5",
+      "role": "upstream notices, provenance and copies"
+    },
+    {
+      "path": "docs/licenses/files/c5a19279faa765293604633bae8b70a06582416c93cdac20b1b81af77a51d957/NOTICE",
+      "git_blob": "b9a1de116ab81a19bf7592187b35d6bc33652c7e",
+      "role": "upstream notices, provenance and copies"
+    },
+    {
+      "path": "docs/licenses/files/ca836a5f9ecca3b2f350230faa20a48fb8b145653b5568d784862df864706b9b/LICENSE",
+      "git_blob": "c3f1657fce94589bd1ec7cead810639047f3d359",
+      "role": "upstream notices, provenance and copies"
+    },
+    {
+      "path": "docs/licenses/files/d1a0ff0c217e8885134a5759953e971addadafee9cd7f428901d0c22af10a741/license.rst",
+      "git_blob": "c6c10bbf358c4b1b16241b113c67a6dbff0e18f3",
+      "role": "upstream notices, provenance and copies"
+    },
+    {
+      "path": "docs/licenses/files/f5110972dedad2b4e9d314518daf3b7d72d6e02e499acd802181de6f74571dcc/NOTICE",
+      "git_blob": "1ff62db688277b77c83c1766dac7f165364d3528",
+      "role": "upstream notices, provenance and copies"
+    },
+    {
+      "path": "docs/licenses/files/f5984f7fb86791cd3de98fe74008db28c6bf4139323b8912ab5441af5ddc79fe/license.rst",
+      "git_blob": "d94b34a990873c20e01fff34ac2b6a25af1dfbc8",
+      "role": "upstream notices, provenance and copies"
+    },
+    {
+      "path": "docs/licenses/files/f97b14080de8b8490d60eb3d620ebc419943e0779466d1dd0d5d6f68fe195dcd/LICENSE",
+      "git_blob": "8c4c849e2321672c89cc1a58df54da6043021ca9",
+      "role": "upstream notices, provenance and copies"
+    },
+    {
+      "path": "docs/licenses/provenance.json",
+      "git_blob": "0628d02ba23c0641555a7ad6933f6e901f8fddb4",
+      "role": "upstream notices, provenance and copies"
+    },
+    {
+      "path": "docs/sources.md",
+      "git_blob": "2f80a306a8e7ddd92762716cfe113b7ba8f8ff59",
+      "role": "authored scientific and user-facing interpretation"
+    },
+    {
+      "path": "manifests/environment.json",
+      "git_blob": "a7e461fc5aba581ace78546f0ba8dce5b7883f29",
+      "role": "original design or input identities"
+    },
+    {
+      "path": "manifests/evaluation.json",
+      "git_blob": "0a7b346e26793b0b199b3afe674562f3d7fbf82d",
+      "role": "original design or input identities"
+    },
+    {
+      "path": "manifests/image_pins.json",
+      "git_blob": "86cef86959e3226e4fc62f8421d289d92b8a1ddc",
+      "role": "original design or input identities"
+    },
+    {
+      "path": "manifests/model.json",
+      "git_blob": "cddbc305ef476eda8e37499d5f4349f9da8b39c2",
+      "role": "original design or input identities"
+    },
+    {
+      "path": "manifests/recovery.json",
+      "git_blob": "3d1c94f3636be7758c6f82f4c6f46e54efd675d1",
+      "role": "original design or input identities"
+    },
+    {
+      "path": "manifests/repositories.json",
+      "git_blob": "c9b77e55b51a95e3c8d0b05fb0d5fbb6adcea0b3",
+      "role": "original design or input identities"
+    },
+    {
+      "path": "manifests/synthetic.json",
+      "git_blob": "74aa6ae6d11e2878757eb53c03d0e481dbf9bdf2",
+      "role": "original design or input identities"
+    },
+    {
+      "path": "pyproject.toml",
+      "git_blob": "df1ba80a8540bcfb1ec9fac8c5995677d83206cb",
+      "role": "project instructions, license, dependency or operational configuration"
+    },
+    {
+      "path": "reports/audit-verification-2026-11-12.json",
+      "git_blob": "b607b2006917bfd089e5dea6a4a25038bedebdc6",
+      "role": "dated historical verification record"
+    },
+    {
+      "path": "reports/claim-coverage-2026-11-12.json",
+      "git_blob": "bf5c9885cfc60302311052d320cf46b9d4adef0d",
+      "role": "dated historical verification record"
+    },
+    {
+      "path": "reports/delivery-verification.json",
+      "git_blob": "6f88343c886cb25faae2bbd156e4c00a7cd1aee0",
+      "role": "dated historical verification record"
+    },
+    {
+      "path": "reports/generated/evidence-audit.json",
+      "git_blob": "4672c467376e037c9e33f213b524ad26d9c9682b",
+      "role": "derived presentation of archived records"
+    },
+    {
+      "path": "reports/generated/experiment.md",
+      "git_blob": "6c2a236442a7d5e2817cc8af88405c94d7dab13f",
+      "role": "derived presentation of archived records"
+    },
+    {
+      "path": "reports/generated/experiments-summary.md",
+      "git_blob": "6542a35d0500cca0ea1c5f36f45da5cf0dd8c42e",
+      "role": "derived presentation of archived records"
+    },
+    {
+      "path": "reports/generated/figures/architecture.png",
+      "git_blob": "3f53de85e886d8e592873c26db019130e3017f29",
+      "role": "derived presentation of archived records"
+    },
+    {
+      "path": "reports/generated/figures/loss.png",
+      "git_blob": "7a078cab7338dc62a916c9a464e35bfc1759703f",
+      "role": "derived presentation of archived records"
+    },
+    {
+      "path": "reports/generated/figures/memory.png",
+      "git_blob": "8a6768714b64000e113d82492d7d1a0b7ca4fedb",
+      "role": "derived presentation of archived records"
+    },
+    {
+      "path": "reports/generated/figures/rewards.png",
+      "git_blob": "743f137465da015f392e0a30db6f8b51182a64d5",
+      "role": "derived presentation of archived records"
+    },
+    {
+      "path": "reports/generated/figures/scores.png",
+      "git_blob": "26ce1f1bd85537cfc1c13d7af934f33314c72a27",
+      "role": "derived presentation of archived records"
+    },
+    {
+      "path": "reports/generated/figures/tokens.png",
+      "git_blob": "c605e0dc169bdc2234ef56bc88b792977443d940",
+      "role": "derived presentation of archived records"
+    },
+    {
+      "path": "reports/generated/figures/validity.png",
+      "git_blob": "e8200aa543363c4f6f5dbc4e8a57c6daf7771e6a",
+      "role": "derived presentation of archived records"
+    },
+    {
+      "path": "reports/generated/independent-audit-2026-11-12.md",
+      "git_blob": "9098252d0d3a4ad54abed376eee9078e866f0f78",
+      "role": "derived presentation of archived records"
+    },
+    {
+      "path": "reports/generated/licenses/README.md",
+      "git_blob": "dce3ffecba2cb2e506f6fa928af34cde2cba9239",
+      "role": "upstream notices, provenance and copies"
+    },
+    {
+      "path": "reports/generated/licenses/files/09e8a9bcec8067104652c168685ab0931e7868f9c8284b66f5ae6edae5f1130b/LICENSE",
+      "git_blob": "67db8588217f266eb561f75fae738656325deac9",
+      "role": "upstream notices, provenance and copies"
+    },
+    {
+      "path": "reports/generated/licenses/files/2e63a3bd3a1f97e2fa9fa33bbf4f61bbb56ee16beb125b5346b0012388dc3b49/LICENSE.rst",
+      "git_blob": "99c58a2127c35d774be7d529cd359b02951b97a4",
+      "role": "upstream notices, provenance and copies"
+    },
+    {
+      "path": "reports/generated/licenses/files/3172d399cbd8f10609e73fec73d0e0b33eecd3c572a68b0722229d8c7059f725/LICENSE",
+      "git_blob": "c38aa5c3f55a389eb2c015eb40cd67f2c15d633c",
+      "role": "upstream notices, provenance and copies"
+    },
+    {
+      "path": "reports/generated/licenses/files/3299f3fac35b42fbd3338044d9519ad8fd51ca72466a928a8732c54f8e2c9fd0/NOTICE",
+      "git_blob": "f583e47ab293de98e4579cab28a42d2423620b89",
+      "role": "upstream notices, provenance and copies"
+    },
+    {
+      "path": "reports/generated/licenses/files/4158d74a42b099b603e597d24a344f395f47da8e187638f451795900f28d9bc4/NOTICE",
+      "git_blob": "f523feaa13aa5c30f18446e04fe4231a97468eec",
+      "role": "upstream notices, provenance and copies"
+    },
+    {
+      "path": "reports/generated/licenses/files/45b6addd843b2ed89f9f8f363f61092db2e3c2461e3f178c3c3793648c3c4e07/license.rst",
+      "git_blob": "acbfb8bdb110e96798813a1b96fc4f871d74f826",
+      "role": "upstream notices, provenance and copies"
+    },
+    {
+      "path": "reports/generated/licenses/files/489a8e1108509ed98a37bb983e11e0f7e1d31f0bd8f99a79c8448e7ff37d07ea/LICENSE.rst",
+      "git_blob": "9d227a0cc43c3268d15722b763bd94ad298645a1",
+      "role": "upstream notices, provenance and copies"
+    },
+    {
+      "path": "reports/generated/licenses/files/4be38574daf05665b6194e4fd84c5ef6ce7c3a2810308a5222d5cdffc2d04d18/LICENSE",
+      "git_blob": "477af2d2e458f6c91c16ccc330222558d85ff182",
+      "role": "upstream notices, provenance and copies"
+    },
+    {
+      "path": "reports/generated/licenses/files/548eb62c9f5f5f7a121d15f26bb0d6a5ebb0cf7260584e0529ad65c56b39e83d/NOTICE",
+      "git_blob": "4d69475ca26f6cbc1d7eb3beea085bcd01f92549",
+      "role": "upstream notices, provenance and copies"
+    },
+    {
+      "path": "reports/generated/licenses/files/6afc9d58f919ab52f4806a895a37aefe4d263f8e52278e6a1e87c5d7ec82299c/LICENSE",
+      "git_blob": "3d1e04a257aa9a7a51fbd87e3dc7cbef01f5b97b",
+      "role": "upstream notices, provenance and copies"
+    },
+    {
+      "path": "reports/generated/licenses/files/7535eac513edd12fb8e33f203c6a403549629e34b363418cdbd6c6ea5464515d/license.rst",
+      "git_blob": "f3f64823b9b55e74d8e42a106d14e1efe87dd8b4",
+      "role": "upstream notices, provenance and copies"
+    },
+    {
+      "path": "reports/generated/licenses/files/7898b9b164d4f93fd9a562fd0f592935518b48c4745303964110eb7f7fe64faf/LICENSE",
+      "git_blob": "d14fb7ff4b34be8cfb361a3ce90a0e881475a97a",
+      "role": "upstream notices, provenance and copies"
+    },
+    {
+      "path": "reports/generated/licenses/files/89478f1915fbb6b6585a685d071bf006ba5649d2615fab787f66e9693c622ae4/LICENSE",
+      "git_blob": "8c5e758401020484b74d00c0aa75debfc7b65155",
+      "role": "upstream notices, provenance and copies"
+    },
+    {
+      "path": "reports/generated/licenses/files/923e6b481ff75c709737251e602bdc311a9be49235b5c20107366747f5640fe4/README.md",
+      "git_blob": "daf334bb09b79f4d41a853a228c6c451fb6a8bdd",
+      "role": "upstream notices, provenance and copies"
+    },
+    {
+      "path": "reports/generated/licenses/files/9c1e620a5cf8e74fe81c1fd4c55e9cc0b189fc04e677cfc7ef915de746c3f59e/LICENSE",
+      "git_blob": "8daab7ee6efe3b6f3c2a2594b711e7a9026eb5e2",
+      "role": "upstream notices, provenance and copies"
+    },
+    {
+      "path": "reports/generated/licenses/files/b081522b6b841e6a5348025fa8897f8ec2b8b7fd2e8da0240a219d78ce955d72/license.rst",
+      "git_blob": "5ee55cf96f83c12db90240d69e7547dc114536c4",
+      "role": "upstream notices, provenance and copies"
+    },
+    {
+      "path": "reports/generated/licenses/files/c031540c6951209351ce0b9bcf1cdf689abb277bcb07780d74f448f882a4a869/LICENSE",
+      "git_blob": "a103fc915e990579af74f603923df168fb8400ef",
+      "role": "upstream notices, provenance and copies"
+    },
+    {
+      "path": "reports/generated/licenses/files/c11460418c5164a489643eae3da311d0fb1d61931c71c64ff83090c1cad1184b/LICENSE",
+      "git_blob": "ca97ae0ead74791eed720be61d19497580cb4ad5",
+      "role": "upstream notices, provenance and copies"
+    },
+    {
+      "path": "reports/generated/licenses/files/c5a19279faa765293604633bae8b70a06582416c93cdac20b1b81af77a51d957/NOTICE",
+      "git_blob": "b9a1de116ab81a19bf7592187b35d6bc33652c7e",
+      "role": "upstream notices, provenance and copies"
+    },
+    {
+      "path": "reports/generated/licenses/files/ca836a5f9ecca3b2f350230faa20a48fb8b145653b5568d784862df864706b9b/LICENSE",
+      "git_blob": "c3f1657fce94589bd1ec7cead810639047f3d359",
+      "role": "upstream notices, provenance and copies"
+    },
+    {
+      "path": "reports/generated/licenses/files/d1a0ff0c217e8885134a5759953e971addadafee9cd7f428901d0c22af10a741/license.rst",
+      "git_blob": "c6c10bbf358c4b1b16241b113c67a6dbff0e18f3",
+      "role": "upstream notices, provenance and copies"
+    },
+    {
+      "path": "reports/generated/licenses/files/f5110972dedad2b4e9d314518daf3b7d72d6e02e499acd802181de6f74571dcc/NOTICE",
+      "git_blob": "1ff62db688277b77c83c1766dac7f165364d3528",
+      "role": "upstream notices, provenance and copies"
+    },
+    {
+      "path": "reports/generated/licenses/files/f5984f7fb86791cd3de98fe74008db28c6bf4139323b8912ab5441af5ddc79fe/license.rst",
+      "git_blob": "d94b34a990873c20e01fff34ac2b6a25af1dfbc8",
+      "role": "upstream notices, provenance and copies"
+    },
+    {
+      "path": "reports/generated/licenses/files/f97b14080de8b8490d60eb3d620ebc419943e0779466d1dd0d5d6f68fe195dcd/LICENSE",
+      "git_blob": "8c4c849e2321672c89cc1a58df54da6043021ca9",
+      "role": "upstream notices, provenance and copies"
+    },
+    {
+      "path": "reports/generated/licenses/provenance.json",
+      "git_blob": "0628d02ba23c0641555a7ad6933f6e901f8fddb4",
+      "role": "upstream notices, provenance and copies"
+    },
+    {
+      "path": "reports/generated/paper.md",
+      "git_blob": "cc83a94fbf7edf4cad0316b35acf51dffeced60a",
+      "role": "derived presentation of archived records"
+    },
+    {
+      "path": "reports/generated/paper.pdf",
+      "git_blob": "fdaa0c9b377e9cba564617cf691ffefece178106",
+      "role": "derived presentation of archived records"
+    },
+    {
+      "path": "reports/generated/preregistration.md",
+      "git_blob": "73d60033b3c7f014cb9d6ddf70d5aa7bfcf57c67",
+      "role": "derived presentation of archived records"
+    },
+    {
+      "path": "reports/generated/summary.json",
+      "git_blob": "00f3e4b8672a1f9b7918b4493eb885fd79bc85db",
+      "role": "derived presentation of archived records"
+    },
+    {
+      "path": "reports/immutable-evidence-2026-11-12.json",
+      "git_blob": "1d3a29ca01b01569960a1619cd492ad1fb2c4ece",
+      "role": "dated historical verification record"
+    },
+    {
+      "path": "reports/independent-audit-2026-11-12.md",
+      "git_blob": "9098252d0d3a4ad54abed376eee9078e866f0f78",
+      "role": "dated historical verification record"
+    },
+    {
+      "path": "reports/preregistration.md",
+      "git_blob": "73d60033b3c7f014cb9d6ddf70d5aa7bfcf57c67",
+      "role": "original design or input identities"
+    },
+    {
+      "path": "reports/source-verification-2026-11-12.json",
+      "git_blob": "f86a9900e49ee3c59d9b074dc6fa25f90c5085ed",
+      "role": "dated historical verification record"
+    },
+    {
+      "path": "scripts/verify_audit.py",
+      "git_blob": "69e37fad31f9d4414a5ec75186422acd506e3d35",
+      "role": "implemented behavior or historical verification software"
+    },
+    {
+      "path": "site/dist/.nojekyll",
+      "git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "role": "derived presentation of archived records"
+    },
+    {
+      "path": "site/dist/app.js",
+      "git_blob": "9cd8b6101f028421489c5ab4770222d680dd9343",
+      "role": "derived presentation of archived records"
+    },
+    {
+      "path": "site/dist/data.json",
+      "git_blob": "00f3e4b8672a1f9b7918b4493eb885fd79bc85db",
+      "role": "derived presentation of archived records"
+    },
+    {
+      "path": "site/dist/evidence-audit.json",
+      "git_blob": "4672c467376e037c9e33f213b524ad26d9c9682b",
+      "role": "derived presentation of archived records"
+    },
+    {
+      "path": "site/dist/experiment.md",
+      "git_blob": "6c2a236442a7d5e2817cc8af88405c94d7dab13f",
+      "role": "derived presentation of archived records"
+    },
+    {
+      "path": "site/dist/experiments-summary.md",
+      "git_blob": "6542a35d0500cca0ea1c5f36f45da5cf0dd8c42e",
+      "role": "derived presentation of archived records"
+    },
+    {
+      "path": "site/dist/figures/architecture.png",
+      "git_blob": "3f53de85e886d8e592873c26db019130e3017f29",
+      "role": "derived presentation of archived records"
+    },
+    {
+      "path": "site/dist/figures/loss.png",
+      "git_blob": "7a078cab7338dc62a916c9a464e35bfc1759703f",
+      "role": "derived presentation of archived records"
+    },
+    {
+      "path": "site/dist/figures/memory.png",
+      "git_blob": "8a6768714b64000e113d82492d7d1a0b7ca4fedb",
+      "role": "derived presentation of archived records"
+    },
+    {
+      "path": "site/dist/figures/rewards.png",
+      "git_blob": "743f137465da015f392e0a30db6f8b51182a64d5",
+      "role": "derived presentation of archived records"
+    },
+    {
+      "path": "site/dist/figures/scores.png",
+      "git_blob": "26ce1f1bd85537cfc1c13d7af934f33314c72a27",
+      "role": "derived presentation of archived records"
+    },
+    {
+      "path": "site/dist/figures/tokens.png",
+      "git_blob": "c605e0dc169bdc2234ef56bc88b792977443d940",
+      "role": "derived presentation of archived records"
+    },
+    {
+      "path": "site/dist/figures/validity.png",
+      "git_blob": "e8200aa543363c4f6f5dbc4e8a57c6daf7771e6a",
+      "role": "derived presentation of archived records"
+    },
+    {
+      "path": "site/dist/independent-audit-2026-11-12.md",
+      "git_blob": "9098252d0d3a4ad54abed376eee9078e866f0f78",
+      "role": "derived presentation of archived records"
+    },
+    {
+      "path": "site/dist/index.html",
+      "git_blob": "3f84a7a518460269d34dfc40cbad72b6dfeb5a1e",
+      "role": "derived presentation of archived records"
+    },
+    {
+      "path": "site/dist/licenses/README.md",
+      "git_blob": "dce3ffecba2cb2e506f6fa928af34cde2cba9239",
+      "role": "upstream notices, provenance and copies"
+    },
+    {
+      "path": "site/dist/licenses/files/09e8a9bcec8067104652c168685ab0931e7868f9c8284b66f5ae6edae5f1130b/LICENSE",
+      "git_blob": "67db8588217f266eb561f75fae738656325deac9",
+      "role": "upstream notices, provenance and copies"
+    },
+    {
+      "path": "site/dist/licenses/files/2e63a3bd3a1f97e2fa9fa33bbf4f61bbb56ee16beb125b5346b0012388dc3b49/LICENSE.rst",
+      "git_blob": "99c58a2127c35d774be7d529cd359b02951b97a4",
+      "role": "upstream notices, provenance and copies"
+    },
+    {
+      "path": "site/dist/licenses/files/3172d399cbd8f10609e73fec73d0e0b33eecd3c572a68b0722229d8c7059f725/LICENSE",
+      "git_blob": "c38aa5c3f55a389eb2c015eb40cd67f2c15d633c",
+      "role": "upstream notices, provenance and copies"
+    },
+    {
+      "path": "site/dist/licenses/files/3299f3fac35b42fbd3338044d9519ad8fd51ca72466a928a8732c54f8e2c9fd0/NOTICE",
+      "git_blob": "f583e47ab293de98e4579cab28a42d2423620b89",
+      "role": "upstream notices, provenance and copies"
+    },
+    {
+      "path": "site/dist/licenses/files/4158d74a42b099b603e597d24a344f395f47da8e187638f451795900f28d9bc4/NOTICE",
+      "git_blob": "f523feaa13aa5c30f18446e04fe4231a97468eec",
+      "role": "upstream notices, provenance and copies"
+    },
+    {
+      "path": "site/dist/licenses/files/45b6addd843b2ed89f9f8f363f61092db2e3c2461e3f178c3c3793648c3c4e07/license.rst",
+      "git_blob": "acbfb8bdb110e96798813a1b96fc4f871d74f826",
+      "role": "upstream notices, provenance and copies"
+    },
+    {
+      "path": "site/dist/licenses/files/489a8e1108509ed98a37bb983e11e0f7e1d31f0bd8f99a79c8448e7ff37d07ea/LICENSE.rst",
+      "git_blob": "9d227a0cc43c3268d15722b763bd94ad298645a1",
+      "role": "upstream notices, provenance and copies"
+    },
+    {
+      "path": "site/dist/licenses/files/4be38574daf05665b6194e4fd84c5ef6ce7c3a2810308a5222d5cdffc2d04d18/LICENSE",
+      "git_blob": "477af2d2e458f6c91c16ccc330222558d85ff182",
+      "role": "upstream notices, provenance and copies"
+    },
+    {
+      "path": "site/dist/licenses/files/548eb62c9f5f5f7a121d15f26bb0d6a5ebb0cf7260584e0529ad65c56b39e83d/NOTICE",
+      "git_blob": "4d69475ca26f6cbc1d7eb3beea085bcd01f92549",
+      "role": "upstream notices, provenance and copies"
+    },
+    {
+      "path": "site/dist/licenses/files/6afc9d58f919ab52f4806a895a37aefe4d263f8e52278e6a1e87c5d7ec82299c/LICENSE",
+      "git_blob": "3d1e04a257aa9a7a51fbd87e3dc7cbef01f5b97b",
+      "role": "upstream notices, provenance and copies"
+    },
+    {
+      "path": "site/dist/licenses/files/7535eac513edd12fb8e33f203c6a403549629e34b363418cdbd6c6ea5464515d/license.rst",
+      "git_blob": "f3f64823b9b55e74d8e42a106d14e1efe87dd8b4",
+      "role": "upstream notices, provenance and copies"
+    },
+    {
+      "path": "site/dist/licenses/files/7898b9b164d4f93fd9a562fd0f592935518b48c4745303964110eb7f7fe64faf/LICENSE",
+      "git_blob": "d14fb7ff4b34be8cfb361a3ce90a0e881475a97a",
+      "role": "upstream notices, provenance and copies"
+    },
+    {
+      "path": "site/dist/licenses/files/89478f1915fbb6b6585a685d071bf006ba5649d2615fab787f66e9693c622ae4/LICENSE",
+      "git_blob": "8c5e758401020484b74d00c0aa75debfc7b65155",
+      "role": "upstream notices, provenance and copies"
+    },
+    {
+      "path": "site/dist/licenses/files/923e6b481ff75c709737251e602bdc311a9be49235b5c20107366747f5640fe4/README.md",
+      "git_blob": "daf334bb09b79f4d41a853a228c6c451fb6a8bdd",
+      "role": "upstream notices, provenance and copies"
+    },
+    {
+      "path": "site/dist/licenses/files/9c1e620a5cf8e74fe81c1fd4c55e9cc0b189fc04e677cfc7ef915de746c3f59e/LICENSE",
+      "git_blob": "8daab7ee6efe3b6f3c2a2594b711e7a9026eb5e2",
+      "role": "upstream notices, provenance and copies"
+    },
+    {
+      "path": "site/dist/licenses/files/b081522b6b841e6a5348025fa8897f8ec2b8b7fd2e8da0240a219d78ce955d72/license.rst",
+      "git_blob": "5ee55cf96f83c12db90240d69e7547dc114536c4",
+      "role": "upstream notices, provenance and copies"
+    },
+    {
+      "path": "site/dist/licenses/files/c031540c6951209351ce0b9bcf1cdf689abb277bcb07780d74f448f882a4a869/LICENSE",
+      "git_blob": "a103fc915e990579af74f603923df168fb8400ef",
+      "role": "upstream notices, provenance and copies"
+    },
+    {
+      "path": "site/dist/licenses/files/c11460418c5164a489643eae3da311d0fb1d61931c71c64ff83090c1cad1184b/LICENSE",
+      "git_blob": "ca97ae0ead74791eed720be61d19497580cb4ad5",
+      "role": "upstream notices, provenance and copies"
+    },
+    {
+      "path": "site/dist/licenses/files/c5a19279faa765293604633bae8b70a06582416c93cdac20b1b81af77a51d957/NOTICE",
+      "git_blob": "b9a1de116ab81a19bf7592187b35d6bc33652c7e",
+      "role": "upstream notices, provenance and copies"
+    },
+    {
+      "path": "site/dist/licenses/files/ca836a5f9ecca3b2f350230faa20a48fb8b145653b5568d784862df864706b9b/LICENSE",
+      "git_blob": "c3f1657fce94589bd1ec7cead810639047f3d359",
+      "role": "upstream notices, provenance and copies"
+    },
+    {
+      "path": "site/dist/licenses/files/d1a0ff0c217e8885134a5759953e971addadafee9cd7f428901d0c22af10a741/license.rst",
+      "git_blob": "c6c10bbf358c4b1b16241b113c67a6dbff0e18f3",
+      "role": "upstream notices, provenance and copies"
+    },
+    {
+      "path": "site/dist/licenses/files/f5110972dedad2b4e9d314518daf3b7d72d6e02e499acd802181de6f74571dcc/NOTICE",
+      "git_blob": "1ff62db688277b77c83c1766dac7f165364d3528",
+      "role": "upstream notices, provenance and copies"
+    },
+    {
+      "path": "site/dist/licenses/files/f5984f7fb86791cd3de98fe74008db28c6bf4139323b8912ab5441af5ddc79fe/license.rst",
+      "git_blob": "d94b34a990873c20e01fff34ac2b6a25af1dfbc8",
+      "role": "upstream notices, provenance and copies"
+    },
+    {
+      "path": "site/dist/licenses/files/f97b14080de8b8490d60eb3d620ebc419943e0779466d1dd0d5d6f68fe195dcd/LICENSE",
+      "git_blob": "8c4c849e2321672c89cc1a58df54da6043021ca9",
+      "role": "upstream notices, provenance and copies"
+    },
+    {
+      "path": "site/dist/licenses/provenance.json",
+      "git_blob": "0628d02ba23c0641555a7ad6933f6e901f8fddb4",
+      "role": "upstream notices, provenance and copies"
+    },
+    {
+      "path": "site/dist/paper.md",
+      "git_blob": "cc83a94fbf7edf4cad0316b35acf51dffeced60a",
+      "role": "derived presentation of archived records"
+    },
+    {
+      "path": "site/dist/paper.pdf",
+      "git_blob": "fdaa0c9b377e9cba564617cf691ffefece178106",
+      "role": "derived presentation of archived records"
+    },
+    {
+      "path": "site/dist/preregistration.md",
+      "git_blob": "73d60033b3c7f014cb9d6ddf70d5aa7bfcf57c67",
+      "role": "derived presentation of archived records"
+    },
+    {
+      "path": "site/dist/style.css",
+      "git_blob": "7941287fe740f3aaedaf2bf63b558a0e352641ec",
+      "role": "derived presentation of archived records"
+    },
+    {
+      "path": "site/dist/summary.json",
+      "git_blob": "00f3e4b8672a1f9b7918b4493eb885fd79bc85db",
+      "role": "derived presentation of archived records"
+    },
+    {
+      "path": "site/template/app.js",
+      "git_blob": "9cd8b6101f028421489c5ab4770222d680dd9343",
+      "role": "authored scientific and user-facing interpretation"
+    },
+    {
+      "path": "site/template/index.html",
+      "git_blob": "3f84a7a518460269d34dfc40cbad72b6dfeb5a1e",
+      "role": "authored scientific and user-facing interpretation"
+    },
+    {
+      "path": "site/template/style.css",
+      "git_blob": "7941287fe740f3aaedaf2bf63b558a0e352641ec",
+      "role": "authored scientific and user-facing interpretation"
+    },
+    {
+      "path": "src/multi_agent_ssr/__init__.py",
+      "git_blob": "42694bb027df75fd6154f7e6707410ee6c591e9a",
+      "role": "implemented behavior or historical verification software"
+    },
+    {
+      "path": "src/multi_agent_ssr/agents.py",
+      "git_blob": "981850c99a67177198ee418f8aabf4191bb3fd85",
+      "role": "implemented behavior or historical verification software"
+    },
+    {
+      "path": "src/multi_agent_ssr/audit.py",
+      "git_blob": "60913e8ef3908669d604ac98ca18e78bbb6f789a",
+      "role": "implemented behavior or historical verification software"
+    },
+    {
+      "path": "src/multi_agent_ssr/cli.py",
+      "git_blob": "d8931cec2b4b5ca6940d824378a2d0bc74d52ed0",
+      "role": "implemented behavior or historical verification software"
+    },
+    {
+      "path": "src/multi_agent_ssr/contracts.py",
+      "git_blob": "7cd277498a2e4b196b01276ea98ed72dbe40f877",
+      "role": "implemented behavior or historical verification software"
+    },
+    {
+      "path": "src/multi_agent_ssr/controls.py",
+      "git_blob": "91d69605c0f33b001132ef99ee08abee46d31abf",
+      "role": "implemented behavior or historical verification software"
+    },
+    {
+      "path": "src/multi_agent_ssr/evaluation.py",
+      "git_blob": "8740bee21937f7df19c59cf9d8bb7eeec02cb028",
+      "role": "implemented behavior or historical verification software"
+    },
+    {
+      "path": "src/multi_agent_ssr/evidence.py",
+      "git_blob": "97d0824e04db4207f4eb4040db4c7e117e117e89",
+      "role": "implemented behavior or historical verification software"
+    },
+    {
+      "path": "src/multi_agent_ssr/experiment.py",
+      "git_blob": "4bb8ca1402f7da4697b9098cf5d3a425312f10a0",
+      "role": "implemented behavior or historical verification software"
+    },
+    {
+      "path": "src/multi_agent_ssr/io.py",
+      "git_blob": "f3811b7b818b3a89239ae8ef7c80088f6837740b",
+      "role": "implemented behavior or historical verification software"
+    },
+    {
+      "path": "src/multi_agent_ssr/learning.py",
+      "git_blob": "c849ef020338be1d7345a9d2709e04c8266b4994",
+      "role": "implemented behavior or historical verification software"
+    },
+    {
+      "path": "src/multi_agent_ssr/model.py",
+      "git_blob": "f5f3f7e777f607b5188aec7aa270929d67e26bc8",
+      "role": "implemented behavior or historical verification software"
+    },
+    {
+      "path": "src/multi_agent_ssr/prepare.py",
+      "git_blob": "8d0a820adcd7e5574455d51d8a55d3859eaa98cf",
+      "role": "implemented behavior or historical verification software"
+    },
+    {
+      "path": "src/multi_agent_ssr/publication.py",
+      "git_blob": "c85f84295b665b40d3a4fd5d444139c767a2c0db",
+      "role": "implemented behavior or historical verification software"
+    },
+    {
+      "path": "src/multi_agent_ssr/py.typed",
+      "git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "role": "implemented behavior or historical verification software"
+    },
+    {
+      "path": "src/multi_agent_ssr/reporting.py",
+      "git_blob": "8543c74bc99fbcbef83f577a144614d38a409dd3",
+      "role": "implemented behavior or historical verification software"
+    },
+    {
+      "path": "src/multi_agent_ssr/rollouts.py",
+      "git_blob": "3435b0c656cadae6c291f56d35c75dcaac6b0e5b",
+      "role": "implemented behavior or historical verification software"
+    },
+    {
+      "path": "src/multi_agent_ssr/sandbox.py",
+      "git_blob": "3a3ce8bef042b25f9910389490e31e082e9ba850",
+      "role": "implemented behavior or historical verification software"
+    },
+    {
+      "path": "src/multi_agent_ssr/supervisor.py",
+      "git_blob": "000c3f7a8a5ee3899d418a36adb9808b271b0c2a",
+      "role": "implemented behavior or historical verification software"
+    },
+    {
+      "path": "src/multi_agent_ssr/synthetic.py",
+      "git_blob": "7d3b0019c480780fe45c2ecb6d9833c49cff48ae",
+      "role": "implemented behavior or historical verification software"
+    },
+    {
+      "path": "src/multi_agent_ssr/validation.py",
+      "git_blob": "c3a3b3599f4ff0d570f5eecdaeae38d53b898999",
+      "role": "implemented behavior or historical verification software"
+    },
+    {
+      "path": "tests/fixtures/tiny_repo/sample/__init__.py",
+      "git_blob": "6971a137ba87c15de5c7d53197cf192a5bbc227e",
+      "role": "software fixture or assertion"
+    },
+    {
+      "path": "tests/fixtures/tiny_repo/tests/test_sample.py",
+      "git_blob": "398c73ed820937d9a7ed18c34d9e21e359f8ce30",
+      "role": "software fixture or assertion"
+    },
+    {
+      "path": "tests/test_agents.py",
+      "git_blob": "b6f79cadbc99f9c03b62cc06aaff0051074d4bb4",
+      "role": "software fixture or assertion"
+    },
+    {
+      "path": "tests/test_audit.py",
+      "git_blob": "e2f1bc99062e09c73f65b60e83baeedb6936dd98",
+      "role": "software fixture or assertion"
+    },
+    {
+      "path": "tests/test_controls.py",
+      "git_blob": "5552dbf2136cb0e7f5da49951c91dc3d060c494f",
+      "role": "software fixture or assertion"
+    },
+    {
+      "path": "tests/test_evaluation.py",
+      "git_blob": "bf7764f36df18a3c6a2bda9cc9b0119e0e2c3844",
+      "role": "software fixture or assertion"
+    },
+    {
+      "path": "tests/test_evidence.py",
+      "git_blob": "59d82addd2cf3f0e41bcc9e66670169815d4c3e0",
+      "role": "software fixture or assertion"
+    },
+    {
+      "path": "tests/test_experiment.py",
+      "git_blob": "eac75ab51f38489ac9b68f3ba43f94dca47a1690",
+      "role": "software fixture or assertion"
+    },
+    {
+      "path": "tests/test_io.py",
+      "git_blob": "2fb0bcaa92771664e68a7ac9efa919e5fb89f38a",
+      "role": "software fixture or assertion"
+    },
+    {
+      "path": "tests/test_learning.py",
+      "git_blob": "7ef8c86e6d2b97addcf1e9e1eb969a5716e2e634",
+      "role": "software fixture or assertion"
+    },
+    {
+      "path": "tests/test_model_contract.py",
+      "git_blob": "4b0ef0b03d9ba3b8ede0ae8555e10f4e747cd6aa",
+      "role": "software fixture or assertion"
+    },
+    {
+      "path": "tests/test_pipeline.py",
+      "git_blob": "0853dd66423dac607dd5d44a250f273ec69f209b",
+      "role": "software fixture or assertion"
+    },
+    {
+      "path": "tests/test_preflight.py",
+      "git_blob": "3eeb1538ad07b5953853b4fd58d2b2d4baf2565c",
+      "role": "software fixture or assertion"
+    },
+    {
+      "path": "tests/test_prepare.py",
+      "git_blob": "8a3b7919dc2819b753fc2b91e10c74951c5da4e6",
+      "role": "software fixture or assertion"
+    },
+    {
+      "path": "tests/test_publication.py",
+      "git_blob": "b5735d6c459f7e0dab416d6a5c85ffc147e4c6c6",
+      "role": "software fixture or assertion"
+    },
+    {
+      "path": "tests/test_reporting.py",
+      "git_blob": "3bff75c1b4bea148c2051d7960d6e8ac617b5840",
+      "role": "software fixture or assertion"
+    },
+    {
+      "path": "tests/test_sandbox.py",
+      "git_blob": "53512d6941521f37921ce861786e8f76c293edbf",
+      "role": "software fixture or assertion"
+    },
+    {
+      "path": "tests/test_supervisor.py",
+      "git_blob": "54f7d5ab72fc616e32dca93fe4aa60d0573edab9",
+      "role": "software fixture or assertion"
+    },
+    {
+      "path": "tests/test_synthetic.py",
+      "git_blob": "e4e79a501f25bc6045a9e4cddbe5afba4c1de367",
+      "role": "software fixture or assertion"
+    },
+    {
+      "path": "tests/test_validation.py",
+      "git_blob": "0dcab23f5a98906f10519b6ab1530b9871466a8d",
+      "role": "software fixture or assertion"
+    },
+    {
+      "path": "uv.lock",
+      "git_blob": "38d57f3226d5dabed32e3a9495d102f81be837df",
+      "role": "project instructions, license, dependency or operational configuration"
+    }
+  ],
+  "dataset": {
+    "tree": "https://huggingface.co/api/datasets/SWE-bench/SWE-bench_Verified/tree/78f471bf655a3137b2e8a75af1501690ec009ec3/data",
+    "parquet_sha256": "030cfd7f2a704c4c0226e7f104c725a3b41230b1d3517f9c915ad7ea5be3fa25"
+  }
+}

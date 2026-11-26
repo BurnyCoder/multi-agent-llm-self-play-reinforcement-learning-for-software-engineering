@@ -2,11 +2,11 @@
 
 Libor "Burny" Burian
 
-Report generated: 2026-11-12. Original run dates are retained below.
+Report generated: 2026-11-26. Original run dates are retained below.
 
 ## Abstract
 
-We implement a local shared-policy extension of Self-play SWE-RL in which bug-injection and repair teams can delegate to asynchronous subagents. All roles use one Qwen3.5-2B policy with a shared trainable LoRA adapter. This report is generated from the saved run records. Recorded run status: pilot_failed. Recorded failure at 2026-11-05T21:30:15.600645+00:00 in preflight: RuntimeError: Generation/scoring log probabilities disagree: 0.152308. Recorded failure at 2026-11-05T21:58:00.073528+00:00 in preflight: RuntimeError: Generation/scoring log probabilities disagree: 0.152151. Recorded failure at 2026-11-06T04:49:29.416350+00:00 in pilot: Worker and supervisor remained alive 45.619 seconds past the persisted wall-clock deadline; the worker process group was externally terminated. The interrupted task has no admitted score. The overrun's cause is not established.. No completed policy optimizer steps are recorded; this record does not establish a learned checkpoint. Recorded research optimizer steps: 0. The initial and selected adapter weights and configurations have identical SHA256 digests and the same pinned base identity. This is two evaluations of unchanged weights, not an estimated self-play training effect. The planned learning hypothesis was not tested by this unchanged-policy comparison. The raw trained label and mechanical preregistered interval decision are preserved for provenance. Across 21 paired tasks, the final-minus-base resolution difference was +0.0 percentage points (95% paired bootstrap interval [+0.0, +0.0]). Improved: 0; regressed: 0; unchanged: 21. The mechanical preregistered interval rule contradicts the predicted improvement. This rule alone does not establish that the planned learning intervention occurred. The bootstrap interval is degenerate; it does not establish equivalence or rule out a population effect.
+The primary learning hypothesis was not tested. The research run recorded zero optimizer steps and selected an adapter identical to initialization. We implement a local shared-policy extension of Self-play SWE-RL in which bug-injection and repair teams can delegate to asynchronous subagents. All roles use one Qwen3.5-2B policy with a shared trainable LoRA adapter. Across 21 paired tasks, the final-minus-base resolution difference was +0.0 percentage points (95% paired bootstrap interval [+0.0, +0.0]). Improved: 0; regressed: 0; unchanged: 21. The bootstrap interval is degenerate; it does not establish equivalence or rule out a population effect. Fresh CPU grader controls distinguished the published repair from an empty patch on 25 of 32 frozen human tasks [16–19].
 
 ## Context and motivation
 
@@ -18,7 +18,7 @@ The injector edits source and weakens existing tests. A trusted Python runner va
 
 ## Task construction and trusted validation
 
-The clean selected test suite must contain at least five passing tests. The source mutation must induce a failure and preserve a pass. The weakening patch must hide at least one induced failure. Inverse mutation checks revert each changed source file independently and require that reversal to repair at least one induced failure. Empty selections, missing expected tests, collection failures, and parser errors cannot produce success. Artifacts retain the SSR five-file interface: source mutation, test weakening, selected test files, runner, and parser; the last two are constructed by this harness rather than delegated to a model [1]. One failed repair per original bug can become an independently revalidated second-order task. Its repair attempts contribute solver gradients; the original injector return uses first-order attempts only.
+The clean selected test suite must contain at least five passing tests. The source mutation must induce a failure and preserve a pass. The weakening patch must hide at least one induced failure. The local validator accepts a strict reduction in failing test IDs, including removal of an exposing test. SSR describes an exposed failure that passes after weakening [1]. Inverse mutation checks revert each changed source file independently and require that reversal to repair at least one induced failure. At repair scoring, missing expected tests, collection failures, and parser errors cannot produce success. Artifacts retain the SSR five-file interface: source mutation, test weakening, selected test files, runner, and parser; the last two are constructed by this harness rather than delegated to a model [1]. One failed repair per original bug can become an independently revalidated second-order task. Its repair attempts contribute solver gradients; the original injector return uses first-order attempts only.
 
 ## Agents and optimization
 
@@ -72,7 +72,7 @@ These are unscored harness diagnostics, excluded from benchmark success and trai
 
 Recorded run status: pilot_failed. Recorded failure at 2026-11-05T21:30:15.600645+00:00 in preflight: RuntimeError: Generation/scoring log probabilities disagree: 0.152308. Recorded failure at 2026-11-05T21:58:00.073528+00:00 in preflight: RuntimeError: Generation/scoring log probabilities disagree: 0.152151. Recorded failure at 2026-11-06T04:49:29.416350+00:00 in pilot: Worker and supervisor remained alive 45.619 seconds past the persisted wall-clock deadline; the worker process group was externally terminated. The interrupted task has no admitted score. The overrun's cause is not established.. No completed policy optimizer steps are recorded; this record does not establish a learned checkpoint.
 
-Recorded research optimizer steps: 0. The initial and selected adapter weights and configurations have identical SHA256 digests and the same pinned base identity. This is two evaluations of unchanged weights, not an estimated self-play training effect. The planned learning hypothesis was not tested by this unchanged-policy comparison. The raw trained label and mechanical preregistered interval decision are preserved for provenance. Across 21 paired tasks, the final-minus-base resolution difference was +0.0 percentage points (95% paired bootstrap interval [+0.0, +0.0]). Improved: 0; regressed: 0; unchanged: 21. The mechanical preregistered interval rule contradicts the predicted improvement. This rule alone does not establish that the planned learning intervention occurred. The bootstrap interval is degenerate; it does not establish equivalence or rule out a population effect.
+Recorded research optimizer steps: 0. The initial and selected adapter weights and configurations have identical SHA256 digests and the same pinned base identity. This is two evaluations of unchanged weights, not an estimated self-play training effect. The planned learning hypothesis was not tested by this unchanged-policy comparison. The raw trained label and mechanical preregistered interval decision are preserved for provenance. Across 21 paired tasks, the final-minus-base resolution difference was +0.0 percentage points (95% paired bootstrap interval [+0.0, +0.0]). Improved: 0; regressed: 0; unchanged: 21. The bootstrap interval is degenerate; it does not establish equivalence or rule out a population effect.
 
 Synthetic diagnostic set: Not evaluated: no tasks have completed outcomes for both conditions.
 
@@ -90,6 +90,40 @@ Synthetic diagnostic set: Not evaluated: no tasks have completed outcomes for bo
 | procedural-mutation training | Control the training bug distribution | Not run |
 | no-delegation evaluation | Measure inference-time delegation dependence | Not run |
 | seed sensitivity | Measure training-seed variation | Not run |
+
+## Collection and training exposure
+
+The 2 completed groups contained 4 injector episodes. 4 reached the tool budget with no declared test targets. 4 episodes had zero length-centered advantage. The original action stream matched 138 saved collection actions. The effective messages for 128 distinct training prompt token sequences contained 0 verbatim complete held-out reference or test patches. Partial overlap, memorization and pretraining exposure remain unknown. [2, 14, 19]
+
+## Human cohort and missing outcomes
+
+The frozen selection took 32 tasks from 38 eligible rows of the 500-row pinned dataset. Both conditions were scored on 21 tasks, base only on 0, final only on 8, and neither on 3. Assigning every missing binary outcome its extremes gives a possible net change of -11 to +3 resolutions out of 32 (-34.38 to +9.38 percentage points). These endpoints describe possible completions of this finite cohort. The paired bootstrap describes only the observed pairs. [8, 17, 19]
+
+## Replay of historical scoring
+
+The locked scorer reproduced all 50 archived human grades from stdout. 50 of the submitted patches were empty. 14 scored submissions recorded zero generated tokens and 15 recorded an agent context-limit error. A recorded failure can therefore include a task for which the agent could not generate a repair. The PASS_TO_PASS failure category contained 208 entries across 9 submissions on 5 tasks. Parsed states among those entries were {"FAILED": 208}. The FAIL_TO_PASS failure category contained 122 entries, with parsed states {"FAILED": 100, "MISSING": 22}. Expected IDs included a literal pytest progress marker on 2 tasks. 4 of the 4 affected submissions also had a separate repair-required failure. Test-level classifications and alias matches are retained in the per-test archive. [16, 19]
+
+## Fixed-patch grader calibration
+
+The grader resolved the published repair and rejected the empty patch on 25/32 tasks. The remaining classifications were 6 failed and 1 indeterminate. Gold repairs resolved on 25/32 planned tasks. Empty submissions resolved on 0/32. These CPU measurements characterize the pinned grading environment. A passing pair validates only these two inputs. [16–19]
+
+![Outcomes of gold and empty patch controls](figures/calibration.png)
+
+## Sensitivity to grader discrimination
+
+Of 25 tasks passing calibration, 16 had both historical policy scores and 9 lacked at least one. The final-minus-base difference is +0.0 percentage points (paired percentile interval [+0.0, +0.0]). The restriction was specified before control execution and after the pilot outcomes were known. The full original analysis retains every admitted score. [8, 18, 19]
+
+## Synthetic diagnostic cohort
+
+The private records and public manifest agree on 16 mutations across 16 distinct functions. The saved clean suite sizes were 723. The policy evaluation stream contains 0 scored synthetic outcomes. [9, 19]
+
+## Where reference repairs failed
+
+Among the completed gold controls, the grader rejected 6 in psf/requests. On 2 of these tasks all repair-required tests were accepted, but expected-pass failures still blocked resolution. Original stdout contained a DNS or network-unreachable message on 6/6 unresolved gold controls. This retrospective text check identifies a concrete environmental limitation. The data do not isolate the cause of every failed test. [16, 18, 19]
+
+## Protocol changes and stopping
+
+The interrupted original pilot records match the recovery amendment. The final observed worker overrun was 45.619 seconds. The stopping diagnostic identified 9 calls continuing past chat EOS in the unscored held-out episode. That exposure preceded the stopping correction. The likelihood gate was also amended after inspection of the same preflight sample. [9, 19]
 
 ## Recorded training outcome
 
@@ -132,7 +166,7 @@ Native read/edit path arguments require repository-relative paths [11]. The froz
 
 ## Official test failures and empty patches
 
-The saved official reports contain 208 PASS_TO_PASS failure entries across 9 scored rows. Of those rows, 9 submitted an empty patch. Across all 50 scored human rows, 50 saved patches are empty. These are failures of tests designated as passing in benchmark metadata, not established regressions caused by agent edits. The grader's failure category can also include tests missing from parsed output. The cause of the failures is unverified; no clean-environment re-evaluation was performed in this audit. The official scores remain unchanged, with this limitation on their interpretation. This is a post-hoc descriptive check of saved reports and submitted patches. Grading semantics: [6].
+The saved official reports contain 208 PASS_TO_PASS failure entries across 9 scored rows. Of those rows, 9 submitted an empty patch. Across all 50 scored human rows, 50 saved patches are empty. These are failures of tests designated as passing in benchmark metadata, not established regressions caused by agent edits. The grader's failure category can also include tests missing from parsed output. The archived score alone cannot identify the cause of an expected-pass failure. The official scores remain unchanged, with this limitation on their interpretation. This is a post-hoc descriptive check of saved reports and submitted patches. Grading semantics: [6].
 
 ## Claims and implications
 
@@ -148,7 +182,7 @@ The pilot uses one training seed, a small task sample, a short context window, a
 
 ## Conclusion
 
-The saved artifacts establish what ran and what was measured. Recorded research optimizer steps: 0. The initial and selected adapter weights and configurations have identical SHA256 digests and the same pinned base identity. This is two evaluations of unchanged weights, not an estimated self-play training effect. The planned learning hypothesis was not tested by this unchanged-policy comparison. The raw trained label and mechanical preregistered interval decision are preserved for provenance. Across 21 paired tasks, the final-minus-base resolution difference was +0.0 percentage points (95% paired bootstrap interval [+0.0, +0.0]). Improved: 0; regressed: 0; unchanged: 21. The mechanical preregistered interval rule contradicts the predicted improvement. This rule alone does not establish that the planned learning intervention occurred. The bootstrap interval is degenerate; it does not establish equivalence or rule out a population effect.
+The primary learning hypothesis was not tested. The research run recorded zero optimizer steps and selected an adapter identical to initialization. Across 21 paired tasks, the final-minus-base resolution difference was +0.0 percentage points (95% paired bootstrap interval [+0.0, +0.0]). Improved: 0; regressed: 0; unchanged: 21. The bootstrap interval is degenerate; it does not establish equivalence or rule out a population effect. Fresh CPU grader controls distinguished the published repair from an empty patch on 25 of 32 frozen human tasks [16–19].
 
 ## Appendix: configuration
 
@@ -267,7 +301,11 @@ The saved artifacts establish what ran and what was measured. Recorded research 
 12. [Frozen agent prompt and native tool descriptions](https://github.com/BurnyCoder/multi-agent-llm-self-play-reinforcement-learning-for-software-engineering/blob/109dfa67740ff9f0260d22be9407d047d90565f7/src/multi_agent_ssr/agents.py#L146)
 13. [CWM clipping thresholds and normalization choices](https://arxiv.org/html/2510.02387v1#S5.SS2)
 14. [Frozen local reward and optimizer implementation](https://github.com/BurnyCoder/multi-agent-llm-self-play-reinforcement-learning-for-software-engineering/blob/109dfa67740ff9f0260d22be9407d047d90565f7/src/multi_agent_ssr/learning.py)
-15. [Independent correction ledger (retrospective)](https://github.com/BurnyCoder/multi-agent-llm-self-play-reinforcement-learning-for-software-engineering/blob/main/reports/independent-audit-2026-11-12.md)
+15. [Archived review of 2026-11-12](https://github.com/BurnyCoder/multi-agent-llm-self-play-reinforcement-learning-for-software-engineering/blob/main/reports/independent-audit-2026-11-12.md)
+16. [Locked SWE-bench test matching and resolution](https://github.com/SWE-bench/SWE-bench/blob/490635b2e9e775dca1e1d6b40ce9dbcff91e780f/swebench/harness/grading.py)
+17. [Frozen SWE-bench Verified dataset](https://huggingface.co/datasets/SWE-bench/SWE-bench_Verified/tree/78f471bf655a3137b2e8a75af1501690ec009ec3)
+18. [Prospective fixed-patch control protocol](https://github.com/BurnyCoder/multi-agent-llm-self-play-reinforcement-learning-for-software-engineering/blob/d9bbab3/reports/reviews/grader-calibration-protocol-2026-11-26.md)
+19. [Independent reconstruction, controls and per-test evidence](https://github.com/BurnyCoder/multi-agent-llm-self-play-reinforcement-learning-for-software-engineering/tree/main/results/scientific-audit-2026-11-26)
 
 ## AI statement
 

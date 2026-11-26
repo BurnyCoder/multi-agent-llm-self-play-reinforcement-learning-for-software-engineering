@@ -33,15 +33,51 @@ These are unscored harness diagnostics, excluded from benchmark success and trai
 | synthetic | base | 16 | 0 | Not evaluated | Not evaluated | 16 | 0 |
 | synthetic | final condition | 16 | 0 | Not evaluated | Not evaluated | 16 | 0 |
 
+The primary learning hypothesis was not tested. The research run recorded zero optimizer steps and selected an adapter identical to initialization.
+
 Recorded research optimizer steps: 0. The initial and selected adapter weights and configurations have identical SHA256 digests and the same pinned base identity. This is two evaluations of unchanged weights, not an estimated self-play training effect. The planned learning hypothesis was not tested by this unchanged-policy comparison. The raw trained label and mechanical preregistered interval decision are preserved for provenance.
 
 ### Human bugs
 
-Across 21 paired tasks, the final-minus-base resolution difference was +0.0 percentage points (95% paired bootstrap interval [+0.0, +0.0]). Improved: 0; regressed: 0; unchanged: 21. The mechanical preregistered interval rule contradicts the predicted improvement. This rule alone does not establish that the planned learning intervention occurred. The bootstrap interval is degenerate; it does not establish equivalence or rule out a population effect.
+Across 21 paired tasks, the final-minus-base resolution difference was +0.0 percentage points (95% paired bootstrap interval [+0.0, +0.0]). Improved: 0; regressed: 0; unchanged: 21. The bootstrap interval is degenerate; it does not establish equivalence or rule out a population effect.
 
 ### Synthetic bugs
 
 Not evaluated: no tasks have completed outcomes for both conditions.
+
+### Collection and training exposure
+
+The 2 completed groups contained 4 injector episodes. 4 reached the tool budget with no declared test targets. 4 episodes had zero length-centered advantage. The original action stream matched 138 saved collection actions. The effective messages for 128 distinct training prompt token sequences contained 0 verbatim complete held-out reference or test patches. Partial overlap, memorization and pretraining exposure remain unknown.
+
+### Human cohort and missing outcomes
+
+The frozen selection took 32 tasks from 38 eligible rows of the 500-row pinned dataset. Both conditions were scored on 21 tasks, base only on 0, final only on 8, and neither on 3. Assigning every missing binary outcome its extremes gives a possible net change of -11 to +3 resolutions out of 32 (-34.38 to +9.38 percentage points). These endpoints describe possible completions of this finite cohort. The paired bootstrap describes only the observed pairs.
+
+### Replay of historical scoring
+
+The locked scorer reproduced all 50 archived human grades from stdout. 50 of the submitted patches were empty. 14 scored submissions recorded zero generated tokens and 15 recorded an agent context-limit error. A recorded failure can therefore include a task for which the agent could not generate a repair. The PASS_TO_PASS failure category contained 208 entries across 9 submissions on 5 tasks. Parsed states among those entries were {"FAILED": 208}. The FAIL_TO_PASS failure category contained 122 entries, with parsed states {"FAILED": 100, "MISSING": 22}. Expected IDs included a literal pytest progress marker on 2 tasks. 4 of the 4 affected submissions also had a separate repair-required failure. Test-level classifications and alias matches are retained in the per-test archive.
+
+### Fixed-patch grader calibration
+
+The grader resolved the published repair and rejected the empty patch on 25/32 tasks. The remaining classifications were 6 failed and 1 indeterminate. Gold repairs resolved on 25/32 planned tasks. Empty submissions resolved on 0/32. These CPU measurements characterize the pinned grading environment. A passing pair validates only these two inputs.
+
+### Sensitivity to grader discrimination
+
+Of 25 tasks passing calibration, 16 had both historical policy scores and 9 lacked at least one. The final-minus-base difference is +0.0 percentage points (paired percentile interval [+0.0, +0.0]). The restriction was specified before control execution and after the pilot outcomes were known. The full original analysis retains every admitted score.
+
+### Synthetic diagnostic cohort
+
+The private records and public manifest agree on 16 mutations across 16 distinct functions. The saved clean suite sizes were 723. The policy evaluation stream contains 0 scored synthetic outcomes.
+
+### Where reference repairs failed
+
+Among the completed gold controls, the grader rejected 6 in psf/requests. On 2 of these tasks all repair-required tests were accepted, but expected-pass failures still blocked resolution. Original stdout contained a DNS or network-unreachable message on 6/6 unresolved gold controls. This retrospective text check identifies a concrete environmental limitation. The data do not isolate the cause of every failed test.
+
+### Protocol changes and stopping
+
+The interrupted original pilot records match the recovery amendment. The final observed worker overrun was 45.619 seconds. The stopping diagnostic identified 9 calls continuing past chat EOS in the unscored held-out episode. That exposure preceded the stopping correction. The likelihood gate was also amended after inspection of the same preflight sample.
+
+[All task controls and source-by-claim review](scientific-review.md) · [Reconstruction](evidence.json) · [Per-test evidence](oracle-tests.json.gz)
 
 ## Recorded training outcome
 
@@ -94,7 +130,7 @@ Sources: [pinned path guard](https://github.com/BurnyCoder/multi-agent-llm-self-
 
 ## Official test failures and empty patches
 
-The saved official reports contain 208 PASS_TO_PASS failure entries across 9 scored rows. Of those rows, 9 submitted an empty patch. Across all 50 scored human rows, 50 saved patches are empty. These are failures of tests designated as passing in benchmark metadata, not established regressions caused by agent edits. The grader's failure category can also include tests missing from parsed output. The cause of the failures is unverified; no clean-environment re-evaluation was performed in this audit. The official scores remain unchanged, with this limitation on their interpretation. This is a post-hoc descriptive check of saved reports and submitted patches.
+The saved official reports contain 208 PASS_TO_PASS failure entries across 9 scored rows. Of those rows, 9 submitted an empty patch. Across all 50 scored human rows, 50 saved patches are empty. These are failures of tests designated as passing in benchmark metadata, not established regressions caused by agent edits. The grader's failure category can also include tests missing from parsed output. The archived score alone cannot identify the cause of an expected-pass failure. The official scores remain unchanged, with this limitation on their interpretation. This is a post-hoc descriptive check of saved reports and submitted patches.
 
 Source: [SWE-bench scoring](https://www.swebench.com/SWE-bench/guides/evaluation/) and the saved per-task reports in [summary.json](summary.json).
 
@@ -2553,7 +2589,7 @@ One shared model serves the primary agents and asynchronous children. The pilot 
 
 ## Reproduction and limitations
 
-[Independent raw-record cross-check](evidence-audit.json) recomputes scores, paired intervals, action accounting, and saved official-report agreement without using the reporting analysis. [Retrospective claim ledger](independent-audit-2026-11-12.md) records corrections and uncertainties.
+[Independent raw-record cross-check](evidence-audit.json) recomputes scores, paired intervals, action accounting, and saved official-report agreement without using the reporting analysis. The [dated November 12 review](independent-audit-2026-11-12.md) is archived for provenance.
 
 Regenerate this report with `uv run selfplay report --run <run-directory>`. Task-paired intervals condition on the recorded checkpoints; training-seed uncertainty is unmeasured. Degenerate bootstrap intervals do not establish equivalence. Missing evaluations and infrastructure errors are excluded from scored denominators and reported separately. Public-data pretraining contamination remains unknown.
 
@@ -2575,4 +2611,8 @@ Regenerate this report with `uv run selfplay report --run <run-directory>`. Task
 - [Frozen agent prompt and native tool descriptions](https://github.com/BurnyCoder/multi-agent-llm-self-play-reinforcement-learning-for-software-engineering/blob/109dfa67740ff9f0260d22be9407d047d90565f7/src/multi_agent_ssr/agents.py#L146)
 - [CWM clipping thresholds and normalization choices](https://arxiv.org/html/2510.02387v1#S5.SS2)
 - [Frozen local reward and optimizer implementation](https://github.com/BurnyCoder/multi-agent-llm-self-play-reinforcement-learning-for-software-engineering/blob/109dfa67740ff9f0260d22be9407d047d90565f7/src/multi_agent_ssr/learning.py)
-- [Independent correction ledger (retrospective)](https://github.com/BurnyCoder/multi-agent-llm-self-play-reinforcement-learning-for-software-engineering/blob/main/reports/independent-audit-2026-11-12.md)
+- [Archived review of 2026-11-12](https://github.com/BurnyCoder/multi-agent-llm-self-play-reinforcement-learning-for-software-engineering/blob/main/reports/independent-audit-2026-11-12.md)
+- [Locked SWE-bench test matching and resolution](https://github.com/SWE-bench/SWE-bench/blob/490635b2e9e775dca1e1d6b40ce9dbcff91e780f/swebench/harness/grading.py)
+- [Frozen SWE-bench Verified dataset](https://huggingface.co/datasets/SWE-bench/SWE-bench_Verified/tree/78f471bf655a3137b2e8a75af1501690ec009ec3)
+- [Prospective fixed-patch control protocol](https://github.com/BurnyCoder/multi-agent-llm-self-play-reinforcement-learning-for-software-engineering/blob/d9bbab3/reports/reviews/grader-calibration-protocol-2026-11-26.md)
+- [Independent reconstruction, controls and per-test evidence](https://github.com/BurnyCoder/multi-agent-llm-self-play-reinforcement-learning-for-software-engineering/tree/main/results/scientific-audit-2026-11-26)
