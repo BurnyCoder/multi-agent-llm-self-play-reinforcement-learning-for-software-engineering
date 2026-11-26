@@ -20,6 +20,14 @@ from typing import Any
 from .audit import recompute
 from .evidence import checkpoint_evidence, intervention_text, optimizer_steps
 from .publication import copy_source_notices
+from .scientific_review import (
+    REVIEW,
+    describe_hypothesis,
+    hypothesis_status,
+    linked_review,
+    public_findings,
+    review_report,
+)
 
 SOURCES = [
     ("Self-play SWE-RL: task construction and rewards", "https://arxiv.org/html/2512.18552v3"),
@@ -36,7 +44,11 @@ SOURCES = [
     ("Frozen agent prompt and native tool descriptions", "https://github.com/BurnyCoder/multi-agent-llm-self-play-reinforcement-learning-for-software-engineering/blob/109dfa67740ff9f0260d22be9407d047d90565f7/src/multi_agent_ssr/agents.py#L146"),
     ("CWM clipping thresholds and normalization choices", "https://arxiv.org/html/2510.02387v1#S5.SS2"),
     ("Frozen local reward and optimizer implementation", "https://github.com/BurnyCoder/multi-agent-llm-self-play-reinforcement-learning-for-software-engineering/blob/109dfa67740ff9f0260d22be9407d047d90565f7/src/multi_agent_ssr/learning.py"),
-    ("Independent correction ledger (retrospective)", "https://github.com/BurnyCoder/multi-agent-llm-self-play-reinforcement-learning-for-software-engineering/blob/main/reports/independent-audit-2026-11-12.md"),
+    ("Archived review of 2026-11-12", "https://github.com/BurnyCoder/multi-agent-llm-self-play-reinforcement-learning-for-software-engineering/blob/main/reports/independent-audit-2026-11-12.md"),
+    ("Locked SWE-bench test matching and resolution", "https://github.com/SWE-bench/SWE-bench/blob/490635b2e9e775dca1e1d6b40ce9dbcff91e780f/swebench/harness/grading.py"),
+    ("Frozen SWE-bench Verified dataset", "https://huggingface.co/datasets/SWE-bench/SWE-bench_Verified/tree/78f471bf655a3137b2e8a75af1501690ec009ec3"),
+    ("Prospective fixed-patch control protocol", "https://github.com/BurnyCoder/multi-agent-llm-self-play-reinforcement-learning-for-software-engineering/blob/d9bbab3/reports/reviews/grader-calibration-protocol-2026-11-26.md"),
+    ("Independent reconstruction, controls and per-test evidence", "https://github.com/BurnyCoder/multi-agent-llm-self-play-reinforcement-learning-for-software-engineering/tree/main/results/scientific-audit-2026-11-26"),
 ]
 
 AI_STATEMENT = (
@@ -421,7 +433,7 @@ def _oracle_text(diagnostics: dict[str, Any]) -> str:
             f"Across all {diagnostics['scored_rows']} scored human rows, {diagnostics['saved_empty_patches']} saved patches are empty. "
             "These are failures of tests designated as passing in benchmark metadata, not established regressions caused by agent edits. "
             "The grader's failure category can also include tests missing from parsed output. "
-            "The cause of the failures is unverified; no clean-environment re-evaluation was performed in this audit. "
+            "The archived score alone cannot identify the cause of an expected-pass failure. "
             "The official scores remain unchanged, with this limitation on their interpretation. "
             "This is a post-hoc descriptive check of saved reports and submitted patches.")
 
@@ -585,8 +597,8 @@ def _effect_text(comparison: dict[str, Any], intervention_disclosure: str = "") 
             f"unchanged: {comparison['unchanged']}.")
     decisions = {"supports_predicted_improvement": "supports the predicted improvement",
                  "contradicts_predicted_improvement": "contradicts the predicted improvement", "inconclusive": "is inconclusive"}
-    text += (f" The mechanical preregistered interval rule {decisions[comparison['preregistered_decision']]}. "
-             "This rule alone does not establish that the planned learning intervention occurred.")
+    if comparison.get("hypothesis_status", "") in decisions:
+        text += f" The preregistered interval rule {decisions[comparison['preregistered_decision']]}."
     if comparison["interval_degenerate"]:
         text += " The bootstrap interval is degenerate; it does not establish equivalence or rule out a population effect."
     return (intervention_disclosure + " " + text).strip()
@@ -614,10 +626,15 @@ def _paper_sections(payload: dict[str, Any]) -> list[tuple[str, str]]:
         state += " Research optimizer-step evidence is missing or incomplete."
     elif payload["diagnostics"]["optimizer_steps"] == 0:
         state += " No completed policy optimizer steps are recorded; this record does not establish a learned checkpoint."
+    abstract_result = _effect_text(payload["analysis"]["comparisons"]["human"])
+    if review := payload.get("scientific_review"):
+        passes = sum(t["discrimination"] == "pass" for t in review["tasks"])
+        abstract_result += (f" Fresh CPU grader controls distinguished the published repair from an empty patch "
+                            f"on {passes} of {len(review['tasks'])} frozen human tasks [16–19].")
     sections = [
-        ("Abstract", "We implement a local shared-policy extension of Self-play SWE-RL in which bug-injection "
+        ("Abstract", payload.get("hypothesis_disclosure", "") + " We implement a local shared-policy extension of Self-play SWE-RL in which bug-injection "
          "and repair teams can delegate to asynchronous subagents. All roles use one Qwen3.5-2B policy with a "
-         "shared trainable LoRA adapter. This report is generated from the saved run records. " + state + " " + primary),
+         "shared trainable LoRA adapter. " + abstract_result),
         ("Context and motivation", ("The experiment asks whether reinforcement learning from executable "
          "repository feedback improves held-out human-bug repair. Prior SSR work motivates repository-grounded "
          "bug injection and repair [1]. Anchored Self-Play reports distribution drift in function-level "
@@ -629,8 +646,10 @@ def _paper_sections(payload: dict[str, Any]) -> list[tuple[str, str]]:
          "of SSR's more general artifact-discovery procedure [1].")),
         ("Task construction and trusted validation", ("The clean selected test suite must contain at least five passing "
          "tests. The source mutation must induce a failure and preserve a pass. The weakening patch must hide at "
-         "least one induced failure. Inverse mutation checks revert each changed source file independently and "
-         "require that reversal to repair at least one induced failure. Empty selections, missing expected tests, "
+         "least one induced failure. The local validator accepts a strict reduction in failing test IDs, including "
+         "removal of an exposing test. SSR describes an exposed failure that passes after weakening [1]. "
+         "Inverse mutation checks revert each changed source file independently and "
+         "require that reversal to repair at least one induced failure. At repair scoring, missing expected tests, "
          "collection failures, and parser errors cannot produce success. Artifacts retain the SSR five-file "
          "interface: source mutation, test weakening, selected test files, runner, and parser; the last two are "
          "constructed by this harness rather than delegated to a model [1]. One failed repair per original bug "
@@ -735,8 +754,16 @@ def _paper_sections(payload: dict[str, Any]) -> list[tuple[str, str]]:
          "appeared in model pretraining; contamination is unknown. Trusted tests reduce particular scoring "
          "failures but cannot guarantee realism or prevent every form of reward gaming. Unrun controls are not "
          "evidence. All incomplete coverage is retained in the tables.")),
-        ("Conclusion", "The saved artifacts establish what ran and what was measured. " + primary),
+        ("Conclusion", payload.get("hypothesis_disclosure", "") + " " + abstract_result),
     ]
+    if payload.get("scientific_review"):
+        position = next(i for i, (title, _) in enumerate(sections) if title == "Observed execution diagnostics")
+        citations = {"Collection and training exposure": "[2, 14, 19]", "Human cohort and missing outcomes": "[8, 17, 19]",
+                     "Replay of historical scoring": "[16, 19]", "Fixed-patch grader calibration": "[16–19]",
+                     "Sensitivity to grader discrimination": "[8, 18, 19]", "Synthetic diagnostic cohort": "[9, 19]",
+                     "Where reference repairs failed": "[16, 18, 19]", "Protocol changes and stopping": "[9, 19]"}
+        for title, body in reversed(payload["scientific_review"]["sections"]):
+            sections.insert(position, (title, body + " " + citations[title]))
     if payload.get("recovery_disclosure"):
         position = next(index for index, (title, _) in enumerate(sections) if title == "Results")
         sections.insert(position, ("Interrupted attempt and recovery amendment", payload["recovery_disclosure"]))
@@ -815,6 +842,26 @@ def render_figures(payload: dict[str, Any], destination: Path) -> dict[str, str]
     fig.savefig(destination / "scores.png", dpi=180)
     plt.close(fig)
     paths["scores"] = "scores.png"
+    if review := payload.get("scientific_review"):
+        tasks = review["tasks"]
+        fig, ax = plt.subplots(figsize=(8, 3.5))
+        ends = [0, 0]
+        for value, label, color in ((True, "Resolved", "#357b73"), (False, "Unresolved", "#decba9"),
+                                    (None, "Unscored", "#858694")):
+            widths = [sum(t[c] is value for t in tasks) for c in ("gold", "empty")]
+            ax.barh([1, 0], widths, left=ends, color=color, height=.5, label=label)
+            for y, start, width in zip((1, 0), ends, widths, strict=True):
+                if width:
+                    ax.text(start + width/2, y, str(width), ha="center", va="center",
+                            color="black" if value is False else "white")
+            ends = [a + b for a, b in zip(ends, widths, strict=True)]
+        ax.set(yticks=[1, 0], yticklabels=["Published repair", "Empty patch"], xlim=(0, len(tasks)),
+               xlabel="Frozen human tasks", title="Grader outcomes for fixed submissions")
+        ax.legend(loc="upper center", bbox_to_anchor=(.5, -.28), ncol=3, frameon=False)
+        fig.tight_layout()
+        fig.savefig(destination / "calibration.png", dpi=180)
+        plt.close(fig)
+        paths["calibration"] = "calibration.png"
     for name, keys, label in [("loss", ["loss"], "Policy objective loss"),
                               ("rewards", ["inject_reward", "repair_reward"], "Mean team return"),
                               ("memory", ["memory"], "Peak GPU allocated memory (GiB)"),
@@ -909,6 +956,8 @@ def render_paper(payload: dict[str, Any], sections: list[tuple[str, str]], desti
             for key in ("scores", "loss", "rewards"):
                 if figures.get(key):
                     story.append(Image(str(figure_dir / figures[key]), width=16 * cm, height=(9 if key == "scores" else 8) * cm))
+        if title == "Fixed-patch grader calibration" and figures.get("calibration"):
+            story.append(Image(str(figure_dir / figures["calibration"]), width=16 * cm, height=7 * cm))
         if title == "Observed execution diagnostics":
             for key, value in payload["diagnostics"].items():
                 if key in {"validated_artifacts", "pass_to_pass_regressions"}:
@@ -1020,6 +1069,29 @@ def generate_report(run_dir: Path, output_dir: Path, site_dir: Path, *, readme_p
     payload["training_outcome_disclosure"] = _training_outcome_text(metrics, payload["diagnostics"])
     payload["oracle_diagnostics"] = _oracle_diagnostics(analysis["records"], payload["patches"])
     payload["oracle_disclosure"] = _oracle_text(payload["oracle_diagnostics"])
+    primary = analysis["comparisons"]["human"]
+    primary["hypothesis_status"] = hypothesis_status(payload["checkpoint_evidence"]["status"],
+                                                     payload["diagnostics"]["optimizer_steps"], primary)
+    payload["hypothesis_disclosure"] = describe_hypothesis(primary["hypothesis_status"])
+    audit = linked_review(run_dir)
+    if audit:
+        reconstructed = audit["historical"]["paired"]
+        if (any(reconstructed[key] != primary[key] for key in ("task_ids", "difference", "ci95"))
+                or audit["training"]["research_optimizer_steps"] != payload["diagnostics"]["optimizer_steps"]):
+            raise ValueError("Archived independent reconstruction disagrees with this report")
+        findings = public_findings(audit)
+        payload["scientific_review"] = findings
+        review_sources = REVIEW.parents[1] / "reports" / "reviews"
+        review = review_report(audit, findings, payload["hypothesis_disclosure"],
+                               (review_sources / "claim-review-2026-11-26.md").read_text(encoding="utf-8"))
+        for destination in (output_dir, site_dir):
+            (destination / "scientific-review.md").write_text(review, encoding="utf-8")
+            for name in ("evidence.json", "oracle-tests.json.gz", "source-checks.json"):
+                shutil.copyfile(REVIEW / name, destination / name)
+    else:
+        for destination in (output_dir, site_dir):
+            for name in ("evidence.json", "oracle-tests.json.gz", "source-checks.json", "scientific-review.md", "figures/calibration.png"):
+                (destination / name).unlink(missing_ok=True)
     if (run_dir / "kernel-review.json").exists():
         payload["preparation"]["kernel_review"] = _json(run_dir / "kernel-review.json")
         payload["preparation"]["kernel_review_evidence_status"] = "Historical diagnostic commentary retained for provenance; not independent evidence for this audit."
@@ -1052,6 +1124,11 @@ def generate_report(run_dir: Path, output_dir: Path, site_dir: Path, *, readme_p
                             for source, comparison in payload["analysis"]["comparisons"].items())
     if payload["training_intervention_disclosure"]:
         details = payload["training_intervention_disclosure"] + "\n\n" + details
+    details = payload["hypothesis_disclosure"] + "\n\n" + details
+    if audit:
+        details += "\n\n" + "\n\n".join(f"### {title}\n\n{body}" for title, body in findings["sections"])
+        details += ("\n\n[All task controls and source-by-claim review](scientific-review.md) · "
+                    "[Reconstruction](evidence.json) · [Per-test evidence](oracle-tests.json.gz)")
     report = (f"# Experiment: {payload['run_id']}\n\nStatus: **{payload['status']}**. "
               "This report is generated from saved records; absent measurements remain unknown. "
               "All tables and diagnostics are derived from the [machine-readable analysis](summary.json). "
@@ -1075,7 +1152,7 @@ def generate_report(run_dir: Path, output_dir: Path, site_dir: Path, *, readme_p
               "## Reproduction and limitations\n\n"
               "[Independent raw-record cross-check](evidence-audit.json) recomputes scores, paired intervals, "
               "action accounting, and saved official-report agreement without using the reporting analysis. "
-              "[Retrospective claim ledger](independent-audit-2026-11-12.md) records corrections and uncertainties.\n\n"
+              "The [dated November 12 review](independent-audit-2026-11-12.md) is archived for provenance.\n\n"
               "Regenerate this report with `uv run selfplay report --run <run-directory>`. "
               "Task-paired intervals condition on the recorded checkpoints; training-seed uncertainty is unmeasured. "
               "Degenerate bootstrap intervals do not establish equivalence. Missing evaluations and infrastructure "
@@ -1113,6 +1190,8 @@ def generate_report(run_dir: Path, output_dir: Path, site_dir: Path, *, readme_p
         paper_md += f"## {title}\n\n{body}\n\n"
         if title == "Results":
             paper_md += table + "\n\n" + controls + "\n\n"
+        elif title == "Fixed-patch grader calibration" and figures.get("calibration"):
+            paper_md += "![Outcomes of gold and empty patch controls](figures/calibration.png)\n\n"
         elif title == "Observed execution diagnostics":
             paper_md += diagnostics + "\n\n"
     paper_md += "## Appendix: configuration\n\n```json\n" + json.dumps(manifest, ensure_ascii=False, indent=2) + "\n```\n\n"
@@ -1146,8 +1225,12 @@ def generate_report(run_dir: Path, output_dir: Path, site_dir: Path, *, readme_p
             relative = output_dir.resolve().relative_to(readme_path.resolve().parent).as_posix()
             links = (f"\n\n![Recorded evaluation outcomes]({relative}/figures/scores.png)\n\n"
                      f"[Experiment report]({relative}/experiment.md) · [PDF paper]({relative}/paper.pdf)")
+        readme_details = details
+        if audit and output_dir.resolve().is_relative_to(readme_path.resolve().parent):
+            for name in ("scientific-review.md", "evidence.json", "oracle-tests.json.gz"):
+                readme_details = readme_details.replace(f"]({name})", f"]({relative}/{name})")
         _update_readme(readme_path, f"Recorded run status: **{status}**.\n\n" + failure_text + recovery_text + protocol_text + table + "\n\n" +
-                       details + "\n\n" + training_text + controls + "\n\n" + payload["oracle_disclosure"] +
+                       readme_details + "\n\n" + training_text + controls + "\n\n" + payload["oracle_disclosure"] +
                        "\n\nSource: saved evaluation records and patches in the [experiment report](reports/generated/experiment.md); "
                        f"[official grader field semantics]({SOURCES[5][1]})." + links +
                        "\n\nRegenerate all results with `uv run selfplay report --run <run-directory>`.")

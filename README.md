@@ -8,6 +8,8 @@ The project adapts [Self-play SWE-RL](https://arxiv.org/html/2512.18552v3), the 
 
 **Research status:** the generated results below report the recorded run, checkpoint and evaluation status. A [dated recovery amendment](reports/preregistration.md#recovery-amendment-2026-11-05) preserves the interrupted initial attempt and deducts its compute charge from the recovery allocation. Preflight parameter updates are software checks, not evidence of self-play learning. The first delivery covers one bounded pilot; the larger seed/control study remains deferred.
 
+The [independent scientific review](reports/generated/scientific-review.md) includes every frozen human task, reference-patch and empty-patch controls, and the range allowed by missing historical scores. [Fixed-patch protocol](reports/reviews/grader-calibration-protocol-2026-11-26.md) · [Claim-by-claim sources](reports/reviews/claim-review-2026-11-26.md)
+
 <!-- SSR_RESULTS:START -->
 
 Recorded run status: **pilot_failed**.
@@ -35,15 +37,51 @@ These are unscored harness diagnostics, excluded from benchmark success and trai
 | synthetic | base | 16 | 0 | Not evaluated | Not evaluated | 16 | 0 |
 | synthetic | final condition | 16 | 0 | Not evaluated | Not evaluated | 16 | 0 |
 
+The primary learning hypothesis was not tested. The research run recorded zero optimizer steps and selected an adapter identical to initialization.
+
 Recorded research optimizer steps: 0. The initial and selected adapter weights and configurations have identical SHA256 digests and the same pinned base identity. This is two evaluations of unchanged weights, not an estimated self-play training effect. The planned learning hypothesis was not tested by this unchanged-policy comparison. The raw trained label and mechanical preregistered interval decision are preserved for provenance.
 
 ### Human bugs
 
-Across 21 paired tasks, the final-minus-base resolution difference was +0.0 percentage points (95% paired bootstrap interval [+0.0, +0.0]). Improved: 0; regressed: 0; unchanged: 21. The mechanical preregistered interval rule contradicts the predicted improvement. This rule alone does not establish that the planned learning intervention occurred. The bootstrap interval is degenerate; it does not establish equivalence or rule out a population effect.
+Across 21 paired tasks, the final-minus-base resolution difference was +0.0 percentage points (95% paired bootstrap interval [+0.0, +0.0]). Improved: 0; regressed: 0; unchanged: 21. The bootstrap interval is degenerate; it does not establish equivalence or rule out a population effect.
 
 ### Synthetic bugs
 
 Not evaluated: no tasks have completed outcomes for both conditions.
+
+### Collection and training exposure
+
+The 2 completed groups contained 4 injector episodes. 4 reached the tool budget with no declared test targets. 4 episodes had zero length-centered advantage. The original action stream matched 138 saved collection actions. The effective messages for 128 distinct training prompt token sequences contained 0 verbatim complete held-out reference or test patches. Partial overlap, memorization and pretraining exposure remain unknown.
+
+### Human cohort and missing outcomes
+
+The frozen selection took 32 tasks from 38 eligible rows of the 500-row pinned dataset. Both conditions were scored on 21 tasks, base only on 0, final only on 8, and neither on 3. Assigning every missing binary outcome its extremes gives a possible net change of -11 to +3 resolutions out of 32 (-34.38 to +9.38 percentage points). These endpoints describe possible completions of this finite cohort. The paired bootstrap describes only the observed pairs.
+
+### Replay of historical scoring
+
+The locked scorer reproduced all 50 archived human grades from stdout. 50 of the submitted patches were empty. 14 scored submissions recorded zero generated tokens and 15 recorded an agent context-limit error. A recorded failure can therefore include a task for which the agent could not generate a repair. The PASS_TO_PASS failure category contained 208 entries across 9 submissions on 5 tasks. Parsed states among those entries were {"FAILED": 208}. The FAIL_TO_PASS failure category contained 122 entries, with parsed states {"FAILED": 100, "MISSING": 22}. Expected IDs included a literal pytest progress marker on 2 tasks. 4 of the 4 affected submissions also had a separate repair-required failure. Test-level classifications and alias matches are retained in the per-test archive.
+
+### Fixed-patch grader calibration
+
+The grader resolved the published repair and rejected the empty patch on 25/32 tasks. The remaining classifications were 6 failed and 1 indeterminate. Gold repairs resolved on 25/32 planned tasks. Empty submissions resolved on 0/32. These CPU measurements characterize the pinned grading environment. A passing pair validates only these two inputs.
+
+### Sensitivity to grader discrimination
+
+Of 25 tasks passing calibration, 16 had both historical policy scores and 9 lacked at least one. The final-minus-base difference is +0.0 percentage points (paired percentile interval [+0.0, +0.0]). The restriction was specified before control execution and after the pilot outcomes were known. The full original analysis retains every admitted score.
+
+### Synthetic diagnostic cohort
+
+The private records and public manifest agree on 16 mutations across 16 distinct functions. The saved clean suite sizes were 723. The policy evaluation stream contains 0 scored synthetic outcomes.
+
+### Where reference repairs failed
+
+Among the completed gold controls, the grader rejected 6 in psf/requests. On 2 of these tasks all repair-required tests were accepted, but expected-pass failures still blocked resolution. Original stdout contained a DNS or network-unreachable message on 6/6 unresolved gold controls. This retrospective text check identifies a concrete environmental limitation. The data do not isolate the cause of every failed test.
+
+### Protocol changes and stopping
+
+The interrupted original pilot records match the recovery amendment. The final observed worker overrun was 45.619 seconds. The stopping diagnostic identified 9 calls continuing past chat EOS in the unscored held-out episode. That exposure preceded the stopping correction. The likelihood gate was also amended after inspection of the same preflight sample.
+
+[All task controls and source-by-claim review](reports/generated/scientific-review.md) · [Reconstruction](reports/generated/evidence.json) · [Per-test evidence](reports/generated/oracle-tests.json.gz)
 
 ## Recorded training outcome
 
@@ -57,9 +95,13 @@ Completed collection groups: 2 (with saved training_group outcomes); valid bugs 
 | no-delegation evaluation | Measure inference-time delegation dependence | Not run |
 | seed sensitivity | Measure training-seed variation | Not run |
 
-The saved official reports contain 208 PASS_TO_PASS failure entries across 9 scored rows. Of those rows, 9 submitted an empty patch. Across all 50 scored human rows, 50 saved patches are empty. These are failures of tests designated as passing in benchmark metadata, not established regressions caused by agent edits. The grader's failure category can also include tests missing from parsed output. The cause of the failures is unverified; no clean-environment re-evaluation was performed in this audit. The official scores remain unchanged, with this limitation on their interpretation. This is a post-hoc descriptive check of saved reports and submitted patches.
+The saved official reports contain 208 PASS_TO_PASS failure entries across 9 scored rows. Of those rows, 9 submitted an empty patch. Across all 50 scored human rows, 50 saved patches are empty. These are failures of tests designated as passing in benchmark metadata, not established regressions caused by agent edits. The grader's failure category can also include tests missing from parsed output. The archived score alone cannot identify the cause of an expected-pass failure. The official scores remain unchanged, with this limitation on their interpretation. This is a post-hoc descriptive check of saved reports and submitted patches.
 
 Source: saved evaluation records and patches in the [experiment report](reports/generated/experiment.md); [official grader field semantics](https://www.swebench.com/SWE-bench/guides/evaluation/).
+
+![Recorded evaluation outcomes](reports/generated/figures/scores.png)
+
+[Experiment report](reports/generated/experiment.md) · [PDF paper](reports/generated/paper.pdf)
 
 Regenerate all results with `uv run selfplay report --run <run-directory>`.
 
@@ -99,6 +141,22 @@ Set `SSR_DATA_DIR`, `HF_HOME`, and `UV_CACHE_DIR` in `.env` to task-specific sto
 Preparation pins model/source/dataset commits, builds dependency-only training images, freezes the human evaluation cohort, and prepares the independently validated diagnostic set. Humanize uses its upstream `uv build`/hatch-vcs hook to generate required version metadata. Source/data licenses and immutable revisions are retained in manifests.
 
 ## Run the research pipeline
+
+### Reproduce the scientific audit without model execution
+
+From the locked WSL checkout, with the original pilot records, verified external task data and pinned Docker images available, use the commands below. Completed fixed-patch controls are reused. The reconstruction reads original stdout, mutation records and checkpoint bytes. It writes portable evidence to `results/scientific-audit-2026-11-26/`.
+
+```bash
+mountpoint -q /mnt/d
+uv run --no-sync python scripts/check_scientific_sources.py
+uv run --no-sync selfplay calibrate-grader
+uv run --no-sync python -m multi_agent_ssr.scientific_reconstruction
+uv run --no-sync selfplay report --run runs/pilot-recovery
+```
+
+The last command alone regenerates the human-facing results from an exact matching run and the committed evidence. The [Hub bundle](https://huggingface.co/BurnyCoder/multi-agent-swe-rl-qwen3.5-2b-pilot) supplies original reporting streams and portable test classifications. Replaying the historical parser from stdout requires the original local grader logs. [Source guide](docs/sources.md)
+
+### Model execution for the research pipeline
 
 Read [the preregistration](reports/preregistration.md) before running. Commit and push code, configuration and manifests first; the CLI enforces this ordering.
 

@@ -15,6 +15,7 @@ def main() -> None:
     subcommands = parser.add_subparsers(dest="command", required=True)
     subcommands.add_parser("prepare", help="Pin source/model/evaluation revisions and dependency images")
     subcommands.add_parser("doctor", help="Inspect local prerequisites without model execution")
+    subcommands.add_parser("calibrate-grader", help="Grade the fixed human and empty patches using CPU containers")
     for name in ("preflight", "pilot", "evaluate"):
         sub = subcommands.add_parser(name)
         sub.add_argument("--run", type=Path, default=Path("runs/pilot"))
@@ -29,7 +30,10 @@ def main() -> None:
     export.add_argument("--report", type=Path, default=Path("reports/generated"))
     export.add_argument("--output", type=Path, default=Path("runs/pilot/publication"))
     args = parser.parse_args()
-    if args.command == "prepare":
+    if args.command == "calibrate-grader":
+        from .grader_calibration import run_calibration
+        run_calibration()
+    elif args.command == "prepare":
         from .prepare import prepare_all
         print(json.dumps(prepare_all(), indent=2))
     elif args.command == "doctor":

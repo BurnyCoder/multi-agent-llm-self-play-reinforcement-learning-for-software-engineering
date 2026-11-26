@@ -1,5 +1,7 @@
 # Optional controls and sensitivity runs
 
+The [CPU grader calibration](../reports/generated/scientific-review.md) runs fixed human and empty patches through the pinned benchmark oracle. Its outcomes measure the grading environment. The model-based comparisons below were deferred.
+
 These configurations are delivered but are **not executed in the first pilot**.
 Each new run receives a separate persisted budget and output directory. Prepare
 and push its configuration before model execution. No control uses humanize or
