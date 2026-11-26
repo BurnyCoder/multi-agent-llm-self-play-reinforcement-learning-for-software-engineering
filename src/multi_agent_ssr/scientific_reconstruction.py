@@ -101,7 +101,8 @@ def historical_scores(run, tasks):
         key = (tid, c)
         if tid not in private or c not in {"base", "trained"}:
             raise ValueError(f"Unexpected historical task or condition: {key}")
-        brief = {k: row.get(k) for k in ("task_id", "condition", "timestamp", "status", "success", "attempted")}
+        brief = {k: row.get(k) for k in ("task_id", "condition", "timestamp", "status", "success", "attempted",
+                                         "generated_tokens", "agent_error")}
         attempts.append(brief)
         if key not in accepted:
             records[key] = brief

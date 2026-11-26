@@ -2,6 +2,7 @@
 
 import itertools
 import json
+from collections import Counter
 
 import pytest
 
@@ -104,3 +105,19 @@ def test_archived_review_only_attaches_to_its_original_inputs(tmp_path):
     events.write_text("")
     with pytest.raises(ValueError, match="events.jsonl"):
         linked_review(run, evidence)
+
+
+def test_portable_control_summary_matches_each_saved_submission():
+    import gzip
+
+    from multi_agent_ssr.scientific_review import REVIEW, public_findings
+
+    audit = json.loads((REVIEW / "evidence.json").read_bytes())
+    cal = audit["calibration"]
+    tasks = [r["task_id"] for r in cal["tasks"]]
+    assert calibration_outcomes(tasks, cal["controls"]) == cal["tasks"]
+    assert cal["counts"] == Counter(r["discrimination"] for r in cal["tasks"])
+    assert completion_bounds(tasks, audit["historical"]["retained"]) == audit["historical"]["bounds"]
+    traces = json.loads(gzip.decompress((REVIEW / audit["test_archive"]["name"]).read_bytes()))
+    assert sum(t["phase"] == "historical" for t in traces) == audit["historical"]["replayed_reports"]
+    assert public_findings(audit)["tasks"] == cal["tasks"]

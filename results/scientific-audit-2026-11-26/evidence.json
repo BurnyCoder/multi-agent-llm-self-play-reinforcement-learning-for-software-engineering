@@ -222,7 +222,9 @@
         "timestamp": "2026-11-05T22:25:34.460574+00:00",
         "status": "infra_error",
         "success": null,
-        "attempted": false
+        "attempted": false,
+        "generated_tokens": 0,
+        "agent_error": null
       },
       {
         "task_id": "pytest-dev__pytest-5631",
@@ -230,7 +232,9 @@
         "timestamp": "2026-11-05T22:51:23.871989+00:00",
         "status": "interrupted_unscored",
         "success": null,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 2094,
+        "agent_error": null
       },
       {
         "task_id": "pytest-dev__pytest-5631",
@@ -238,7 +242,9 @@
         "timestamp": "2026-11-05T23:10:15.255578+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 1243,
+        "agent_error": null
       },
       {
         "task_id": "pylint-dev__pylint-7080",
@@ -246,7 +252,9 @@
         "timestamp": "2026-11-05T23:21:45.281778+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 0,
+        "agent_error": "ContextLimitError: Required instructions/latest interaction use 8788 tokens; prompt capacity is 1792"
       },
       {
         "task_id": "pylint-dev__pylint-6386",
@@ -254,7 +262,9 @@
         "timestamp": "2026-11-05T23:34:32.328066+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 2065,
+        "agent_error": null
       },
       {
         "task_id": "pytest-dev__pytest-7982",
@@ -262,7 +272,9 @@
         "timestamp": "2026-11-05T23:39:49.489910+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 1227,
+        "agent_error": null
       },
       {
         "task_id": "pylint-dev__pylint-4970",
@@ -270,7 +282,9 @@
         "timestamp": "2026-11-05T23:48:17.919504+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 1429,
+        "agent_error": null
       },
       {
         "task_id": "psf__requests-2931",
@@ -278,7 +292,9 @@
         "timestamp": "2026-11-05T23:54:22.435855+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 1935,
+        "agent_error": null
       },
       {
         "task_id": "pytest-dev__pytest-7432",
@@ -286,7 +302,9 @@
         "timestamp": "2026-11-06T00:01:29.363986+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 2061,
+        "agent_error": null
       },
       {
         "task_id": "pytest-dev__pytest-5809",
@@ -294,7 +312,9 @@
         "timestamp": "2026-11-06T00:07:44.499536+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 1774,
+        "agent_error": null
       },
       {
         "task_id": "pytest-dev__pytest-7521",
@@ -302,7 +322,9 @@
         "timestamp": "2026-11-06T00:09:42.035998+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 0,
+        "agent_error": "ContextLimitError: Required instructions/latest interaction use 2000 tokens; prompt capacity is 1792"
       },
       {
         "task_id": "pylint-dev__pylint-6903",
@@ -310,7 +332,9 @@
         "timestamp": "2026-11-06T00:20:51.049872+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 0,
+        "agent_error": "ContextLimitError: Required instructions/latest interaction use 1804 tokens; prompt capacity is 1792"
       },
       {
         "task_id": "pytest-dev__pytest-5262",
@@ -318,7 +342,9 @@
         "timestamp": "2026-11-06T00:22:44.757244+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 0,
+        "agent_error": "ContextLimitError: Required instructions/latest interaction use 2097 tokens; prompt capacity is 1792"
       },
       {
         "task_id": "pytest-dev__pytest-10356",
@@ -326,7 +352,9 @@
         "timestamp": "2026-11-06T00:24:55.102900+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 0,
+        "agent_error": "ContextLimitError: Required instructions/latest interaction use 2116 tokens; prompt capacity is 1792"
       },
       {
         "task_id": "pylint-dev__pylint-4661",
@@ -334,7 +362,9 @@
         "timestamp": "2026-11-06T00:37:38.715246+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 1856,
+        "agent_error": null
       },
       {
         "task_id": "pytest-dev__pytest-10051",
@@ -342,7 +372,9 @@
         "timestamp": "2026-11-06T00:43:26.061369+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 1396,
+        "agent_error": null
       },
       {
         "task_id": "psf__requests-1142",
@@ -350,7 +382,9 @@
         "timestamp": "2026-11-06T00:48:31.054851+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 1609,
+        "agent_error": null
       },
       {
         "task_id": "psf__requests-1921",
@@ -358,7 +392,9 @@
         "timestamp": "2026-11-06T00:53:55.755163+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 1617,
+        "agent_error": null
       },
       {
         "task_id": "pytest-dev__pytest-6202",
@@ -366,7 +402,9 @@
         "timestamp": "2026-11-06T00:59:12.699590+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 1306,
+        "agent_error": null
       },
       {
         "task_id": "pylint-dev__pylint-4551",
@@ -374,7 +412,9 @@
         "timestamp": "2026-11-06T01:07:30.802362+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 1423,
+        "agent_error": null
       },
       {
         "task_id": "psf__requests-1766",
@@ -382,7 +422,9 @@
         "timestamp": "2026-11-06T01:12:37.866640+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 1575,
+        "agent_error": null
       },
       {
         "task_id": "psf__requests-5414",
@@ -390,7 +432,9 @@
         "timestamp": "2026-11-06T01:17:49.357198+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 1717,
+        "agent_error": null
       },
       {
         "task_id": "pytest-dev__pytest-7205",
@@ -398,7 +442,9 @@
         "timestamp": "2026-11-06T01:19:49.341426+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 0,
+        "agent_error": "ContextLimitError: Required instructions/latest interaction use 2085 tokens; prompt capacity is 1792"
       },
       {
         "task_id": "pylint-dev__pylint-6528",
@@ -406,7 +452,9 @@
         "timestamp": "2026-11-06T01:30:25.177261+00:00",
         "status": "timeout",
         "success": null,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 1021,
+        "agent_error": null
       },
       {
         "task_id": "pytest-dev__pytest-5787",
@@ -414,7 +462,9 @@
         "timestamp": "2026-11-06T01:30:25.180673+00:00",
         "status": "pending",
         "success": null,
-        "attempted": false
+        "attempted": false,
+        "generated_tokens": 0,
+        "agent_error": null
       },
       {
         "task_id": "psf__requests-6028",
@@ -422,7 +472,9 @@
         "timestamp": "2026-11-06T01:30:25.199668+00:00",
         "status": "pending",
         "success": null,
-        "attempted": false
+        "attempted": false,
+        "generated_tokens": 0,
+        "agent_error": null
       },
       {
         "task_id": "psf__requests-2317",
@@ -430,7 +482,9 @@
         "timestamp": "2026-11-06T01:30:25.218254+00:00",
         "status": "pending",
         "success": null,
-        "attempted": false
+        "attempted": false,
+        "generated_tokens": 0,
+        "agent_error": null
       },
       {
         "task_id": "pallets__flask-5014",
@@ -438,7 +492,9 @@
         "timestamp": "2026-11-06T01:30:25.235611+00:00",
         "status": "pending",
         "success": null,
-        "attempted": false
+        "attempted": false,
+        "generated_tokens": 0,
+        "agent_error": null
       },
       {
         "task_id": "pytest-dev__pytest-7490",
@@ -446,7 +502,9 @@
         "timestamp": "2026-11-06T01:30:25.254083+00:00",
         "status": "pending",
         "success": null,
-        "attempted": false
+        "attempted": false,
+        "generated_tokens": 0,
+        "agent_error": null
       },
       {
         "task_id": "pytest-dev__pytest-7571",
@@ -454,7 +512,9 @@
         "timestamp": "2026-11-06T01:30:25.271920+00:00",
         "status": "pending",
         "success": null,
-        "attempted": false
+        "attempted": false,
+        "generated_tokens": 0,
+        "agent_error": null
       },
       {
         "task_id": "pytest-dev__pytest-6197",
@@ -462,7 +522,9 @@
         "timestamp": "2026-11-06T01:30:25.289372+00:00",
         "status": "pending",
         "success": null,
-        "attempted": false
+        "attempted": false,
+        "generated_tokens": 0,
+        "agent_error": null
       },
       {
         "task_id": "pylint-dev__pylint-8898",
@@ -470,7 +532,9 @@
         "timestamp": "2026-11-06T01:30:25.308432+00:00",
         "status": "pending",
         "success": null,
-        "attempted": false
+        "attempted": false,
+        "generated_tokens": 0,
+        "agent_error": null
       },
       {
         "task_id": "psf__requests-1724",
@@ -478,7 +542,9 @@
         "timestamp": "2026-11-06T01:30:25.325713+00:00",
         "status": "pending",
         "success": null,
-        "attempted": false
+        "attempted": false,
+        "generated_tokens": 0,
+        "agent_error": null
       },
       {
         "task_id": "pytest-dev__pytest-7236",
@@ -486,7 +552,9 @@
         "timestamp": "2026-11-06T01:30:25.343945+00:00",
         "status": "pending",
         "success": null,
-        "attempted": false
+        "attempted": false,
+        "generated_tokens": 0,
+        "agent_error": null
       },
       {
         "task_id": "pytest-dev__pytest-5631",
@@ -494,7 +562,9 @@
         "timestamp": "2026-11-06T01:53:14.594377+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 1460,
+        "agent_error": null
       },
       {
         "task_id": "pylint-dev__pylint-7080",
@@ -502,7 +572,9 @@
         "timestamp": "2026-11-06T02:04:16.746747+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 0,
+        "agent_error": "ContextLimitError: Required instructions/latest interaction use 8788 tokens; prompt capacity is 1792"
       },
       {
         "task_id": "pylint-dev__pylint-6386",
@@ -510,7 +582,9 @@
         "timestamp": "2026-11-06T02:15:43.067740+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 1526,
+        "agent_error": null
       },
       {
         "task_id": "pytest-dev__pytest-7982",
@@ -518,7 +592,9 @@
         "timestamp": "2026-11-06T02:21:12.502229+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 1318,
+        "agent_error": null
       },
       {
         "task_id": "pylint-dev__pylint-4970",
@@ -526,7 +602,9 @@
         "timestamp": "2026-11-06T02:31:36.916543+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 2305,
+        "agent_error": null
       },
       {
         "task_id": "psf__requests-2931",
@@ -534,7 +612,9 @@
         "timestamp": "2026-11-06T02:37:45.323553+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 2011,
+        "agent_error": null
       },
       {
         "task_id": "pytest-dev__pytest-7432",
@@ -542,7 +622,9 @@
         "timestamp": "2026-11-06T02:44:15.392068+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 1764,
+        "agent_error": null
       },
       {
         "task_id": "pytest-dev__pytest-5809",
@@ -550,7 +632,9 @@
         "timestamp": "2026-11-06T02:51:35.400343+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 2229,
+        "agent_error": null
       },
       {
         "task_id": "pytest-dev__pytest-7521",
@@ -558,7 +642,9 @@
         "timestamp": "2026-11-06T02:53:34.042336+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 0,
+        "agent_error": "ContextLimitError: Required instructions/latest interaction use 2000 tokens; prompt capacity is 1792"
       },
       {
         "task_id": "pylint-dev__pylint-6903",
@@ -566,7 +652,9 @@
         "timestamp": "2026-11-06T03:04:36.051130+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 0,
+        "agent_error": "ContextLimitError: Required instructions/latest interaction use 1804 tokens; prompt capacity is 1792"
       },
       {
         "task_id": "pytest-dev__pytest-5262",
@@ -574,7 +662,9 @@
         "timestamp": "2026-11-06T03:06:27.093546+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 0,
+        "agent_error": "ContextLimitError: Required instructions/latest interaction use 2097 tokens; prompt capacity is 1792"
       },
       {
         "task_id": "pytest-dev__pytest-10356",
@@ -582,7 +672,9 @@
         "timestamp": "2026-11-06T03:08:36.172798+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 0,
+        "agent_error": "ContextLimitError: Required instructions/latest interaction use 2116 tokens; prompt capacity is 1792"
       },
       {
         "task_id": "pylint-dev__pylint-4661",
@@ -590,7 +682,9 @@
         "timestamp": "2026-11-06T03:17:32.036426+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 1608,
+        "agent_error": null
       },
       {
         "task_id": "pytest-dev__pytest-10051",
@@ -598,7 +692,9 @@
         "timestamp": "2026-11-06T03:23:20.612309+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 1412,
+        "agent_error": null
       },
       {
         "task_id": "psf__requests-1142",
@@ -606,7 +702,9 @@
         "timestamp": "2026-11-06T03:28:12.706294+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 1496,
+        "agent_error": null
       },
       {
         "task_id": "psf__requests-1921",
@@ -614,7 +712,9 @@
         "timestamp": "2026-11-06T03:37:12.925362+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 1837,
+        "agent_error": null
       },
       {
         "task_id": "pytest-dev__pytest-6202",
@@ -622,7 +722,9 @@
         "timestamp": "2026-11-06T03:43:02.008383+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 1476,
+        "agent_error": null
       },
       {
         "task_id": "pylint-dev__pylint-4551",
@@ -630,7 +732,9 @@
         "timestamp": "2026-11-06T03:52:01.469920+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 1619,
+        "agent_error": null
       },
       {
         "task_id": "psf__requests-1766",
@@ -638,7 +742,9 @@
         "timestamp": "2026-11-06T03:54:24.030981+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 480,
+        "agent_error": null
       },
       {
         "task_id": "psf__requests-5414",
@@ -646,7 +752,9 @@
         "timestamp": "2026-11-06T03:59:24.281112+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 1608,
+        "agent_error": null
       },
       {
         "task_id": "pytest-dev__pytest-7205",
@@ -654,7 +762,9 @@
         "timestamp": "2026-11-06T04:01:22.047131+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 0,
+        "agent_error": "ContextLimitError: Required instructions/latest interaction use 2085 tokens; prompt capacity is 1792"
       },
       {
         "task_id": "pylint-dev__pylint-6528",
@@ -662,7 +772,9 @@
         "timestamp": "2026-11-06T04:13:47.035884+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 1377,
+        "agent_error": null
       },
       {
         "task_id": "pytest-dev__pytest-5787",
@@ -670,7 +782,9 @@
         "timestamp": "2026-11-06T04:16:02.035490+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 163,
+        "agent_error": "ContextLimitError: Required instructions/latest interaction use 1974 tokens; prompt capacity is 1792"
       },
       {
         "task_id": "psf__requests-6028",
@@ -678,7 +792,9 @@
         "timestamp": "2026-11-06T04:22:09.254589+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 1455,
+        "agent_error": null
       },
       {
         "task_id": "psf__requests-2317",
@@ -686,7 +802,9 @@
         "timestamp": "2026-11-06T04:26:44.838181+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 1309,
+        "agent_error": null
       },
       {
         "task_id": "pallets__flask-5014",
@@ -694,7 +812,9 @@
         "timestamp": "2026-11-06T04:31:43.191978+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 1420,
+        "agent_error": null
       },
       {
         "task_id": "pytest-dev__pytest-7490",
@@ -702,7 +822,9 @@
         "timestamp": "2026-11-06T04:33:42.348327+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 0,
+        "agent_error": "ContextLimitError: Required instructions/latest interaction use 5168 tokens; prompt capacity is 1792"
       },
       {
         "task_id": "pytest-dev__pytest-7571",
@@ -710,7 +832,9 @@
         "timestamp": "2026-11-06T04:39:30.658705+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 1492,
+        "agent_error": null
       },
       {
         "task_id": "pytest-dev__pytest-6197",
@@ -718,7 +842,9 @@
         "timestamp": "2026-11-06T04:41:29.808881+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 0,
+        "agent_error": "ContextLimitError: Required instructions/latest interaction use 1797 tokens; prompt capacity is 1792"
       },
       {
         "task_id": "pylint-dev__pylint-8898",
@@ -726,7 +852,9 @@
         "timestamp": "2026-11-06T04:51:21.279476+00:00",
         "status": "interrupted_budget",
         "success": null,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 0,
+        "agent_error": "ContextLimitError: Required instructions/latest interaction use 1889 tokens; prompt capacity is 1792"
       },
       {
         "task_id": "psf__requests-1724",
@@ -734,7 +862,9 @@
         "timestamp": "2026-11-06T04:51:21.279476+00:00",
         "status": "not_run_budget",
         "success": null,
-        "attempted": false
+        "attempted": false,
+        "generated_tokens": 0,
+        "agent_error": null
       },
       {
         "task_id": "pytest-dev__pytest-7236",
@@ -742,7 +872,9 @@
         "timestamp": "2026-11-06T04:51:21.279476+00:00",
         "status": "not_run_budget",
         "success": null,
-        "attempted": false
+        "attempted": false,
+        "generated_tokens": 0,
+        "agent_error": null
       }
     ],
     "retained": [
@@ -752,7 +884,9 @@
         "timestamp": "2026-11-05T23:10:15.255578+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 1243,
+        "agent_error": null
       },
       {
         "task_id": "pylint-dev__pylint-7080",
@@ -760,7 +894,9 @@
         "timestamp": "2026-11-05T23:21:45.281778+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 0,
+        "agent_error": "ContextLimitError: Required instructions/latest interaction use 8788 tokens; prompt capacity is 1792"
       },
       {
         "task_id": "pylint-dev__pylint-6386",
@@ -768,7 +904,9 @@
         "timestamp": "2026-11-05T23:34:32.328066+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 2065,
+        "agent_error": null
       },
       {
         "task_id": "pytest-dev__pytest-7982",
@@ -776,7 +914,9 @@
         "timestamp": "2026-11-05T23:39:49.489910+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 1227,
+        "agent_error": null
       },
       {
         "task_id": "pylint-dev__pylint-4970",
@@ -784,7 +924,9 @@
         "timestamp": "2026-11-05T23:48:17.919504+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 1429,
+        "agent_error": null
       },
       {
         "task_id": "psf__requests-2931",
@@ -792,7 +934,9 @@
         "timestamp": "2026-11-05T23:54:22.435855+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 1935,
+        "agent_error": null
       },
       {
         "task_id": "pytest-dev__pytest-7432",
@@ -800,7 +944,9 @@
         "timestamp": "2026-11-06T00:01:29.363986+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 2061,
+        "agent_error": null
       },
       {
         "task_id": "pytest-dev__pytest-5809",
@@ -808,7 +954,9 @@
         "timestamp": "2026-11-06T00:07:44.499536+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 1774,
+        "agent_error": null
       },
       {
         "task_id": "pytest-dev__pytest-7521",
@@ -816,7 +964,9 @@
         "timestamp": "2026-11-06T00:09:42.035998+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 0,
+        "agent_error": "ContextLimitError: Required instructions/latest interaction use 2000 tokens; prompt capacity is 1792"
       },
       {
         "task_id": "pylint-dev__pylint-6903",
@@ -824,7 +974,9 @@
         "timestamp": "2026-11-06T00:20:51.049872+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 0,
+        "agent_error": "ContextLimitError: Required instructions/latest interaction use 1804 tokens; prompt capacity is 1792"
       },
       {
         "task_id": "pytest-dev__pytest-5262",
@@ -832,7 +984,9 @@
         "timestamp": "2026-11-06T00:22:44.757244+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 0,
+        "agent_error": "ContextLimitError: Required instructions/latest interaction use 2097 tokens; prompt capacity is 1792"
       },
       {
         "task_id": "pytest-dev__pytest-10356",
@@ -840,7 +994,9 @@
         "timestamp": "2026-11-06T00:24:55.102900+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 0,
+        "agent_error": "ContextLimitError: Required instructions/latest interaction use 2116 tokens; prompt capacity is 1792"
       },
       {
         "task_id": "pylint-dev__pylint-4661",
@@ -848,7 +1004,9 @@
         "timestamp": "2026-11-06T00:37:38.715246+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 1856,
+        "agent_error": null
       },
       {
         "task_id": "pytest-dev__pytest-10051",
@@ -856,7 +1014,9 @@
         "timestamp": "2026-11-06T00:43:26.061369+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 1396,
+        "agent_error": null
       },
       {
         "task_id": "psf__requests-1142",
@@ -864,7 +1024,9 @@
         "timestamp": "2026-11-06T00:48:31.054851+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 1609,
+        "agent_error": null
       },
       {
         "task_id": "psf__requests-1921",
@@ -872,7 +1034,9 @@
         "timestamp": "2026-11-06T00:53:55.755163+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 1617,
+        "agent_error": null
       },
       {
         "task_id": "pytest-dev__pytest-6202",
@@ -880,7 +1044,9 @@
         "timestamp": "2026-11-06T00:59:12.699590+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 1306,
+        "agent_error": null
       },
       {
         "task_id": "pylint-dev__pylint-4551",
@@ -888,7 +1054,9 @@
         "timestamp": "2026-11-06T01:07:30.802362+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 1423,
+        "agent_error": null
       },
       {
         "task_id": "psf__requests-1766",
@@ -896,7 +1064,9 @@
         "timestamp": "2026-11-06T01:12:37.866640+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 1575,
+        "agent_error": null
       },
       {
         "task_id": "psf__requests-5414",
@@ -904,7 +1074,9 @@
         "timestamp": "2026-11-06T01:17:49.357198+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 1717,
+        "agent_error": null
       },
       {
         "task_id": "pytest-dev__pytest-7205",
@@ -912,7 +1084,9 @@
         "timestamp": "2026-11-06T01:19:49.341426+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 0,
+        "agent_error": "ContextLimitError: Required instructions/latest interaction use 2085 tokens; prompt capacity is 1792"
       },
       {
         "task_id": "pylint-dev__pylint-6528",
@@ -920,7 +1094,9 @@
         "timestamp": "2026-11-06T01:30:25.177261+00:00",
         "status": "timeout",
         "success": null,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 1021,
+        "agent_error": null
       },
       {
         "task_id": "pytest-dev__pytest-5787",
@@ -928,7 +1104,9 @@
         "timestamp": "2026-11-06T01:30:25.180673+00:00",
         "status": "pending",
         "success": null,
-        "attempted": false
+        "attempted": false,
+        "generated_tokens": 0,
+        "agent_error": null
       },
       {
         "task_id": "psf__requests-6028",
@@ -936,7 +1114,9 @@
         "timestamp": "2026-11-06T01:30:25.199668+00:00",
         "status": "pending",
         "success": null,
-        "attempted": false
+        "attempted": false,
+        "generated_tokens": 0,
+        "agent_error": null
       },
       {
         "task_id": "psf__requests-2317",
@@ -944,7 +1124,9 @@
         "timestamp": "2026-11-06T01:30:25.218254+00:00",
         "status": "pending",
         "success": null,
-        "attempted": false
+        "attempted": false,
+        "generated_tokens": 0,
+        "agent_error": null
       },
       {
         "task_id": "pallets__flask-5014",
@@ -952,7 +1134,9 @@
         "timestamp": "2026-11-06T01:30:25.235611+00:00",
         "status": "pending",
         "success": null,
-        "attempted": false
+        "attempted": false,
+        "generated_tokens": 0,
+        "agent_error": null
       },
       {
         "task_id": "pytest-dev__pytest-7490",
@@ -960,7 +1144,9 @@
         "timestamp": "2026-11-06T01:30:25.254083+00:00",
         "status": "pending",
         "success": null,
-        "attempted": false
+        "attempted": false,
+        "generated_tokens": 0,
+        "agent_error": null
       },
       {
         "task_id": "pytest-dev__pytest-7571",
@@ -968,7 +1154,9 @@
         "timestamp": "2026-11-06T01:30:25.271920+00:00",
         "status": "pending",
         "success": null,
-        "attempted": false
+        "attempted": false,
+        "generated_tokens": 0,
+        "agent_error": null
       },
       {
         "task_id": "pytest-dev__pytest-6197",
@@ -976,7 +1164,9 @@
         "timestamp": "2026-11-06T01:30:25.289372+00:00",
         "status": "pending",
         "success": null,
-        "attempted": false
+        "attempted": false,
+        "generated_tokens": 0,
+        "agent_error": null
       },
       {
         "task_id": "pylint-dev__pylint-8898",
@@ -984,7 +1174,9 @@
         "timestamp": "2026-11-06T01:30:25.308432+00:00",
         "status": "pending",
         "success": null,
-        "attempted": false
+        "attempted": false,
+        "generated_tokens": 0,
+        "agent_error": null
       },
       {
         "task_id": "psf__requests-1724",
@@ -992,7 +1184,9 @@
         "timestamp": "2026-11-06T01:30:25.325713+00:00",
         "status": "pending",
         "success": null,
-        "attempted": false
+        "attempted": false,
+        "generated_tokens": 0,
+        "agent_error": null
       },
       {
         "task_id": "pytest-dev__pytest-7236",
@@ -1000,7 +1194,9 @@
         "timestamp": "2026-11-06T01:30:25.343945+00:00",
         "status": "pending",
         "success": null,
-        "attempted": false
+        "attempted": false,
+        "generated_tokens": 0,
+        "agent_error": null
       },
       {
         "task_id": "pytest-dev__pytest-5631",
@@ -1008,7 +1204,9 @@
         "timestamp": "2026-11-06T01:53:14.594377+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 1460,
+        "agent_error": null
       },
       {
         "task_id": "pylint-dev__pylint-7080",
@@ -1016,7 +1214,9 @@
         "timestamp": "2026-11-06T02:04:16.746747+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 0,
+        "agent_error": "ContextLimitError: Required instructions/latest interaction use 8788 tokens; prompt capacity is 1792"
       },
       {
         "task_id": "pylint-dev__pylint-6386",
@@ -1024,7 +1224,9 @@
         "timestamp": "2026-11-06T02:15:43.067740+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 1526,
+        "agent_error": null
       },
       {
         "task_id": "pytest-dev__pytest-7982",
@@ -1032,7 +1234,9 @@
         "timestamp": "2026-11-06T02:21:12.502229+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 1318,
+        "agent_error": null
       },
       {
         "task_id": "pylint-dev__pylint-4970",
@@ -1040,7 +1244,9 @@
         "timestamp": "2026-11-06T02:31:36.916543+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 2305,
+        "agent_error": null
       },
       {
         "task_id": "psf__requests-2931",
@@ -1048,7 +1254,9 @@
         "timestamp": "2026-11-06T02:37:45.323553+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 2011,
+        "agent_error": null
       },
       {
         "task_id": "pytest-dev__pytest-7432",
@@ -1056,7 +1264,9 @@
         "timestamp": "2026-11-06T02:44:15.392068+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 1764,
+        "agent_error": null
       },
       {
         "task_id": "pytest-dev__pytest-5809",
@@ -1064,7 +1274,9 @@
         "timestamp": "2026-11-06T02:51:35.400343+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 2229,
+        "agent_error": null
       },
       {
         "task_id": "pytest-dev__pytest-7521",
@@ -1072,7 +1284,9 @@
         "timestamp": "2026-11-06T02:53:34.042336+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 0,
+        "agent_error": "ContextLimitError: Required instructions/latest interaction use 2000 tokens; prompt capacity is 1792"
       },
       {
         "task_id": "pylint-dev__pylint-6903",
@@ -1080,7 +1294,9 @@
         "timestamp": "2026-11-06T03:04:36.051130+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 0,
+        "agent_error": "ContextLimitError: Required instructions/latest interaction use 1804 tokens; prompt capacity is 1792"
       },
       {
         "task_id": "pytest-dev__pytest-5262",
@@ -1088,7 +1304,9 @@
         "timestamp": "2026-11-06T03:06:27.093546+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 0,
+        "agent_error": "ContextLimitError: Required instructions/latest interaction use 2097 tokens; prompt capacity is 1792"
       },
       {
         "task_id": "pytest-dev__pytest-10356",
@@ -1096,7 +1314,9 @@
         "timestamp": "2026-11-06T03:08:36.172798+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 0,
+        "agent_error": "ContextLimitError: Required instructions/latest interaction use 2116 tokens; prompt capacity is 1792"
       },
       {
         "task_id": "pylint-dev__pylint-4661",
@@ -1104,7 +1324,9 @@
         "timestamp": "2026-11-06T03:17:32.036426+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 1608,
+        "agent_error": null
       },
       {
         "task_id": "pytest-dev__pytest-10051",
@@ -1112,7 +1334,9 @@
         "timestamp": "2026-11-06T03:23:20.612309+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 1412,
+        "agent_error": null
       },
       {
         "task_id": "psf__requests-1142",
@@ -1120,7 +1344,9 @@
         "timestamp": "2026-11-06T03:28:12.706294+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 1496,
+        "agent_error": null
       },
       {
         "task_id": "psf__requests-1921",
@@ -1128,7 +1354,9 @@
         "timestamp": "2026-11-06T03:37:12.925362+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 1837,
+        "agent_error": null
       },
       {
         "task_id": "pytest-dev__pytest-6202",
@@ -1136,7 +1364,9 @@
         "timestamp": "2026-11-06T03:43:02.008383+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 1476,
+        "agent_error": null
       },
       {
         "task_id": "pylint-dev__pylint-4551",
@@ -1144,7 +1374,9 @@
         "timestamp": "2026-11-06T03:52:01.469920+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 1619,
+        "agent_error": null
       },
       {
         "task_id": "psf__requests-1766",
@@ -1152,7 +1384,9 @@
         "timestamp": "2026-11-06T03:54:24.030981+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 480,
+        "agent_error": null
       },
       {
         "task_id": "psf__requests-5414",
@@ -1160,7 +1394,9 @@
         "timestamp": "2026-11-06T03:59:24.281112+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 1608,
+        "agent_error": null
       },
       {
         "task_id": "pytest-dev__pytest-7205",
@@ -1168,7 +1404,9 @@
         "timestamp": "2026-11-06T04:01:22.047131+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 0,
+        "agent_error": "ContextLimitError: Required instructions/latest interaction use 2085 tokens; prompt capacity is 1792"
       },
       {
         "task_id": "pylint-dev__pylint-6528",
@@ -1176,7 +1414,9 @@
         "timestamp": "2026-11-06T04:13:47.035884+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 1377,
+        "agent_error": null
       },
       {
         "task_id": "pytest-dev__pytest-5787",
@@ -1184,7 +1424,9 @@
         "timestamp": "2026-11-06T04:16:02.035490+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 163,
+        "agent_error": "ContextLimitError: Required instructions/latest interaction use 1974 tokens; prompt capacity is 1792"
       },
       {
         "task_id": "psf__requests-6028",
@@ -1192,7 +1434,9 @@
         "timestamp": "2026-11-06T04:22:09.254589+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 1455,
+        "agent_error": null
       },
       {
         "task_id": "psf__requests-2317",
@@ -1200,7 +1444,9 @@
         "timestamp": "2026-11-06T04:26:44.838181+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 1309,
+        "agent_error": null
       },
       {
         "task_id": "pallets__flask-5014",
@@ -1208,7 +1454,9 @@
         "timestamp": "2026-11-06T04:31:43.191978+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 1420,
+        "agent_error": null
       },
       {
         "task_id": "pytest-dev__pytest-7490",
@@ -1216,7 +1464,9 @@
         "timestamp": "2026-11-06T04:33:42.348327+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 0,
+        "agent_error": "ContextLimitError: Required instructions/latest interaction use 5168 tokens; prompt capacity is 1792"
       },
       {
         "task_id": "pytest-dev__pytest-7571",
@@ -1224,7 +1474,9 @@
         "timestamp": "2026-11-06T04:39:30.658705+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 1492,
+        "agent_error": null
       },
       {
         "task_id": "pytest-dev__pytest-6197",
@@ -1232,7 +1484,9 @@
         "timestamp": "2026-11-06T04:41:29.808881+00:00",
         "status": "completed",
         "success": false,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 0,
+        "agent_error": "ContextLimitError: Required instructions/latest interaction use 1797 tokens; prompt capacity is 1792"
       },
       {
         "task_id": "pylint-dev__pylint-8898",
@@ -1240,7 +1494,9 @@
         "timestamp": "2026-11-06T04:51:21.279476+00:00",
         "status": "interrupted_budget",
         "success": null,
-        "attempted": true
+        "attempted": true,
+        "generated_tokens": 0,
+        "agent_error": "ContextLimitError: Required instructions/latest interaction use 1889 tokens; prompt capacity is 1792"
       },
       {
         "task_id": "psf__requests-1724",
@@ -1248,7 +1504,9 @@
         "timestamp": "2026-11-06T04:51:21.279476+00:00",
         "status": "not_run_budget",
         "success": null,
-        "attempted": false
+        "attempted": false,
+        "generated_tokens": 0,
+        "agent_error": null
       },
       {
         "task_id": "pytest-dev__pytest-7236",
@@ -1256,7 +1514,9 @@
         "timestamp": "2026-11-06T04:51:21.279476+00:00",
         "status": "not_run_budget",
         "success": null,
-        "attempted": false
+        "attempted": false,
+        "generated_tokens": 0,
+        "agent_error": null
       }
     ],
     "test_summary": {

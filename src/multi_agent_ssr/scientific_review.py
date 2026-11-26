@@ -123,6 +123,9 @@ def public_findings(audit):
     p2p = hist["test_summary"]["PASS_TO_PASS"]
     f2p = hist["test_summary"]["FAIL_TO_PASS"]
     marker = hist["marker_sensitivity"]
+    scored = [r for r in hist["retained"] if r["status"] == "completed"]
+    no_tokens = sum(r["generated_tokens"] == 0 for r in scored)
+    context_errors = sum((r["agent_error"] or "").startswith("ContextLimitError:") for r in scored)
     count = len(cal["tasks"])
     def effect(pair):
         if not pair["paired"]:
@@ -149,7 +152,9 @@ def public_findings(audit):
          "this finite cohort. The paired bootstrap describes only the observed pairs."),
         ("Replay of historical scoring",
          f"The locked scorer reproduced all {hist['replayed_reports']} archived human grades from stdout. "
-         f"{hist['empty_submissions']} of the submitted patches were empty. The PASS_TO_PASS failure category contained "
+         f"{hist['empty_submissions']} of the submitted patches were empty. {no_tokens} scored submissions recorded zero "
+         f"generated tokens and {context_errors} recorded an agent context-limit error. A recorded failure can therefore "
+         "include a task for which the agent could not generate a repair. The PASS_TO_PASS failure category contained "
          f"{p2p['entries']} entries across {p2p['rows']} submissions on {len(p2p['task_ids'])} tasks. "
          f"Parsed states among those entries were {json.dumps(p2p['by_parsed_status'], sort_keys=True)}. "
          f"The FAIL_TO_PASS failure category contained {f2p['entries']} entries, with parsed states "
@@ -159,7 +164,7 @@ def public_findings(audit):
          "Test-level classifications and alias matches are retained in the per-test archive."),
         ("Fixed-patch grader calibration",
          f"The grader resolved the published repair and rejected the empty patch on {passes}/{count} tasks. "
-         f"{failed} tasks failed this criterion and {unknown} were indeterminate. "
+         f"The remaining classifications were {failed} failed and {unknown} indeterminate. "
          f"Gold repairs resolved on {sum(t['gold'] is True for t in cal['tasks'])}/{count} planned tasks. "
          f"Empty submissions resolved on {sum(t['empty'] is True for t in cal['tasks'])}/{count}. "
          "These CPU measurements characterize the pinned grading environment. A passing pair validates only these two inputs."),
