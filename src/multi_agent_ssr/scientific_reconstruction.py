@@ -53,9 +53,12 @@ def replay(task, condition, patch, directory, recorded):
         raise ValueError(f"Official reconstruction disagrees for {task['instance_id']}/{condition}")
     parsed, readable = get_logs_eval(spec, str(log))
     entries = test_entries(task, report.get("tests_status", {}), parsed, _resolve_case)
+    stdout = log.read_text(encoding="utf-8", errors="replace").lower()
+    markers = [s for s in ("temporary failure in name resolution", "network is unreachable", "no module named 'appdirs'")
+               if s in stdout]
     return {"parser_accepted_log": readable, "resolved": report["resolved"], "cache_present": cached is not None,
             "test_output_sha256": file_sha256(log), "cached_report_sha256": file_sha256(cache) if cached else None,
-            "entries": entries}
+            "stdout_markers": markers, "entries": entries}
 
 
 def _failure_summary(details):
@@ -152,12 +155,17 @@ def calibration_scores(root, tasks, pins):
             logs = list(path.parent.glob("official/*/*/*/test_output.txt"))
             if len(logs) > 1 or (not logs and row["status"] == "completed"):
                 raise ValueError("Missing or ambiguous completed control stdout")
+            diagnostics = {}
             if logs:
                 check = replay(task, "audit-" + condition, patch, logs[0].parent, row.get("official_report"))
                 if row["status"] == "completed" and check["resolved"] != row["success"]:
                     raise ValueError("Control score differs on log replay")
                 trace.append({"task_id": tid, "condition": condition, "phase": "calibration", **check})
-            rows.append({**{k: v for k, v in row.items() if k != "official_report"}, "result_sha256": file_sha256(path)})
+                diagnostics = {"stdout_markers": check["stdout_markers"], "failure_entries": {
+                    c: sum(e["category"] == c and e["official_class"] == "failure" for e in check["entries"])
+                    for c in ("FAIL_TO_PASS", "PASS_TO_PASS")}}
+            rows.append({**{k: v for k, v in row.items() if k != "official_report"},
+                         **diagnostics, "repository": task["repo"], "result_sha256": file_sha256(path)})
     return rows, attempts, trace
 
 

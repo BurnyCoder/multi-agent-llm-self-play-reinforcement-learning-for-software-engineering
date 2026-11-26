@@ -44,7 +44,7 @@ SOURCES = [
     ("Frozen agent prompt and native tool descriptions", "https://github.com/BurnyCoder/multi-agent-llm-self-play-reinforcement-learning-for-software-engineering/blob/109dfa67740ff9f0260d22be9407d047d90565f7/src/multi_agent_ssr/agents.py#L146"),
     ("CWM clipping thresholds and normalization choices", "https://arxiv.org/html/2510.02387v1#S5.SS2"),
     ("Frozen local reward and optimizer implementation", "https://github.com/BurnyCoder/multi-agent-llm-self-play-reinforcement-learning-for-software-engineering/blob/109dfa67740ff9f0260d22be9407d047d90565f7/src/multi_agent_ssr/learning.py"),
-    ("Independent correction ledger (retrospective)", "https://github.com/BurnyCoder/multi-agent-llm-self-play-reinforcement-learning-for-software-engineering/blob/main/reports/independent-audit-2026-11-12.md"),
+    ("Archived review of 2026-11-12", "https://github.com/BurnyCoder/multi-agent-llm-self-play-reinforcement-learning-for-software-engineering/blob/main/reports/independent-audit-2026-11-12.md"),
     ("Locked SWE-bench test matching and resolution", "https://github.com/SWE-bench/SWE-bench/blob/490635b2e9e775dca1e1d6b40ce9dbcff91e780f/swebench/harness/grading.py"),
     ("Frozen SWE-bench Verified dataset", "https://huggingface.co/datasets/SWE-bench/SWE-bench_Verified/tree/78f471bf655a3137b2e8a75af1501690ec009ec3"),
     ("Prospective fixed-patch control protocol", "https://github.com/BurnyCoder/multi-agent-llm-self-play-reinforcement-learning-for-software-engineering/blob/d9bbab3/reports/reviews/grader-calibration-protocol-2026-11-26.md"),
@@ -626,10 +626,15 @@ def _paper_sections(payload: dict[str, Any]) -> list[tuple[str, str]]:
         state += " Research optimizer-step evidence is missing or incomplete."
     elif payload["diagnostics"]["optimizer_steps"] == 0:
         state += " No completed policy optimizer steps are recorded; this record does not establish a learned checkpoint."
+    abstract_result = _effect_text(payload["analysis"]["comparisons"]["human"])
+    if review := payload.get("scientific_review"):
+        passes = sum(t["discrimination"] == "pass" for t in review["tasks"])
+        abstract_result += (f" Fresh CPU grader controls distinguished the published repair from an empty patch "
+                            f"on {passes} of {len(review['tasks'])} frozen human tasks [16–19].")
     sections = [
         ("Abstract", payload.get("hypothesis_disclosure", "") + " We implement a local shared-policy extension of Self-play SWE-RL in which bug-injection "
          "and repair teams can delegate to asynchronous subagents. All roles use one Qwen3.5-2B policy with a "
-         "shared trainable LoRA adapter. This report is generated from the saved run records. " + state + " " + primary),
+         "shared trainable LoRA adapter. " + abstract_result),
         ("Context and motivation", ("The experiment asks whether reinforcement learning from executable "
          "repository feedback improves held-out human-bug repair. Prior SSR work motivates repository-grounded "
          "bug injection and repair [1]. Anchored Self-Play reports distribution drift in function-level "
@@ -749,12 +754,16 @@ def _paper_sections(payload: dict[str, Any]) -> list[tuple[str, str]]:
          "appeared in model pretraining; contamination is unknown. Trusted tests reduce particular scoring "
          "failures but cannot guarantee realism or prevent every form of reward gaming. Unrun controls are not "
          "evidence. All incomplete coverage is retained in the tables.")),
-        ("Conclusion", payload.get("hypothesis_disclosure", "") + " " + primary),
+        ("Conclusion", payload.get("hypothesis_disclosure", "") + " " + abstract_result),
     ]
     if payload.get("scientific_review"):
         position = next(i for i, (title, _) in enumerate(sections) if title == "Observed execution diagnostics")
+        citations = {"Collection and training exposure": "[2, 14, 19]", "Human cohort and missing outcomes": "[8, 17, 19]",
+                     "Replay of historical scoring": "[16, 19]", "Fixed-patch grader calibration": "[16–19]",
+                     "Sensitivity to grader discrimination": "[8, 18, 19]", "Synthetic diagnostic cohort": "[9, 19]",
+                     "Where reference repairs failed": "[16, 18, 19]", "Protocol changes and stopping": "[9, 19]"}
         for title, body in reversed(payload["scientific_review"]["sections"]):
-            sections.insert(position, (title, body + " [16–19]"))
+            sections.insert(position, (title, body + " " + citations[title]))
     if payload.get("recovery_disclosure"):
         position = next(index for index, (title, _) in enumerate(sections) if title == "Results")
         sections.insert(position, ("Interrupted attempt and recovery amendment", payload["recovery_disclosure"]))
@@ -1143,7 +1152,7 @@ def generate_report(run_dir: Path, output_dir: Path, site_dir: Path, *, readme_p
               "## Reproduction and limitations\n\n"
               "[Independent raw-record cross-check](evidence-audit.json) recomputes scores, paired intervals, "
               "action accounting, and saved official-report agreement without using the reporting analysis. "
-              "[Retrospective claim ledger](independent-audit-2026-11-12.md) records corrections and uncertainties.\n\n"
+              "The [dated November 12 review](independent-audit-2026-11-12.md) is archived for provenance.\n\n"
               "Regenerate this report with `uv run selfplay report --run <run-directory>`. "
               "Task-paired intervals condition on the recorded checkpoints; training-seed uncertainty is unmeasured. "
               "Degenerate bootstrap intervals do not establish equivalence. Missing evaluations and infrastructure "

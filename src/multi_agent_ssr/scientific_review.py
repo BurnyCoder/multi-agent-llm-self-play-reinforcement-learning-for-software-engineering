@@ -7,6 +7,7 @@ worst-case completion principle in https://doi.org/10.1080/01621459.2000.1047390
 from __future__ import annotations
 
 import json
+from collections import Counter
 from pathlib import Path
 
 from .evidence import file_sha256
@@ -173,6 +174,20 @@ def public_findings(audit):
                   f"across {audit['synthetic']['distinct_functions']} distinct functions. The saved clean suite sizes were "
                   f"{', '.join(map(str, audit['synthetic']['clean_test_counts']))}. "
                   f"The policy evaluation stream contains {audit['synthetic']['scored']} scored synthetic outcomes."))
+    missed = [r for r in cal["controls"] if r["condition"] == "gold" and r["success"] is False]
+    if missed:
+        repos = Counter(r["repository"] for r in missed)
+        by_repo = ", ".join(f"{n} in {repo}" for repo, n in sorted(repos.items()))
+        p2p_only = sum(r["failure_entries"]["FAIL_TO_PASS"] == 0 and r["failure_entries"]["PASS_TO_PASS"] > 0
+                       for r in missed)
+        network = sum(any(m in r["stdout_markers"] for m in ("temporary failure in name resolution", "network is unreachable"))
+                      for r in missed)
+        notes.append(("Where reference repairs failed",
+                      f"Among the completed gold controls, the grader rejected {by_repo}. "
+                      f"On {p2p_only} of these tasks all repair-required tests were accepted, but expected-pass "
+                      f"failures still blocked resolution. Original stdout contained a DNS or network-unreachable "
+                      f"message on {network}/{len(missed)} unresolved gold controls. This retrospective text check "
+                      "identifies a concrete environmental limitation. The data do not isolate the cause of every failed test."))
     notes.append(("Protocol changes and stopping",
                   f"The interrupted original pilot records match the recovery amendment. The final observed worker "
                   f"overrun was {training['deadline_overrun_seconds']:.3f} seconds. The stopping diagnostic identified "
@@ -199,7 +214,8 @@ def review_report(audit, findings, headline, claim_ledger):
     for kind, cats in audit["calibration"]["test_summary"].items():
         for cat, summary in cats.items():
             failures.append(f"| {kind} | {cat} | {summary['entries']} | {json.dumps(summary['by_parsed_status'], sort_keys=True)} |")
-    infra = [f"- {r['task_id']} ({r['condition']}), {r['status']}: {r.get('reason') or 'no reason recorded'}"
+    infra = [f"- {r['task_id']} ({r['condition']}), {r['status']}: {r.get('reason') or 'no reason recorded'}. "
+             f"Observed log markers: {', '.join(r.get('stdout_markers', [])) or 'none of the retrospective search terms'}."
              for r in audit["calibration"]["controls"] if r["status"] != "completed"]
     issue = ("\n\n" + "\n".join(infra)) if infra else "\n\nEvery control had an admitted grade."
     return ("# Scientific review of the software-repair pilot\n\n" + audit["date"] + "\n\n" + headline + "\n\n" +

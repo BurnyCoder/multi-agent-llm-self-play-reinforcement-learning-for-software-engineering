@@ -20,6 +20,24 @@ def json_rows(path):
                 yield json.loads(line)
 
 
+def _message_strings(value):
+    """Include nested tool-call arguments as well as ordinary message content."""
+    if isinstance(value, dict):
+        for field in value.values():
+            yield from _message_strings(field)
+    elif isinstance(value, list):
+        for field in value:
+            yield from _message_strings(field)
+    elif isinstance(value, str):
+        yield value
+        if value.lstrip().startswith(("{", "[")):
+            try:
+                decoded = json.loads(value)
+            except ValueError:
+                return
+            yield from _message_strings(decoded)
+
+
 def reconstruct_training(run, tasks):
     """Follow collection IDs to episodes and compare original action and model evidence."""
     events = list(json_rows(run / "events.jsonl"))
@@ -72,7 +90,7 @@ def reconstruct_training(run, tasks):
     for r in json_rows(run / "model.jsonl"):
         if r["event"] == "prompt_effective" and (key := tuple(r["prompt_ids"])) in prompts:
             observed.add(key)
-            text = "\n".join(str(m.get("content", "")) for m in r["messages"])
+            text = "\n".join(_message_strings(r["messages"]))
             matched_refs.update(hashlib.sha256(p.encode()).hexdigest() for p in gold if p in text)
     if observed != prompts:
         raise ValueError("Missing effective training prompt in model stream")
