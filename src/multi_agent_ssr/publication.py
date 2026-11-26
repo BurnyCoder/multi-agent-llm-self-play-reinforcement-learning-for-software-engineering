@@ -188,12 +188,25 @@ def export_checkpoint(run_dir: Path, report_dir: Path, destination: Path) -> Pat
     write_json(evidence_path, evidence)
     files.append(evidence_path)
     for name in ["experiment.md", "experiments-summary.md", "paper.md", "paper.pdf", "preregistration.md",
-                 "evidence-audit.json", "independent-audit-2026-11-12.md"]:
+                 "evidence-audit.json", "independent-audit-2026-11-12.md", "scientific-review.md",
+                 "evidence.json", "oracle-tests.json.gz", "source-checks.json"]:
         if (report_dir / name).exists():
             shutil.copyfile(report_dir / name, destination / name)
             files.append(destination / name)
     base = record["model_config"]
+    for relative in report.get("figures", {}).values():
+        figure = Path(relative)
+        if figure.parent != Path("figures") or figure.suffix != ".png":
+            raise ValueError(f"Unexpected figure path in report: {relative}")
+        (destination / "figures").mkdir(exist_ok=True)
+        shutil.copyfile(report_dir / figure, destination / figure)
+        files.append(destination / figure)
     aggregate_analysis = {key: value for key, value in report["analysis"].items() if key != "records"}
+    calibration = ""
+    if report.get("scientific_review"):
+        calibration = ("\n\n" + "\n\n".join(body for _, body in report["scientific_review"]["sections"]) +
+                       "\n\n[All task controls and source-by-claim review](scientific-review.md) · "
+                       "[Attempts and hashes](evidence.json) · [Per-test evidence](oracle-tests.json.gz)\n\n")
     status = ("An unchanged research adapter, verified against the initial saved adapter. This is not a trained checkpoint."
               if evidence["status"] == "unchanged" else
               "A research adapter whose saved bytes differ from initialization; this alone does not establish improvement."
@@ -210,7 +223,7 @@ def export_checkpoint(run_dir: Path, report_dir: Path, destination: Path) -> Pat
         files.extend(path for path in destination.glob(pattern) if path.is_file() and not path.is_symlink())
     card = ("---\nlicense: apache-2.0\nlibrary_name: peft\nbase_model: " + base["model_id"] +
         "\nbase_model_relation: adapter\ntags:\n- reinforcement-learning\n- code\n- lora\n- multi-agent\n---\n\n"
-        "# Local multi-agent software self-play pilot\n\n" + status + "\n\n"
+        "# Local multi-agent software self-play pilot\n\n" + report.get("hypothesis_disclosure", "") + "\n\n" + status + "\n\n"
         "All primaries and asynchronous subagents use exactly one shared adapter. The frozen base weights, "
         "vision tower, embeddings and output head are not trained.\n\n"
         f"Exact base revision: `{base['revision']}`. Selected policy version: `{record['policy_version']}`. "
@@ -246,7 +259,7 @@ def export_checkpoint(run_dir: Path, report_dir: Path, destination: Path) -> Pat
         f'uv run --no-sync selfplay report --run "$BUNDLE"/{shlex.quote(records_relative.as_posix())} '
         '--output "$BUNDLE/regenerated-reports" --site "$BUNDLE/regenerated-site"\n```\n\n'
         "## Recorded evaluation\n\n"
-        + report.get("oracle_disclosure", "") + "\n\n"
+        + report.get("oracle_disclosure", "") + calibration + "\n\n"
         "Aggregate results are shown below. [Complete evaluation records](evaluation-summary.json) "
         "contain the full saved analysis, including task-level outcomes and official reports.\n\n```json\n"
         + json.dumps(aggregate_analysis, indent=2) + "\n```\n\n"

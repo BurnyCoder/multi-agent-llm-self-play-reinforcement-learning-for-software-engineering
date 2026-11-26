@@ -32,6 +32,12 @@
       </div>
       <div id="interpretation" class="finding" aria-live="polite">Results will appear only when valid evaluations have completed.</div>
       <p id="oracle-disclosure" class="notice"></p>
+      <details id="calibration" class="metadata" hidden><summary>Grader calibration and missing outcomes</summary>
+        <div id="review-findings"></div>
+        <figure><img id="calibration-figure" alt="Counts of resolved, unresolved and unscored fixed patches" loading="lazy"></figure>
+        <div class="table-wrap"><table><thead><tr><th>Frozen task</th><th>Human repair</th><th>Empty patch</th><th>Discrimination</th></tr></thead><tbody id="calibration-tasks"></tbody></table></div>
+        <p><a href="scientific-review.md">Source-by-claim review</a> · <a href="evidence.json">Attempts and hashes</a> · <a href="oracle-tests.json.gz">Per-test classifications</a></p>
+      </details>
       <div class="figure-grid"><figure><img src="figures/scores.png" alt="Observed task resolution with evaluated counts" loading="lazy"><figcaption>Resolution uses completed evaluations. Missing coverage is never treated as a failed repair.</figcaption></figure><div class="methods-note"><span class="label">READING THE EVIDENCE</span><h3>A pilot, with explicit limits.</h3><p>The paired interval resamples held-out tasks. It conditions on one checkpoint and does not measure training-seed uncertainty.</p><p>Improving self-generated bugs does not by itself demonstrate transfer to human-written bugs. Unrun controls have no score.</p><a class="text-link" href="summary.json" id="summary-link">Download generated analysis ↗</a></div></div>
       <div class="table-controls"><label>Bug source<select id="source-filter"><option value="all">All sources</option><option value="human">Human bugs</option><option value="synthetic">Synthetic bugs</option></select></label><label>Outcome<select id="outcome-filter"><option value="all">All outcomes</option><option value="resolved">Resolved</option><option value="unresolved">Not resolved</option><option value="unscored">Unscored</option></select></label><label class="search-label">Find a task<input id="task-filter" type="search" placeholder="Repository or task ID…"></label><span id="visible-count" class="muted"></span></div>
       <div class="table-wrap"><table><thead><tr><th>Task</th><th>Source</th><th>Condition</th><th>Outcome</th><th>Tokens</th><th>Recorded children</th></tr></thead><tbody id="evaluation-table"><tr><td colspan="6" class="empty">Loading saved records…</td></tr></tbody></table></div>

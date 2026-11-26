@@ -59,7 +59,11 @@ def test_zero_update_final_condition_is_not_presented_as_a_training_effect(tmp_p
     monkeypatch.setattr("multi_agent_ssr.reporting.render_paper", lambda *args: None)
     generate_report(run, tmp_path / "report", tmp_path / "site", readme_path=readme)
     payload = json.loads((tmp_path / "site" / "data.json").read_text())
-    assert payload["analysis"]["comparisons"] == analyze_evaluations(rows, bootstrap_samples=20)["comparisons"]
+    raw = analyze_evaluations(rows, bootstrap_samples=20)["comparisons"]
+    human = payload["analysis"]["comparisons"]["human"]
+    assert {key: human[key] for key in raw["human"]} == raw["human"]
+    assert human["hypothesis_status"] == ("not_tested_no_update" if optimizer_steps == 0 else "intervention_unverified")
+    assert payload["analysis"]["comparisons"]["synthetic"] == raw["synthetic"]
     disclosure = payload["training_intervention_disclosure"]
     if optimizer_steps == 0 and final_scored:
         assert "two evaluations of unchanged weights" in disclosure

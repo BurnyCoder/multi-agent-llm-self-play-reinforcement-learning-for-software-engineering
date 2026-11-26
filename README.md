@@ -8,6 +8,8 @@ The project adapts [Self-play SWE-RL](https://arxiv.org/html/2512.18552v3), the 
 
 **Research status:** the generated results below report the recorded run, checkpoint and evaluation status. A [dated recovery amendment](reports/preregistration.md#recovery-amendment-2026-11-05) preserves the interrupted initial attempt and deducts its compute charge from the recovery allocation. Preflight parameter updates are software checks, not evidence of self-play learning. The first delivery covers one bounded pilot; the larger seed/control study remains deferred.
 
+The [independent scientific review](reports/generated/scientific-review.md) includes every frozen human task, reference-patch and empty-patch controls, and the range allowed by missing historical scores. [Fixed-patch protocol](reports/reviews/grader-calibration-protocol-2026-11-26.md) · [Claim-by-claim sources](reports/reviews/claim-review-2026-11-26.md)
+
 <!-- SSR_RESULTS:START -->
 
 Recorded run status: **pilot_failed**.
@@ -99,6 +101,22 @@ Set `SSR_DATA_DIR`, `HF_HOME`, and `UV_CACHE_DIR` in `.env` to task-specific sto
 Preparation pins model/source/dataset commits, builds dependency-only training images, freezes the human evaluation cohort, and prepares the independently validated diagnostic set. Humanize uses its upstream `uv build`/hatch-vcs hook to generate required version metadata. Source/data licenses and immutable revisions are retained in manifests.
 
 ## Run the research pipeline
+
+### Reproduce the scientific audit without model execution
+
+From the locked WSL checkout, with the original pilot records, verified external task data and pinned Docker images available, use the commands below. Completed fixed-patch controls are reused. The reconstruction reads original stdout, mutation records and checkpoint bytes. It writes portable evidence to `results/scientific-audit-2026-11-26/`.
+
+```bash
+mountpoint -q /mnt/d
+uv run --no-sync python scripts/check_scientific_sources.py
+uv run --no-sync selfplay calibrate-grader
+uv run --no-sync python -m multi_agent_ssr.scientific_reconstruction
+uv run --no-sync selfplay report --run runs/pilot-recovery
+```
+
+The last command alone regenerates the human-facing results from an exact matching run and the committed evidence. The [Hub bundle](https://huggingface.co/BurnyCoder/multi-agent-swe-rl-qwen3.5-2b-pilot) supplies original reporting streams and portable test classifications. Replaying the historical parser from stdout requires the original local grader logs. [Source guide](docs/sources.md)
+
+### Model execution for the research pipeline
 
 Read [the preregistration](reports/preregistration.md) before running. Commit and push code, configuration and manifests first; the CLI enforces this ordering.
 

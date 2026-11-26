@@ -35,9 +35,22 @@ function renderEvidence() {
     if (pair.interval_degenerate && pair.interpretation !== "no_observed_difference")
       byId("interpretation").textContent += " The interval is degenerate and should not be interpreted as precise population uncertainty.";
   }
-  if (dataset.training_intervention_disclosure) {
-    const decision = pair.preregistered_decision.replaceAll("_", " ");
-    byId("interpretation").textContent = `${dataset.training_intervention_disclosure} ${byId("interpretation").textContent} Recorded interval-rule decision: ${decision}.`;
+  if (dataset.hypothesis_disclosure) {
+    byId("interpretation").textContent = dataset.hypothesis_disclosure + " " + byId("interpretation").textContent;
+  }
+  if (dataset.scientific_review) {
+    byId("calibration").hidden = false;
+    byId("calibration-figure").src = dataset.figures.calibration;
+    for (const [title, body] of dataset.scientific_review.sections) {
+      byId("review-findings").append(element("h3", title), element("p", body));
+    }
+    const outcome = value => value == null ? "Unscored" : value ? "Resolved" : "Unresolved";
+    for (const row of dataset.scientific_review.tasks) {
+      const tr = element("tr");
+      for (const value of [row.task_id, outcome(row.gold), outcome(row.empty), row.discrimination])
+        tr.append(element("td", value));
+      byId("calibration-tasks").append(tr);
+    }
   }
   byId("oracle-disclosure").textContent = dataset.oracle_disclosure || "No saved grader and patch diagnostic is available.";
   renderTable();
